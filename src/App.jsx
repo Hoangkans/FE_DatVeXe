@@ -1,8 +1,15 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import routes from "./routes/MainRoute";
+
 function App() {
   return (
-    <>
-      <h1>Base React</h1>
-    </>
+    <Router>
+      <Routes>
+        {routes.map(({path, component: Component}) => (
+          <Route key={path} path={path} element={<Component/>}/>
+        ))}
+      </Routes>
+    </Router>
   );
 }
 
