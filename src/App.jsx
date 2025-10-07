@@ -1,7 +1,9 @@
+import BookCarPage from "./pages/BookCarPage.jsx";
+
 function App() {
   return (
     <>
-      <h1>Base React</h1>
+      <BookCarPage />
     </>
   );
 }
