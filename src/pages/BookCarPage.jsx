@@ -102,6 +102,7 @@ export default function BookCarPage() {
   const anyChecked = Object.values(selectedOps).some(Boolean) || popular.discount || popular.vip;
   const [expandedId, setExpandedId] = useState(null);
   const [activeTab, setActiveTab] = useState("images");
+  const [showFilters, setShowFilters] = useState(true);
 
   const handleTogglePopular = (key) => (e) => setPopular((s) => ({ ...s, [key]: e.target.checked }));
   const handleToggleOperator = (name) => (e) => setSelectedOps((s) => ({ ...s, [name]: e.target.checked }));
@@ -115,7 +116,19 @@ export default function BookCarPage() {
   return (
     <div className="bookcar">
       <div className="bookcar__container">
-        <aside className="filters">
+        <div className="filters-toggle">
+          <button className="btn btn--outline" onClick={() => setShowFilters((s) => !s)}>
+            Bộ lọc
+            {anyChecked && (
+              <span className="pill">{
+                (popular.discount ? 1 : 0) +
+                  (popular.vip ? 1 : 0) +
+                  Object.values(selectedOps).filter(Boolean).length
+              }</span>
+            )}
+          </button>
+        </div>
+        <aside className={`filters ${!showFilters ? "is-collapsed" : ""}`}>
           <div className="filters__section">
             <h4 className="filters__title">Tiêu chí phổ biến</h4>
             <label className="checkbox"><input type="checkbox" checked={popular.discount} onChange={handleTogglePopular("discount")} /> Chuyến giảm giá <span className="muted">(370)</span></label>
