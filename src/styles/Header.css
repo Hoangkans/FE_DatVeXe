@@ -63,3 +63,9 @@
 .header-search{
     padding: 5px
 }
+
+@media (max-width: 900px) {
+    .header-nav {
+        display: none;
+    }
+}

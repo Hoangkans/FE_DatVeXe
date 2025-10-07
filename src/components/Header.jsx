@@ -6,6 +6,8 @@ import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PhoneIcon from '@mui/icons-material/Phone';
 
+import ResponsiveNav from "./ResponsiveNav";
+
 export default function Header() {
 
     return (
@@ -40,7 +42,7 @@ export default function Header() {
                     <Link>THONG TIN NHA XE</Link>
                     <Link>BEN XE</Link>
                     <Link>TUYEN DUONG</Link>
-                    <Link>MUA VE</Link>
+                    <Link>KIEM TRA VE</Link>
                 </div>
                 <div className="header-search">
                     <SearchIcon  
@@ -53,6 +55,7 @@ export default function Header() {
                     />
                 </div>
             </div>
+            <ResponsiveNav/>
         </div>
     )
 }
