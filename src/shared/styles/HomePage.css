@@ -115,7 +115,7 @@
 .claim-item {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    
     width: 100%;
     max-width: 1500px;
     flex-wrap: wrap;

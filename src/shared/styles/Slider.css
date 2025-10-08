@@ -16,8 +16,7 @@
     max-width: 1600px;  
     margin-left: auto;
     margin-right: auto;
-    text-align: left;
-    padding-left: 60px;  
+    text-align: left; 
     display: flex;
     align-items: center;
     gap: 10px;

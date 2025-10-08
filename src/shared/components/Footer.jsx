@@ -1,7 +1,7 @@
 import { Grid} from "@mui/material";
 import { Link } from "react-router-dom";
-import ncsc from "../assets/verify/ncsc.png";
-import dmca from "../assets/verify/dmca.png";
+import ncsc from "../../assets/verify/ncsc.png";
+import dmca from "../../assets/verify/dmca.png";
 
 import "../styles/Footer.css";
 

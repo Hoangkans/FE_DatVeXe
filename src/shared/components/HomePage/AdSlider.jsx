@@ -2,10 +2,10 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useRef } from "react";
 
-import sample from "../assets/sample.png"
-import "../styles/HomePage.css"
+import sample from "../../../assets/sample.png"
+import "../../styles/Slider.css"
 
-export default function SliderContent() {
+export default function AdSlider() {
     const routes = [
         { id: 1, name: "Sài Gòn - Vũng Tàu", price: "150.000đ", img:`${sample}` },
         { id: 2, name: "Sài Gòn - Mũi Né", price: "180.000đ", img:`${sample}` },
@@ -18,7 +18,7 @@ export default function SliderContent() {
 
     const scroll = (dir) => {
         const container = scrollRef.current;
-        const card = container.querySelector(".route-card");
+        const card = container.querySelector(".route-card-ad");
 
         if (!card) return;
 
@@ -29,21 +29,17 @@ export default function SliderContent() {
 
     return (
         <>
-            <div className="slide-content">
-                <h2 className="title-accent"> Uu Dai Noi Bat</h2>
-                <div className="slider-wrapper">
+            <div className="slide-content-ad">
+                <h2 className="title-accent-ad"> Tuyến Đường Phổ Biến </h2>
+                <div className="slider-wrapper-ad">
                     <button className="arrow left" onClick={() => scroll("left")}>
                         <ArrowBackIosNewIcon />
                     </button>
 
-                    <div className="routes-slider" ref={scrollRef}>
+                    <div className="routes-slider-ad" ref={scrollRef}>
                         {routes.map((route) => (
-                            <div key={route.id} className="route-card">
+                            <div key={route.id} className="route-card-ad">
                                 <img src={route.img} alt={route.name} />
-                                <div className="route-info">
-                                    <h3>{route.name}</h3>
-                                    <p className="price">{route.price}</p>
-                                </div>
                             </div>
                         ))}
                     </div>

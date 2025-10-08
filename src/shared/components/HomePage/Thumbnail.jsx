@@ -1,7 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import bg from "../assets/thumbnail.png"
-import "../styles/Thumbnail.css"
+import bg from "../../../assets/thumbnail.png"
+import "../../styles/Thumbnail.css"
 
 export default function Thumbnail() {
     return (

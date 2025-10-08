@@ -1,8 +1,8 @@
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-import sample from "../assets/sample.png"
+import sample from "../../../assets/sample.png"
 
-import  "../styles/TopReview.css";
+import  "../../styles/TopReview.css";
 
 function srcset(image, size, rows = 1, cols = 1) {
     return {
@@ -26,9 +26,9 @@ export default function TopReview() {
                     overflow: 'hidden',
                 }}
             >
-                {itemData.map((item) => (
+                {itemData.map((item, index) => (
                     <ImageListItem
-                        key={item.img}
+                        key={`${item.img}-${index}`}
                         cols={item.cols || 1}
                         rows={item.rows || 1}
                         sx={{ position: 'relative' }}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Drawer, IconButton, Box, List, ListItem, ListItemText, AppBar, Toolbar} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../../assets/logo.png';
 
 export default function ResponsiveNav() {
   const [open, setOpen] = useState(false);

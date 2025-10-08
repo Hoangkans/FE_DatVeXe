@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import logo from "../assets/logo.png"
+import logo from "../../assets/logo.png"
 import "../styles/Header.css"
 import SearchIcon from '@mui/icons-material/Search';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';

@@ -1,10 +1,12 @@
-import MainLayout from "../layouts/MainLayout"
-import Thumbnail from "../components/Thumbnail"
+import MainLayout from "../shared/layouts/MainLayout"
 
-import SliderContent from "../components/Slider";
-import AdSlider from "../components/adSlider";
-import TopReview from "../components/TopReview";
-import "../styles/HomePage.css"
+import Thumbnail from "../shared/components/HomePage/Thumbnail"
+import SliderContent from "../shared/components/HomePage/Slider";
+import AdSlider from "../shared/components/HomePage/AdSlider";
+import TopReview from "../shared/components/HomePage/TopReview";
+
+import "../shared/styles/HomePage.css"
+
 import icon1 from "../assets/claim.png"
 import icon2 from "../assets/prize.png"
 import icon3 from "../assets/shake.png"
