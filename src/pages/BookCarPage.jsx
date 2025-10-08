@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import "./BookCarPage.css";
 import carImg from "../assets/anh-minh-hoa-xe.jpg";
 import hotlineImg from "../assets/hotline-bookcar.jpg";

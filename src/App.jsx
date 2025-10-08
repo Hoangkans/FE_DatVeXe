@@ -1,10 +1,15 @@
-import BookCarPage from "./pages/BookCarPage.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import routes from "./routes/MainRoute";
 
 function App() {
   return (
-    <>
-      <BookCarPage />
-    </>
+    <Router>
+      <Routes>
+        {routes.map(({path, component: Component}) => (
+          <Route key={path} path={path} element={<Component/>}/>
+        ))}
+      </Routes>
+    </Router>
   );
 }
 
