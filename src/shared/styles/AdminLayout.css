@@ -1,0 +1,17 @@
+.admin-shell { display: flex; min-height: 100vh; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+.admin-sidebar { width: 260px; background: #0f172a; color: #e2e8f0; display: flex; flex-direction: column; padding: 16px; }
+.admin-brand { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; background: #111827; margin-bottom: 16px; }
+.admin-brand img { width: 24px; height: 24px; object-fit: contain; }
+.admin-env .env-name { color: #e5e7eb; font-weight: 600; line-height: 1.1; }
+.admin-env .env-sub { color: #94a3b8; font-size: 12px; }
+.admin-section { margin-top: 8px; }
+.admin-section-title { color: #94a3b8; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; margin: 10px 8px; }
+.admin-nav { display: flex; flex-direction: column; gap: 6px; }
+.admin-nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; color: #cbd5e1; text-decoration: none; border-radius: 10px; transition: background .15s ease, color .15s ease; }
+.admin-nav-link .icon { font-size: 18px; color: #94a3b8; }
+.admin-nav-link:hover { background: #111827; color: #fff; }
+.admin-nav-link.is-active { background: #1f2937; color: #fff; }
+.admin-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.06); display: flex; flex-direction: column; gap: 8px; }
+.user-line { font-size: 12px; color: #94a3b8; }
+.logout-btn { align-self: flex-start; padding: 8px 10px; background: #ef4444; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+.admin-content { flex: 1; background: #f8fafc; padding: 24px; }
