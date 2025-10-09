@@ -39,9 +39,9 @@ export default function Header() {
                 <div className="navigation">
                     <Link>TRANG CHU</Link>
                     <Link>GIOI THIEU</Link>
-                    <Link>THONG TIN NHA XE</Link>
-                    <Link>BEN XE</Link>
-                    <Link>TUYEN DUONG</Link>
+                    <Link to="/bus-company">THONG TIN NHA XE</Link>
+                    <Link to="/bus-station">BEN XE</Link>
+                    <Link to="/bus-route">TUYEN DUONG</Link>
                     <Link>KIEM TRA VE</Link>
                 </div>
                 <div className="header-search">
