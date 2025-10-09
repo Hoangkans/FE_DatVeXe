@@ -1,0 +1,25 @@
+.top-review {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 5px 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  color: white;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+}
+
+.overlay h3 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.overlay p {
+  font-size: 16px;
+  margin: 0;
+}
