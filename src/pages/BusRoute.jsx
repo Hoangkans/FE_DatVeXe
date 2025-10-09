@@ -1,0 +1,110 @@
+import MainLayout from "../shared/layouts/MainLayout"
+import Card from "../shared/components/Card"
+import { Grid } from "@mui/material";
+import sample from "../assets/sample.png"
+import PaginationBar from "../shared/components/Pagination";
+import { useState } from "react";
+
+import "../shared/styles/BusPage.css"
+
+export default function BusRoutePage() {
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 8;
+
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = itemData.slice(startIndex, endIndex);
+
+    const handleChange = (e, value) => {
+        setPage(value);
+        window.scrollTo({ top: 0, behavior: "smooth" });  
+    };
+
+    return (
+        <MainLayout>
+            <div className="bus-company-list">
+                <h2 className="title-accent-bus">TUYẾN ĐƯỜNG</h2>
+                
+                <Grid 
+                    container 
+                    spacing={4} 
+                    justifyContent="center" 
+                    sx={{
+                        maxWidth: "1800px", 
+                        margin: "0 auto",
+                    }}
+                >
+                    {currentItems.map((item, index) => (
+                        <Grid item xs={12} sm={6} md={3} key={index}>
+                            <Card
+                                title={item.title}
+                                description={item.description}
+                                image={item.img}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+
+                <PaginationBar 
+                    totalItems={itemData.length}
+                    itemsPerPage={itemsPerPage}
+                    page={page}
+                    onChange={handleChange}
+                />
+            </div>
+        </MainLayout>
+    )
+}
+
+const itemData = [
+    {
+        img: `${sample}`,
+        title: 'Sai Gon',
+        description: '287 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Vung Tau',
+        description: '93 bai viet',  
+    },
+    {
+        img: `${sample}`,
+        title: 'Ha Noi',
+        description: '612 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Da Lat',
+        description: '87 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Quy Nhon',
+        description: '81 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Nha Trang',
+        description: '557 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Da Nang',
+        description: '570 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Phan Thiet',
+        description: '276 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Con Dao',
+        description: '111 bai viet',
+    },
+    {
+        img: `${sample}`,
+        title: 'Phu Quoc',
+        description: '136 bai viet',
+    }
+];

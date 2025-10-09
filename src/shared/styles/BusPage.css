@@ -1,0 +1,84 @@
+.bus-company-list {
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    margin: 0 auto;
+}
+.bus-company-list p {
+    color: #777;
+    font-size: 20px;
+
+}
+.title-accent-bus {
+    font-size: 25px;
+    font-weight: 700;
+    color: #222;
+    width: 100%;
+    max-width: 1600px;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title-accent-bus::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 30px;
+    background-color: #f8b600;
+}
+
+.station-detail {
+    display: flex;
+    width: 100%;
+    flex-direction: column;   
+    align-items: center;
+    gap: 40px;
+}
+
+.station-header {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.station-header h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+}
+
+
+.station-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.station-content img {
+    width: 100%;
+    max-width: 1200px;
+    object-fit: cover;
+}
+
+.station-content p {
+    font-size: 20px;
+    color: #333;
+}
