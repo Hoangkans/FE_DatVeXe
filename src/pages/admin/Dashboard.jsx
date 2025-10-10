@@ -1,16 +1,14 @@
 import AdminLayout from "../../shared/layouts/AdminLayout";
+import Dashboard from "../../shared/components/admin/Dashboard";
 
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      <h1>Dashboard</h1>
-      <p>Chào mừng đến trang quản trị.</p>
-      <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
-        <div style={{ padding: 16, background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb" }}>
-          <b>Thống kê nhanh</b>
-          <p>Ví dụ: người dùng, đơn hàng, doanh thu...</p>
-        </div>
+      <h1 style={{ margin: 0 }}>Dashboard</h1>
+      <div style={{ color: "#64748b", marginBottom: 16, marginTop: 4 }}>
+        Tổng quan hoạt động nhà xe
       </div>
+      <Dashboard />
     </AdminLayout>
   );
 }
