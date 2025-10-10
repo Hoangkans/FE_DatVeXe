@@ -1,0 +1,131 @@
+/* SidebarFilters component styles */
+
+.filters-toggle {
+  display: none;
+  margin-bottom: 12px;
+}
+
+.filters {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  background: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-top: 220px; /* matches --filters-offset */
+}
+
+.filters__section {
+  margin-bottom: 18px;
+}
+
+.filters__section + .filters__section {
+  border-top: 1px solid #e9e9e9;
+  padding-top: 12px;
+}
+
+.filters__title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #484848;
+}
+
+.filters__label {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #484848;
+  display: block;
+}
+
+.checkbox {
+  display: block;
+  margin: 8px 0;
+  color: #484848;
+  cursor: pointer;
+}
+
+.checkbox input {
+  margin-right: 6px;
+}
+
+.checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #96dbfa;
+  cursor: pointer;
+}
+
+.filters__search {
+  width: 100%;
+  height: 34px;
+  border: 1px solid #e9e9e9;
+  border-radius: 6px;
+  padding: 0 10px;
+  margin: 6px 0 8px;
+  box-sizing: border-box;
+}
+
+.filters__search::placeholder {
+  color: #999;
+}
+
+.range {
+  width: 100%;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: #e9e9e9;
+  outline: none;
+}
+
+.filters__range-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #666666;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #a8e2fb;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #96dbfa;
+  cursor: pointer;
+}
+
+.range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #a8e2fb;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #96dbfa;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .filters {
+    position: static;
+    margin-top: 12px;
+  }
+
+  .filters.is-collapsed {
+    display: none;
+  }
+
+  .filters-toggle {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

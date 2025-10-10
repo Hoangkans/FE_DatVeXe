@@ -21,15 +21,15 @@ export default function AdminLayout({ children }) {
         <div className="admin-section">
           <div className="admin-section-title">Overview</div>
           <nav className="admin-nav">
-            <NavLink to="/admin">
+            <NavLink to="/admin" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <DashboardIcon className="icon" />
               <span>Dashboard</span>
             </NavLink>
-            <NavLink to="/admin/operators" >
+            <NavLink to="/admin/operators" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <DirectionsBusIcon className="icon" />
               <span>Nhà xe</span>
             </NavLink>
-            <NavLink to="/admin/stations">
+            <NavLink to="/admin/stations" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <PlaceIcon className="icon" />
               <span>Bến xe</span>
             </NavLink>

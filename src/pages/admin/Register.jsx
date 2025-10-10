@@ -1,11 +1,10 @@
+import AdminRegister from "../../shared/components/admin/login/Register";
+// styles are imported by the Register component
 
-
-export default function AdminRegister() {
-
-
+export default function AdminRegisterPage() {
   return (
-    <div style={{ display: "grid", placeItems: "center", minHeight: "100vh", background: "#f1f5f9" }}>
-      
+    <div className="auth-page">
+      <AdminRegister />
     </div>
   );
 }

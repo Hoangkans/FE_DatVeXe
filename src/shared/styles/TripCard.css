@@ -1,0 +1,292 @@
+/* ===== TripCard (single trip item) ===== */
+
+/* Card */
+.trip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 72px;
+  margin: 12px 0;
+  min-height: 202px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #c0c0c0;
+  border-radius: 8px;
+}
+
+.trip__thumb {
+  width: 111px;
+  height: 118px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.trip__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.trip__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.trip__name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.trip__rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #666666;
+}
+
+.trip__subtitle {
+  margin-top: 4px;
+}
+
+.badge {
+  background: #428bca;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.muted {
+  color: #666666;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.link {
+  color: #428bca;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Time row */
+.time--row {
+  display: grid;
+  grid-template-columns: 1fr 140px 1fr;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.time__col {
+  min-width: 0;
+}
+
+.time__col.end {
+  text-align: right;
+}
+
+.time__value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.time__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.time__arrow {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: #c0c0c0;
+}
+
+.time__arrow::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  top: -3px;
+  border-left: 6px solid #c0c0c0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+/* Aside */
+.trip__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 26px;
+  min-width: 111px;
+}
+
+.aside__price {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Details + tabs */
+.trip__details {
+  flex-basis: 100%;
+  border-top: 1px solid #e9e9e9;
+  padding-top: 12px;
+  margin-top: 8px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+  border-bottom: 1px solid #e9e9e9;
+}
+
+.tabs__btn {
+  height: 36px;
+  background: #fff;
+  border: 0;
+  border-right: 1px solid #e9e9e9;
+  cursor: pointer;
+  font-weight: 600;
+  color: #428bca;
+}
+
+.tabs__btn:last-child {
+  border-right: 0;
+}
+
+.tabs__btn.is-active {
+  color: #484848;
+  position: relative;
+}
+
+.tabs__btn.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #428bca;
+}
+
+.tab-panel {
+  padding: 16px 8px;
+}
+
+/* Gallery */
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.gallery img {
+  width: 520px;
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  display: inline-block;
+}
+
+.dot.is-active {
+  background: #7aa7e9;
+}
+
+/* Policy */
+.policy {
+  padding: 8px 4px;
+}
+
+.policy-table .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 14px 8px;
+  border-bottom: 1px dashed #e9e9e9;
+}
+
+.policy-table .row.head {
+  font-weight: 700;
+  color: #484848;
+  border-bottom: 1px solid #e9e9e9;
+}
+
+.policy-table .cell {
+  text-align: left;
+}
+
+.policy-table .row .strong {
+  font-weight: 700;
+  color: #000;
+}
+
+.policy-note {
+  padding: 16px 8px;
+  border-bottom: 1px solid #e9e9e9;
+}
+
+.policy-note .note-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .trip {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .trip__thumb {
+    width: 90px;
+    height: 90px;
+  }
+
+  .trip__title {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .time--row {
+    grid-template-columns: 1fr 100px 1fr;
+  }
+
+  .trip__aside {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .trip__details {
+    padding-top: 8px;
+  }
+
+  .gallery img {
+    width: 100%;
+  }
+}

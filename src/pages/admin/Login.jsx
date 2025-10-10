@@ -1,9 +1,11 @@
 
-export default function AdminLogin() {
+import AdminLoginForm from "../../shared/components/admin/login/Login";
+// styles are imported by the Login component
 
+export default function AdminLoginPage() {
   return (
-    <div style={{ display: "grid", placeItems: "center", minHeight: "100vh", background: "#f1f5f9" }}>
-     
+    <div className="auth-page">
+      <AdminLoginForm />
     </div>
   );
 }
