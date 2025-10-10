@@ -31,62 +31,63 @@ export default function HomePage() {
 
     return (
         <MainLayout>
-            <Thumbnail/>
-            <SliderContent/>
-            <AdSlider/>
-            <SliderContent/>
-            <h2 className="title-accent">Top Review</h2>   
-            <TopReview/>
-            <SliderContent/>
+            <div className="body-main">
+                <Thumbnail/>
+                <SliderContent/>
+                <AdSlider/>
+                <SliderContent/>
+                <h2 className="title-accent">Top Review</h2>   
+                <TopReview/>
+                <SliderContent/>
 
-            <h2 className="title-accent">Nen Tang Ket Noi Nguoi Dung Va Nha Xe</h2>   
-            <div className="claim-section">
-                <div className="claim-item">
-                    <div className="claim-card">
-                        <img src={icon1} style={{height: "65px"}}/>
-                        <div className="claim-info">
-                            <h3>DAP UNG MOI NHU CAU TIM KIEM</h3>
-                            <p>Voi hon 5000+ tuyen duong va 1500+ nha xe tren khap ca nuoc</p>
+                <h2 className="title-accent">Nền tảng kết nối người dùng và nhà xe</h2>   
+                <div className="claim-section">
+                    <div className="claim-item">
+                        <div className="claim-card">
+                            <img src={icon1} style={{height: "65px"}}/>
+                            <div className="claim-info">
+                                <h3>ĐÁP ỨNG MỌI NHU CẦU TÌM KIẾM</h3>
+                                <p>Với hơn 5000+ tuyến dường và 1500+ nhà xe trên khắp cả nước</p>
+                            </div>
+                        </div>
+                        <div className="claim-card">
+                            <img src={icon2} style={{height: "65px"}}/>
+                            <div className="claim-info">
+                                <h3>ĐẢM BẢO CÓ VÉ</h3>
+                                <p>Hoàn ngay 150% nếu không có vé, mang đến hành trình chọn vẹn</p>
+                            </div>
                         </div>
                     </div>
-                    <div className="claim-card">
-                        <img src={icon2} style={{height: "65px"}}/>
-                        <div className="claim-info">
-                            <h3>DAM BAO CO VE</h3>
-                            <p>Hoan ngay 150% neu khong co ve, mang den hanh trinh chon ven</p>
+
+                    <div className="claim-item">
+                        <div className="claim-card">
+                            <img src={icon3} style={{height: "65px"}} />
+                            <div className="claim-info">
+                                <h3>CAM KẾT GIỮ VẼ</h3>
+                                <p>Vivutoday cam kết hoàn 150% nếu nhà xe không giữ vé</p>
+                            </div>
+                        </div>
+                        <div className="claim-card">
+                            <img src={icon4} style={{height: "65px"}}/>
+                            <div className="claim-info">
+                                <h3>TỔNG ĐÀI HỖ TRỢ KHÁCH HÀNG 24/7</h3>
+                                <p>Giải quyết kịp thời vấn đề của khách hàng một cách nhanh chóng</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="claim-item">
-                    <div className="claim-card">
-                        <img src={icon3} style={{height: "65px"}} />
-                        <div className="claim-info">
-                            <h3>CAM KET GIU VE</h3>
-                            <p>Vivutoday cam ket hoan 150% neu nha xe khong giu ve</p>
-                        </div>
-                    </div>
-                    <div className="claim-card">
-                        <img src={icon4} style={{height: "65px"}}/>
-                        <div className="claim-info">
-                            <h3>TONG DAI HO TRO KHACH HANG 24/7</h3>
-                            <p>Giai quyet kip thoi van de cua khach hang mot cach nhanh chong</p>
-                        </div>
+                <h2 className="title-accent">Nền Tảng Kết Nối Người Dùng Và Nhà Xe</h2>
+                <div className="prize-section">
+                    <div className="prize-list">
+                        {prize.map((item, index) => (
+                            <div key={index} className="prize-card">
+                                <img src={item.src} alt={item.name} />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
-
-            <h2 className="title-accent">Nen Tang Ket Noi Nguoi Dung Va Nha Xe</h2>
-            <div className="prize-section">
-                <div className="prize-list">
-                    {prize.map((item, index) => (
-                        <div key={index} className="prize-card">
-                            <img src={item.src} alt={item.name} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
         </MainLayout>
     )
 }

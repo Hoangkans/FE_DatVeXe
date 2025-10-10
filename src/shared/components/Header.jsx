@@ -15,7 +15,7 @@ export default function Header() {
             <div className="upHeader">
                 <div className="header-name">
                     <DirectionsBusIcon/>
-                    <p>He thong dat ve xe toan quoc</p>
+                    <p>Hệ thống đặt vé xe toàn quốc</p>
                 </div>
                 <div className="header-contact">
                     <div className="icon-group">
@@ -37,12 +37,13 @@ export default function Header() {
                     <img src={logo}/>
                 </Link>
                 <div className="navigation">
-                    <Link>TRANG CHU</Link>
-                    <Link>GIOI THIEU</Link>
-                    <Link to="/bus-company">THONG TIN NHA XE</Link>
-                    <Link to="/bus-station">BEN XE</Link>
-                    <Link to="/bus-route">TUYEN DUONG</Link>
-                    <Link>KIEM TRA VE</Link>
+                    <Link>TRANG CHỦ</Link>
+                    <Link>GIỚI THIỆU</Link>
+                    <Link to="/book-car">ĐẶT XE</Link>
+                    <Link to="/bus-company">THÔNG TIN NHÀ XE</Link>
+                    <Link to="/bus-station">BẾN XE</Link>
+                    <Link to="/bus-route">TUYẾN ĐƯỜNG</Link>
+                    <Link>KIỂM TRA VÉ</Link>
                 </div>
                 <div className="header-search">
                     <SearchIcon  
@@ -55,7 +56,7 @@ export default function Header() {
                     />
                 </div>
             </div>
-            <ResponsiveNav/>
+            <ResponsiveNav className="naviagtionNav"/>
         </div>
     )
 }

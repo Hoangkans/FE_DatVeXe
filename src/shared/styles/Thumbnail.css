@@ -1,15 +1,29 @@
+.bgCover {
+    display: none; /* hidden by default */
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* show full image (no crop) */
+}
 .thumbnail{
     display: flex;
+    width: 100%;
     height: 600px;
     align-items: center;
     justify-content: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    flex-direction: column;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('../../assets/thumbnail.png');
 }
+
 .thumbnail form{
     display: flex;
-    gap: 10px;
+    gap: 20px;
     background-color: rgba(255, 255, 255, 0.632);
-    padding: 15px 8px;
+    max-width: 1800px;
+    padding: 15px 10px;
     border-radius: 10px;
 }
 .booking-input{
@@ -17,7 +31,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 30px 50px;
+    padding: 20px 50px;
     border: 1px solid brown;
     border-radius: 10px;
     font-size: 16px;
@@ -47,12 +61,37 @@
     padding: 0 50px;
     border-radius: 10px;
     color: white;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
 }
-
-@media (max-width: 900px) {
+.thumbnail button:hover{
+    background-color: #e19601;
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+@media (max-width: 1200px) {
+    .thumbnail{
+        margin-top: 50px;
+        background-image: none;
+    }
     .thumbnail form{
         flex-direction: column;
+        width: 90%;
+        padding: 20px 50px;
+    }
+    .bgCover{
+        display: block;
+    }
+}
+@media (min-width: 1800px) {
+    .thumbnail {
+        height: 650px;
+        background-size: contain;
+    }
+}
+@media (min-width: 2500px) {
+    .thumbnail {
+        height: 100vh;
+        background-size: contain;
     }
 }
