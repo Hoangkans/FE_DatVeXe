@@ -1,82 +1,8 @@
 import { useMemo, useState } from "react";
-import "./BookCarPage.css";
 import carImg from "../assets/anh-minh-hoa-xe.jpg";
 import hotlineImg from "../assets/hotline-bookcar.jpg";
 
-const trips = [
-  {
-    id: 1,
-    name: "Vip Phương Huy Luxury",
-    rating: 4.8,
-    reviews: 21,
-    depart: "21:00",
-    arrive: "22:30",
-    price: 220000,
-    seatsLeft: 10,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 2,
-    name: "Hoàng Anh Limousine (Hải Phòng)",
-    rating: 4.9,
-    reviews: 310,
-    depart: "21:15",
-    arrive: "23:50",
-    price: 450000,
-    seatsLeft: 5,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 3,
-    name: "Anh Huy Travel",
-    rating: 4.3,
-    reviews: 230,
-    depart: "21:45",
-    arrive: "00:25",
-    price: 120000,
-    seatsLeft: 12,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 4,
-    name: "Vip Phương Huy Luxury",
-    rating: 4.7,
-    reviews: 18,
-    depart: "20:30",
-    arrive: "22:00",
-    price: 220000,
-    seatsLeft: 7,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 5,
-    name: "Hoàng Anh Limousine (Hải Phòng)",
-    rating: 4.9,
-    reviews: 310,
-    depart: "22:00",
-    arrive: "00:30",
-    price: 450000,
-    seatsLeft: 3,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 6,
-    name: "Anh Huy Travel",
-    rating: 4.2,
-    reviews: 200,
-    depart: "19:45",
-    arrive: "22:15",
-    price: 120000,
-    seatsLeft: 14,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-];
+import "../shared/styles/BookCarPage.css"
 
 function Price({ value }) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
@@ -167,24 +93,7 @@ export default function BookCarPage() {
         </aside>
 
         <main className="results">
-          <div className="route-title">Hà Nội <span>Đến</span> Hải Phòng</div>
-          <div className="searchbox">
-            <div className="searchbox__grid">
-              <div className="searchbox__item">
-                <div className="searchbox__label">Điểm Khởi Hành</div>
-                <div className="searchbox__value muted">Chọn Điểm Khởi Hành</div>
-              </div>
-              <div className="searchbox__item">
-                <div className="searchbox__label">Điểm Đến</div>
-                <div className="searchbox__value muted">Chọn Điểm Đến</div>
-              </div>
-              <div className="searchbox__item">
-                <div className="searchbox__label">Ngày Khởi Hành</div>
-                <div className="searchbox__value muted">Chọn Điểm Đến</div>
-              </div>
-              <button className="searchbox__button"><span className="icon">🔍</span> Tìm chuyến xe</button>
-            </div>
-          </div>
+          
 
           <div className="results__header">
             <div className="sort link">Sắp xếp theo tuyến đường</div>
@@ -330,3 +239,78 @@ export default function BookCarPage() {
     </div>
   );
 }
+
+const trips = [
+  {
+    id: 1,
+    name: "Vip Phương Huy Luxury",
+    rating: 4.8,
+    reviews: 21,
+    depart: "21:00",
+    arrive: "22:30",
+    price: 220000,
+    seatsLeft: 10,
+    from: "Hà Nội",
+    to: "Hải Phòng",
+  },
+  {
+    id: 2,
+    name: "Hoàng Anh Limousine (Hải Phòng)",
+    rating: 4.9,
+    reviews: 310,
+    depart: "21:15",
+    arrive: "23:50",
+    price: 450000,
+    seatsLeft: 5,
+    from: "Hà Nội",
+    to: "Hải Phòng",
+  },
+  {
+    id: 3,
+    name: "Anh Huy Travel",
+    rating: 4.3,
+    reviews: 230,
+    depart: "21:45",
+    arrive: "00:25",
+    price: 120000,
+    seatsLeft: 12,
+    from: "Hà Nội",
+    to: "Hải Phòng",
+  },
+  {
+    id: 4,
+    name: "Vip Phương Huy Luxury",
+    rating: 4.7,
+    reviews: 18,
+    depart: "20:30",
+    arrive: "22:00",
+    price: 220000,
+    seatsLeft: 7,
+    from: "Hà Nội",
+    to: "Hải Phòng",
+  },
+  {
+    id: 5,
+    name: "Hoàng Anh Limousine (Hải Phòng)",
+    rating: 4.9,
+    reviews: 310,
+    depart: "22:00",
+    arrive: "00:30",
+    price: 450000,
+    seatsLeft: 3,
+    from: "Hà Nội",
+    to: "Hải Phòng",
+  },
+  {
+    id: 6,
+    name: "Anh Huy Travel",
+    rating: 4.2,
+    reviews: 200,
+    depart: "19:45",
+    arrive: "22:15",
+    price: 120000,
+    seatsLeft: 14,
+    from: "Hà Nội",
+    to: "Hải Phòng",
+  },
+];

@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import MainLayout from "../layouts/MainLayout"
-import Thumbnail from "../components/Thumbnail"
-
-import SliderContent from "../components/Slider";
-import AdSlider from "../components/adSlider";
-import TopReview from "../components/TopReview";
-import "../styles/HomePage.css"
-=======
 import MainLayout from "../shared/layouts/MainLayout"
 
 import Thumbnail from "../shared/components/HomePage/Thumbnail"
@@ -16,7 +7,6 @@ import TopReview from "../shared/components/HomePage/TopReview";
 
 import "../shared/styles/HomePage.css"
 
->>>>>>> origin/fix-UpdateBaseCode
 import icon1 from "../assets/claim.png"
 import icon2 from "../assets/prize.png"
 import icon3 from "../assets/shake.png"

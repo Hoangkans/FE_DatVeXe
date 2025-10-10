@@ -1,5 +1,5 @@
 import { useNavigate, NavLink } from "react-router-dom";
-import { clearToken, getUser } from "../utils/auth";
+
 import "../styles/AdminLayout.css";
 import logo from "../../assets/logo.png";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -7,14 +7,6 @@ import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import PlaceIcon from "@mui/icons-material/Place";
 
 export default function AdminLayout({ children }) {
-  const navigate = useNavigate();
-  const user = getUser();
-
-  const handleLogout = () => {
-    clearToken();
-    navigate("/admin/login", { replace: true });
-  };
-
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
@@ -29,15 +21,15 @@ export default function AdminLayout({ children }) {
         <div className="admin-section">
           <div className="admin-section-title">Overview</div>
           <nav className="admin-nav">
-            <NavLink to="/admin" end className={({ isActive }) => `admin-nav-link${isActive ? " is-active" : ""}`}>
+            <NavLink to="/admin">
               <DashboardIcon className="icon" />
               <span>Dashboard</span>
             </NavLink>
-            <NavLink to="/admin/operators" className={({ isActive }) => `admin-nav-link${isActive ? " is-active" : ""}`}>
+            <NavLink to="/admin/operators" >
               <DirectionsBusIcon className="icon" />
               <span>Nhà xe</span>
             </NavLink>
-            <NavLink to="/admin/stations" className={({ isActive }) => `admin-nav-link${isActive ? " is-active" : ""}`}>
+            <NavLink to="/admin/stations">
               <PlaceIcon className="icon" />
               <span>Bến xe</span>
             </NavLink>
@@ -45,8 +37,8 @@ export default function AdminLayout({ children }) {
         </div>
 
         <div className="admin-footer">
-          <div className="user-line">{user ? (user?.name || user?.email) : ''}</div>
-          <button className="logout-btn" onClick={handleLogout}>Đăng xuất</button>
+          <div className="user-line"></div>
+          <button className="logout-btn">Đăng xuất</button>
         </div>
       </aside>
       <main className="admin-content">
