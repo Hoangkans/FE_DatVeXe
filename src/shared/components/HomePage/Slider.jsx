@@ -30,7 +30,7 @@ export default function SliderContent() {
     return (
         <>
             <div className="slide-content">
-                <h2 className="title-accent"> Uu Dai Noi Bat</h2>
+                <h2 className="title-accent"> Ưu đãi nổi bật</h2>
                 <div className="slider-wrapper">
                     <button className="arrow left" onClick={() => scroll("left")}>
                         <ArrowBackIosNewIcon />

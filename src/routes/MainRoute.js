@@ -23,7 +23,7 @@ const routes = [
   { path: "/admin", component: AdminDashboard },
   { path: "/admin/stations", component: AdminStations },
   { path: "/admin/operators", component: AdminOperators },
-  { path: "/bookcar", component: BookCarPage }
+  { path: "/book-car", component: BookCarPage }
 ]
 
 export default routes;

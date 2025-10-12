@@ -5,30 +5,26 @@ import "../../styles/Thumbnail.css"
 
 export default function Thumbnail() {
     return (
-        <div className="thumbnail" style={{
-            backgroundImage: `url(${bg})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center'
-        }}>
+        <div className="thumbnail">
+            <img src={`${bg}`} className='bgCover'/>
             <form>
                 <div className="booking-input">
-                    <h4>Diem khoi hanh</h4>
-                    <input type="text" placeholder="Chon diem khoi hanh"/>
+                    <h4>Diểm khởi hành</h4>
+                    <input type="text" placeholder="Chọn điểm khởi hành"/>
                 </div>
                 <div className="booking-input">
-                    <h4>Diem den</h4>
-                    <input type="text" placeholder="Chon diem den" />
+                    <h4>Điểm đến</h4>
+                    <input type="text" placeholder="Chọn điểm đến" />
                 </div>
                 <div className="booking-input">
-                    <h4>Ngay khoi hanh</h4>
+                    <h4>Ngày khởi hành</h4>
                     <div className='calendar'>
                         <CalendarMonthIcon
                             sx={{
                                 color: 'black'
                             }}
                         />
-                        <input type="text" placeholder="Chon diem den"/>
+                        <input type="text" placeholder="Chọn điểm đến"/>
                     </div>
                 </div>
 
@@ -41,7 +37,7 @@ export default function Thumbnail() {
                         }}    
                     />
 
-                    <p>TIM CHUYEN XE</p>
+                    <p>TÌM CHUYẾN XE</p>
                 </button>
             </form>
         </div>

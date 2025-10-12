@@ -1,30 +1,29 @@
 import { useState } from 'react';
-import { Drawer, IconButton, Box, List, ListItem, ListItemText, AppBar, Toolbar} from '@mui/material';
+import { Drawer, IconButton, Box, List, ListItemButton, ListItemText, AppBar, Toolbar} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
 export default function ResponsiveNav() {
-  const [open, setOpen] = useState(false);
-  const toggleDrawer = (state) => () => setOpen(state);
+    const [open, setOpen] = useState(false);
+    const toggleDrawer = (state) => () => setOpen(state);
 
-  const navLinks = [
-    'TRANG CHU',
-    'GIOI THIEU',
-    'THONG TIN NHA XE',
-    'BEN XE',
-    'TUYEN DUONG',
-    'MUA VE'
-  ];
+    const navLinks = [
+        { title: 'TRANG CHỦ', path: '/' },
+        { title: 'GIỚI THIỆU', path: '/' },
+        { title: 'THONG TIN NHÀ XE', path: '/bus-company' },
+        { title: 'BẾN XE', path: 'bus-station' },
+        { title: 'TUYẾN ĐƯỜNG', path: '/bus-route' },
+        { title: 'MUA VÉ', path: '/mua-ve' }
+    ];
 
   return (
     <>
         <AppBar
-            
             sx={{
-                display: { xs: 'flex', md: 'none' },
-                backgroundColor: 'white',
-                zIndex: (theme) => theme.zIndex.drawer + 1,
+                display: { xs: 'flex', lg: 'none' },
+                backgroundColor: 'rgba(255, 255, 255, 0.632)',
+                marginTop: 3.5
             }}
         >
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>   
@@ -62,15 +61,16 @@ export default function ResponsiveNav() {
             }}
         >
 
-            <List style={{ marginTop: 70 }}>
-                {navLinks.map((text) => (
-                    <ListItem
-                        button
-                        key={text}
+            <List style={{ marginTop: 20 }}>
+                {navLinks.map((link) => (
+                    <ListItemButton
+                        key={link.title}
+                        component={Link}
+                        to={link.path}
                         onClick={toggleDrawer(false)}
                     >
-                        <ListItemText primary={text} />
-                    </ListItem>
+                        <ListItemText primary={link.title} />
+                    </ListItemButton>
                 ))}
             </List>
         </Drawer>
