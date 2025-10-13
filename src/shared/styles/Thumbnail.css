@@ -61,15 +61,20 @@
 .thumbnail button{
     background-color:#FFA901 ;
     border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    max-width: 270px;
+}
+.thumbnail .button-wrapper{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 50px;
-    border-radius: 10px;
-    color: white;
-    font-size: 20px;
-    font-weight: 600;
+    width: 100%;
 }
+
 .thumbnail button:hover{
     background-color: #e19601;
     transition: transform 0.2s ease;
@@ -90,7 +95,9 @@
         margin: 20px auto;
     }
     .thumbnail button{
-        padding: 15px 50px;
+        padding: 18px 0;
+        width: 100%;
+        max-width: 1200px;
     }
     .bgCover{
         display: block;

@@ -29,15 +29,17 @@ export default function Thumbnail() {
                 </div>
 
                 <button>
-                    <SearchIcon
-                        sx={{
-                            color: 'white', 
-                            p: 1,
-                            borderRadius: 1
-                        }}    
-                    />
+                    <div className='button-wrapper'>
+                        <SearchIcon
+                            sx={{
+                                color: 'white', 
+                                p: 1,
+                                borderRadius: 1
+                            }}    
+                        />
 
-                    <p>TÌM CHUYẾN XE</p>
+                        <p>TÌM CHUYẾN XE</p>
+                    </div>
                 </button>
             </form>
         </div>
