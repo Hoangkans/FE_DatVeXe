@@ -32,7 +32,9 @@ export default function HomePage() {
     return (
         <MainLayout>
             <div className="body-main">
-                <Thumbnail/>
+                <div className="thumnail-wrapper">
+                    <Thumbnail/>
+                </div>
                 <SliderContent/>
                 <AdSlider/>
                 <SliderContent/>
@@ -78,15 +80,20 @@ export default function HomePage() {
                 </div>
 
                 <h2 className="title-accent">Nền Tảng Kết Nối Người Dùng Và Nhà Xe</h2>
-                <div className="prize-section">
-                    <div className="prize-list">
-                        {prize.map((item, index) => (
-                            <div key={index} className="prize-card">
+                
+                <div className="prize-wrapper">
+                    <div className="prize-section">
+                        <div className="prize-list">
+                            {[...prize, ...prize].map((item, index) => (
+                                <div key={index} className="prize-card">
                                 <img src={item.src} alt={item.name} />
-                            </div>
-                        ))}
+                                <p>{item.name}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
+                
             </div>
         </MainLayout>
     )
