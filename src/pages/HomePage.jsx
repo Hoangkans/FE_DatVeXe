@@ -87,7 +87,6 @@ export default function HomePage() {
                             {[...prize, ...prize].map((item, index) => (
                                 <div key={index} className="prize-card">
                                 <img src={item.src} alt={item.name} />
-                                <p>{item.name}</p>
                                 </div>
                             ))}
                         </div>
