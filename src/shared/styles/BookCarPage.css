@@ -16,6 +16,7 @@
   background: var(--bg);
   min-height: 100vh;
   color: var(--text);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 .bookcar__container {
@@ -527,6 +528,18 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+}
+
+.searchbox__item:hover,
+.searchbox__item:focus-within {
+  border-color: #1b87aa;
+  box-shadow: 0 0 0 3px rgba(27, 135, 170, 0.12);
+}
+
+.searchbox__item:active {
+  transform: translateY(1px);
 }
 
 .searchbox__label {
@@ -552,10 +565,15 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  height: 64px;
+  width: 100%;
+  font-size: 16px;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.06);
 }
 
 .searchbox__button .icon {
   filter: grayscale(100%);
+  font-size: 18px;
 }
 
 /* Responsive */

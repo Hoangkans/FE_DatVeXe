@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
 import "../shared/styles/BookCarPage.css";
+import MainLayout from "../shared/layouts/MainLayout";
 import hotlineImg from "../assets/hotline-bookcar.jpg";
 import SidebarFilters from "../shared/components/BookCar/SidebarFilters";
 import TripList from "../shared/components/BookCar/TripList";
+
 
 export default function BookCarPage() {
   const operatorList = useMemo(
@@ -28,6 +30,19 @@ export default function BookCarPage() {
   const [activeTab, setActiveTab] = useState("images");
   const [showFilters, setShowFilters] = useState(true);
 
+  const handlePickFrom = () => {
+    // TODO: open location picker/modal
+    console.log("Pick departure clicked");
+  };
+  const handlePickTo = () => {
+    // TODO: open destination picker/modal
+    console.log("Pick destination clicked");
+  };
+  const handlePickDate = () => {
+    // TODO: open date picker
+    console.log("Pick date clicked");
+  };
+
   const handleTogglePopular = (key) => (e) => setPopular((s) => ({ ...s, [key]: e.target.checked }));
   const handleToggleOperator = (name) => (e) => setSelectedOps((s) => ({ ...s, [name]: e.target.checked }));
   const clearSelections = () => {
@@ -38,7 +53,51 @@ export default function BookCarPage() {
   const filteredOperators = operatorList.filter((n) => n.toLowerCase().includes(search.toLowerCase()));
 
   return (
+    <MainLayout>
     <div className="bookcar">
+      {/* Route title */}
+      <div className="route-title">
+        <span>Hà Nội</span> Đến <span>Hải Phòng</span>
+      </div>
+
+      {/* Search box */}
+      <div className="searchbox">
+        <div className="searchbox__grid">
+          <div
+            className="searchbox__item"
+            role="button"
+            tabIndex={0}
+            onClick={handlePickFrom}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handlePickFrom()}
+          >
+            <div className="searchbox__label">Điểm Khởi Hành</div>
+            <div className="searchbox__value">Chọn Điểm Khởi Hành</div>
+          </div>
+          <div
+            className="searchbox__item"
+            role="button"
+            tabIndex={0}
+            onClick={handlePickTo}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handlePickTo()}
+          >
+            <div className="searchbox__label">Điểm Đến</div>
+            <div className="searchbox__value">Chọn Điểm Đến</div>
+          </div>
+          <div
+            className="searchbox__item"
+            role="button"
+            tabIndex={0}
+            onClick={handlePickDate}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handlePickDate()}
+          >
+            <div className="searchbox__label">Ngày Khởi Hành</div>
+            <div className="searchbox__value">Chọn Điểm Đến</div>
+          </div>
+          <button className="searchbox__button">
+            TÌM CHUYẾN XE
+          </button>
+        </div>
+      </div>
       <div className="bookcar__container">
         <SidebarFilters
           showFilters={showFilters}
@@ -76,6 +135,7 @@ export default function BookCarPage() {
         </main>
       </div>
     </div>
+    </MainLayout>
   );
 }
 
