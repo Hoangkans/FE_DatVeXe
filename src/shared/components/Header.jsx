@@ -37,8 +37,8 @@ export default function Header() {
                     <img src={logo}/>
                 </Link>
                 <div className="navigation">
-                    <Link>TRANG CHỦ</Link>
-                    <Link>GIỚI THIỆU</Link>
+                    <Link to="/">TRANG CHỦ</Link>
+                    <Link to="/info">GIỚI THIỆU</Link>
                     <Link to="/book-car">ĐẶT XE</Link>
                     <Link to="/bus-company">THÔNG TIN NHÀ XE</Link>
                     <Link to="/bus-station">BẾN XE</Link>

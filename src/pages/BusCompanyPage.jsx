@@ -70,7 +70,7 @@ const itemData = [
     {
         img: `${sample}`,
         title: 'Vung Tau',
-        description: '93 bai viet',  
+        description: 'Vũng Tàu là một thành phố biển thuộc tỉnh Bà Rịa - Vũng Tàu, nằm ở miền Đông Nam Bộ và hướng ra Biển Đông.',  
     },
     {
         img: `${sample}`,

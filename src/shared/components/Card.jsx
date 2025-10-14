@@ -1,4 +1,6 @@
+
 import "../styles/Card.css"
+
 export default function Card({title, description, image}) {
     return (
         <div className="card">
