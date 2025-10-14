@@ -16,7 +16,8 @@
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  margin-top: 220px; /* matches --filters-offset */
+  /* Nudge lower to align with first TripCard */
+  margin-top: 56px;
 }
 
 .filters__section {

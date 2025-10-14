@@ -9,7 +9,7 @@
   --primary: #E5A100;
   --primary-600: #D59000;
   --border: #E9E9E9;
-  --filters-offset: 220px;
+  /* Removed artificial offset; let layout align naturally */
 }
 
 .bookcar {
@@ -45,7 +45,8 @@
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  margin-top: var(--filters-offset);
+  /* Nudge lower to align with first TripCard */
+  margin-top: 56px;
 }
 
 .filters__section {
@@ -530,6 +531,7 @@
   justify-content: center;
   cursor: pointer;
   transition: border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+  position: relative;
 }
 
 .searchbox__item:hover,
@@ -540,6 +542,41 @@
 
 .searchbox__item:active {
   transform: translateY(1px);
+}
+
+/* Picker dropdown */
+.picker__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+
+.picker__header {
+  font-weight: 700;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+
+.picker__list {
+  max-height: 280px;
+  overflow: auto;
+}
+
+.picker__option {
+  padding: 12px;
+  border-bottom: 1px solid #F1F1F1;
+}
+
+.picker__option:hover {
+  background: #F6FBFE;
 }
 
 .searchbox__label {

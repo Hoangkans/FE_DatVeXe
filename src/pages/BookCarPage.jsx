@@ -4,6 +4,9 @@ import MainLayout from "../shared/layouts/MainLayout";
 import hotlineImg from "../assets/hotline-bookcar.jpg";
 import SidebarFilters from "../shared/components/BookCar/SidebarFilters";
 import TripList from "../shared/components/BookCar/TripList";
+import LocationPicker from "../shared/components/BookCar/LocationPicker";
+import LOCATIONS from "../mock/data/locations.json";
+import TRIPS from "../mock/data/trips.json";
 
 
 export default function BookCarPage() {
@@ -29,18 +32,26 @@ export default function BookCarPage() {
   const [expandedId, setExpandedId] = useState(null);
   const [activeTab, setActiveTab] = useState("images");
   const [showFilters, setShowFilters] = useState(true);
-
-  const handlePickFrom = () => {
-    // TODO: open location picker/modal
-    console.log("Pick departure clicked");
-  };
-  const handlePickTo = () => {
-    // TODO: open destination picker/modal
-    console.log("Pick destination clicked");
-  };
+  const [trips, setTrips] = useState([]);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [date, setDate] = useState("");
+  const [locations] = useState(LOCATIONS);
   const handlePickDate = () => {
-    // TODO: open date picker
-    console.log("Pick date clicked");
+    setDate(new Date().toISOString().slice(0, 10));
+  };
+
+  const handleSearch = async () => {
+    // Filter local mock data instead of calling services
+    const qFrom = from?.toLowerCase?.() || "";
+    const qTo = to?.toLowerCase?.() || "";
+    const results = TRIPS.filter((t) =>
+      (!qFrom || String(t.from).toLowerCase().includes(qFrom)) &&
+      (!qTo || String(t.to).toLowerCase().includes(qTo))
+    );
+    setTrips(results);
+    setExpandedId(null);
+    setActiveTab("images");
   };
 
   const handleTogglePopular = (key) => (e) => setPopular((s) => ({ ...s, [key]: e.target.checked }));
@@ -63,26 +74,20 @@ export default function BookCarPage() {
       {/* Search box */}
       <div className="searchbox">
         <div className="searchbox__grid">
-          <div
-            className="searchbox__item"
-            role="button"
-            tabIndex={0}
-            onClick={handlePickFrom}
-            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handlePickFrom()}
-          >
-            <div className="searchbox__label">Điểm Khởi Hành</div>
-            <div className="searchbox__value">Chọn Điểm Khởi Hành</div>
-          </div>
-          <div
-            className="searchbox__item"
-            role="button"
-            tabIndex={0}
-            onClick={handlePickTo}
-            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handlePickTo()}
-          >
-            <div className="searchbox__label">Điểm Đến</div>
-            <div className="searchbox__value">Chọn Điểm Đến</div>
-          </div>
+          <LocationPicker
+            label="Điểm Khởi Hành"
+            placeholder="Chọn Điểm Khởi Hành"
+            value={from}
+            options={locations}
+            onSelect={setFrom}
+          />
+          <LocationPicker
+            label="Điểm Đến"
+            placeholder="Chọn Điểm Đến"
+            value={to}
+            options={locations}
+            onSelect={setTo}
+          />
           <div
             className="searchbox__item"
             role="button"
@@ -91,9 +96,9 @@ export default function BookCarPage() {
             onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handlePickDate()}
           >
             <div className="searchbox__label">Ngày Khởi Hành</div>
-            <div className="searchbox__value">Chọn Điểm Đến</div>
+            <div className="searchbox__value">{date || "Chọn Ngày"}</div>
           </div>
-          <button className="searchbox__button">
+          <button className="searchbox__button" onClick={handleSearch}>
             TÌM CHUYẾN XE
           </button>
         </div>
@@ -138,78 +143,3 @@ export default function BookCarPage() {
     </MainLayout>
   );
 }
-
-const trips = [
-  {
-    id: 1,
-    name: "Vip Phương Huy Luxury",
-    rating: 4.8,
-    reviews: 21,
-    depart: "21:00",
-    arrive: "22:30",
-    price: 220000,
-    seatsLeft: 10,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 2,
-    name: "Hoàng Anh Limousine (Hải Phòng)",
-    rating: 4.9,
-    reviews: 310,
-    depart: "21:15",
-    arrive: "23:50",
-    price: 450000,
-    seatsLeft: 5,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 3,
-    name: "Anh Huy Travel",
-    rating: 4.3,
-    reviews: 230,
-    depart: "21:45",
-    arrive: "00:25",
-    price: 120000,
-    seatsLeft: 12,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 4,
-    name: "Vip Phương Huy Luxury",
-    rating: 4.7,
-    reviews: 18,
-    depart: "20:30",
-    arrive: "22:00",
-    price: 220000,
-    seatsLeft: 7,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 5,
-    name: "Hoàng Anh Limousine (Hải Phòng)",
-    rating: 4.9,
-    reviews: 310,
-    depart: "22:00",
-    arrive: "00:30",
-    price: 450000,
-    seatsLeft: 3,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-  {
-    id: 6,
-    name: "Anh Huy Travel",
-    rating: 4.2,
-    reviews: 200,
-    depart: "19:45",
-    arrive: "22:15",
-    price: 120000,
-    seatsLeft: 14,
-    from: "Hà Nội",
-    to: "Hải Phòng",
-  },
-];
