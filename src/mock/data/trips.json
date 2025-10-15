@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1,
+    "name": "Vip Phương Huy Luxury",
+    "rating": 4.8,
+    "reviews": 21,
+    "depart": "21:00",
+    "arrive": "22:30",
+    "price": 220000,
+    "seatsLeft": 10,
+    "from": "Vinh",
+    "to": "Hải Phòng"
+  },
+  {
+    "id": 2,
+    "name": "Hoàng Anh Limousine (Hải Phòng)",
+    "rating": 4.9,
+    "reviews": 310,
+    "depart": "21:15",
+    "arrive": "23:50",
+    "price": 450000,
+    "seatsLeft": 5,
+    "from": "Hà Nội",
+    "to": "Hải Phòng"
+  },
+  {
+    "id": 3,
+    "name": "Anh Huy Travel",
+    "rating": 4.3,
+    "reviews": 230,
+    "depart": "21:45",
+    "arrive": "00:25",
+    "price": 120000,
+    "seatsLeft": 12,
+    "from": "Hà Nội",
+    "to": "Hải Phòng"
+  },
+  {
+    "id": 4,
+    "name": "Vip Phương Huy Luxury",
+    "rating": 4.7,
+    "reviews": 18,
+    "depart": "20:30",
+    "arrive": "22:00",
+    "price": 220000,
+    "seatsLeft": 7,
+    "from": "Cao Bằng",
+    "to": "Hà Nội"
+  },
+  {
+    "id": 5,
+    "name": "Hoàng Anh Limousine (Hải Phòng)",
+    "rating": 4.9,
+    "reviews": 310,
+    "depart": "22:00",
+    "arrive": "00:30",
+    "price": 450000,
+    "seatsLeft": 3,
+    "from": "Hà Nội",
+    "to": "Vinh"
+  },
+  {
+    "id": 6,
+    "name": "Anh Huy Travel",
+    "rating": 4.2,
+    "reviews": 200,
+    "depart": "19:45",
+    "arrive": "22:15",
+    "price": 120000,
+    "seatsLeft": 14,
+    "from": "Hà Nội",
+    "to": "Hải Phòng"
+  }
+]
+
