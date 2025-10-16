@@ -30,7 +30,7 @@
 }
 
 .filters-toggle {
-  display: none;
+  display: none !important;
   margin-bottom: 12px;
 }
 
@@ -46,7 +46,6 @@
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  /* Nudge lower to align with first TripCard */
   margin-top: 56px;
 }
 
@@ -199,16 +198,23 @@
 .results__header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; /* center label + toolbar */
   gap: 12px;
-  margin: 12px 0 16px;
+  margin: 20px 0 16px;
+  width: 100%;
 }
+
+/* Desktop: group label + toolbar near center */
+.results__header .sort { flex: 0; text-align: left; color: var(--link); margin-right: 12px; white-space: nowrap; }
 
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* bring two dropdowns closer */
+  flex-shrink: 0;
 }
+
+.filters-inline { margin-left: 8px; }
 
 .dropdown {
   height: 32px;
@@ -230,6 +236,7 @@
 
 .sort.link {
   font-size: 14px;
+  flex: 1;
 }
 
 .trip {
@@ -497,9 +504,12 @@
 .route-title {
   text-align: center;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 23.63px;
+  line-height: 1;
+  letter-spacing: 0;
   color: #1878AA;
-  margin: 4px 0 12px;
+  margin: 100px 0 20px; /* distance from header to title */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .route-title span {
@@ -510,8 +520,8 @@
   border: 2px solid #1b87aa;
   border-radius: 6px;
   padding: 14px;
-  margin: 0 auto 12px;
-  max-width: 920px;
+  margin: 0 auto 20px;
+  max-width: 1100px;
   width: 100%;
   box-sizing: border-box;
   background: rgba(255,255,255,0.7);
@@ -531,6 +541,7 @@
     gap: 12px;
     padding: 12px;
   }
+  .filters-toggle { display: none !important; }
   .searchbox__grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -661,13 +672,11 @@
     display: none;
   }
   
-  .filters-toggle {
-    display: flex;
-    justify-content: flex-end;
-  }
+  .filters-toggle { display: none !important; }
   
   .results__header {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-content: space-between;
   }
 }
 

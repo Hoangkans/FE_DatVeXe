@@ -1,11 +1,21 @@
 import TripCard from "./TripCard";
 import "../../styles/TripList.css";
 
-export default function TripList({ trips, expandedId, activeTab, onToggleTrip, onTabChange }) {
+export default function TripList({ trips, expandedId, activeTab, onToggleTrip, onTabChange, showHeader = true, onToggleFilters, isNarrow = false }) {
   function ResultsHeader() {
+    const label = isNarrow ? "Bộ lọc" : "Sắp xếp theo tuyến đường";
+    const clickable = Boolean(onToggleFilters);
+    const commonProps = clickable
+      ? {
+          role: "button",
+          tabIndex: 0,
+          onClick: onToggleFilters,
+          onKeyDown: (e) => (e.key === "Enter" || e.key === " ") && onToggleFilters && onToggleFilters(),
+        }
+      : {};
     return (
       <div className="results__header">
-        <div className="sort link">Sắp xếp theo tuyến đường</div>
+        <div className={`sort ${isNarrow ? "link" : ""}`} {...commonProps}>{label}</div>
         <div className="toolbar">
           <button className="dropdown">
             <span>Giờ đi</span>
@@ -22,7 +32,7 @@ export default function TripList({ trips, expandedId, activeTab, onToggleTrip, o
 
   return (
     <>
-      <ResultsHeader />
+      {showHeader && <ResultsHeader />}
       {trips.map((t) => (
         <TripCard
           key={t.id}
