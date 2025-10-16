@@ -17,6 +17,7 @@
   min-height: 100vh;
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
 }
 
 .bookcar__container {
@@ -511,6 +512,8 @@
   padding: 14px;
   margin: 0 auto 12px;
   max-width: 920px;
+  width: 100%;
+  box-sizing: border-box;
   background: rgba(255,255,255,0.7);
 }
 
@@ -519,6 +522,25 @@
   grid-template-columns: 1fr 1fr 1fr 220px;
   gap: 16px;
   align-items: stretch;
+}
+
+/* Tablet: two columns layout */
+@media (max-width: 1024px) {
+  .bookcar__container {
+    grid-template-columns: 200px 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+  .searchbox__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .searchbox__button {
+    grid-column: 1 / -1;
+    height: 56px;
+  }
+  .route-title {
+    font-size: 22px;
+  }
 }
 
 .searchbox__item {
@@ -618,6 +640,11 @@
   .searchbox__grid {
     grid-template-columns: 1fr;
   }
+  .searchbox {
+    width: calc(100% - 32px);
+    margin: 0 auto 12px;
+  }
+  .route-title { font-size: 20px; }
 }
 
 @media (max-width: 900px) {
@@ -650,6 +677,9 @@
     padding: 0 8px;
     font-size: 13px;
   }
+  .searchbox__button { height: 52px; font-size: 15px; }
+  .searchbox__item { padding: 12px; }
+  .picker__menu { left: 0; right: 0; }
   
   .trip {
     gap: 16px;
