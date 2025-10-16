@@ -1,4 +1,4 @@
-/* Basic admin register page styles (same base as login) */
+/* Admin Auth - Register styles (same base as login) */
 .auth-page {
   display: grid;
   place-items: center;
@@ -17,16 +17,14 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
 }
 
-.auth-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0f172a;
-}
+.auth-brand { font-size: 22px; font-weight: 800; color: #0f172a; text-align: center; }
+.auth-title { font-size: 22px; font-weight: 800; color: #0f172a; }
 
 .auth-subtitle {
   color: #64748b;
   margin-top: 4px;
   margin-bottom: 12px;
+  text-align: center;
 }
 
 .auth-error {
@@ -50,12 +48,16 @@
   margin-bottom: 6px;
 }
 
+.auth-input-group { position: relative; display: flex; align-items: center; }
+.auth-input-icon { color: #94a3b8; position: absolute; left: 10px; display: inline-flex; }
+.auth-input-action { position: absolute; right: 8px; background: transparent; border: 0; color: #64748b; cursor: pointer; padding: 4px; display: inline-flex; align-items: center; }
+
 .auth-input {
   width: 100%;
   height: 38px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 0 10px;
+  padding: 0 36px 0 36px;
   outline: none;
 }
 
@@ -68,7 +70,7 @@
   height: 40px;
   border: none;
   border-radius: 8px;
-  background: #0284c7;
+  background: #2563eb;
   color: #fff;
   font-weight: 700;
   cursor: pointer;
@@ -78,3 +80,7 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.auth-switch { margin-top: 12px; text-align: center; color: #475569; }
+.auth-link { color: #2563eb; text-decoration: none; font-weight: 600; }
+.auth-link:hover { text-decoration: underline; }
