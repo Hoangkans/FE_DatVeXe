@@ -27,8 +27,8 @@
     display: flex;
     gap: 20px;
     background-color: rgba(255, 255, 255, 0.7);
-    width: 100%;
-    max-width: 1100px;
+    width: 90%;
+    max-width: 1280px;
     padding: 20px 30px;
     border-radius: 12px;
 }
@@ -47,40 +47,104 @@
     padding: 0;
     margin: 0;
 }
-.booking-input input{
+
+.select-wrapper{
     width: 100%;
-    border: none;
     background-color: transparent;
-    text-align: center;
-    outline: none; 
-}
-.booking-input .calendar{
     display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none; 
+    min-width: 180px;
+    padding: 0;
+    margin: 0;
+}
+.MuiAutocomplete-root{
+    min-width: 200px;
+}
+.select-wrapper .MuiOutlinedInput-root fieldset {
+    border: none !important;
+}
+.select-wrapper .MuiOutlinedInput-root:hover fieldset {
+    border: none !important;
+}
+.select-wrapper .MuiOutlinedInput-root.Mui-focused fieldset {
+    border: none !important;
+}
+.select-wrapper .MuiInputBase-input {
+    text-align: center !important;
+    width: 100%;
+    padding: 0 10px !important;
+    
+}
+.select-wrapper .MuiAutocomplete-popupIndicator {
+    color: brown !important;
+    background-color: transparent !important;
+}
+
+
+.booking-input .calendar{
+    display: flex !important;
+    align-items: center;
 }   
 
-.thumbnail button{
-    background-color:#FFA901 ;
+.calendar-root{
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+.calendar-input{
+    padding: 10px 0;
+    border: none;
+    background: none;
+    text-align: center;
+    font-size:16px;
+    color: #494646;
+    outline: none;
+}
+
+.calendar-popup{
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-53%);
+    align-items: center;
+    margin-top: 8px;
+    z-index: 9999;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    
+}
+
+.calendar-popup .MuiDayCalendar-root,
+.calendar-popup .MuiPickersCalendar-root,
+.calendar-popup .MuiCalendarPicker-root{
+    background: transparent;
+}
+.thumbnail .button-date{
+    background-color:#FFA901 !important;
     border: none;
     border-radius: 10px;
     color: white;
     font-size: 16px;
     font-weight: 600;
     width: 100%;
-    max-width: 270px;
 }
 .thumbnail .button-wrapper{
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
     width: 100%;
 }
 
-.thumbnail button:hover{
-    background-color: #e19601;
+.thumbnail .button-date:hover{
+    background-color: #e19601 !important;
     transition: transform 0.2s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
     .thumbnail{
         margin-top: 50px;
         background-image: none;
@@ -101,5 +165,9 @@
     }
     .bgCover{
         display: block;
+    }
+    .MuiAutocomplete-root{
+        width: 100% !important;
+        text-align: center !important;
     }
 }

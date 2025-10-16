@@ -6,10 +6,7 @@
   --muted: #666666;
   --link: #428BCA;
   --accent: #96DBFA;
-  --primary: #E5A100;
-  --primary-600: #D59000;
   --border: #E9E9E9;
-  /* Removed artificial offset; let layout align naturally */
 }
 
 .bookcar {

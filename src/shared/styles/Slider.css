@@ -27,7 +27,7 @@
     display: inline-block;
     width: 5px;
     height: 25px;
-    background-color: #f8b600;
+    background-color: #f8b600 !important;
     border-radius: 3px;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .arrow {
-    background: #ffb300;
+    background: #ffb300 !important;
     color: white;
     border: none;
     border-radius: 50%;
@@ -83,7 +83,7 @@
 }
 
 .arrow:hover {
-    background: #ffa000;
+    background: #ffa000 !important;
 }
 
 @media (max-width: 1024px) {

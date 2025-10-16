@@ -32,7 +32,7 @@
     display: inline-block;
     width: 5px;
     height: 30px;
-    background-color: #f8b600;
+    background-color: #f8b600 !important;
 }
 
 .station-detail {
