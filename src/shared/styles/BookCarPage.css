@@ -520,7 +520,8 @@
   font-weight: 700;
   font-size: 23.63px;
   line-height: 1;
-  letter-spacing: 0;
+  letter-spacing: 0.2px; /* nhẹ cho cảm giác đều hơn */
+  word-spacing: 2px;     /* dãn khoảng cách giữa từ */
   color: #1878AA;
   margin: 0 0 12px; /* tighter spacing to form */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -528,6 +529,7 @@
 
 .route-title span {
   font-weight: 400;
+  margin: 0 8px; /* space 2 bên của 'Đến' cho cân */
 }
 
 .searchbox {
@@ -658,6 +660,20 @@
   margin-top: 4px; /* Figma gap 4 */
   color: #757575;
 }
+
+/* Native date input styled to look like value */
+.searchbox__date {
+  width: 100%;
+  height: 28px;
+  margin-top: 4px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  color: #757575;
+  font-size: 14px;
+}
+.searchbox__date:focus { outline: none; }
+.searchbox__date::-webkit-calendar-picker-indicator { cursor: pointer; }
 
 .searchbox__button {
   background: #F9A401;

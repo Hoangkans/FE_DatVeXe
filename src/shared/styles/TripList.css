@@ -26,6 +26,29 @@
 .dropdown > span:first-child { height: 20px; line-height: 20px; }
 .sort.link { font-size: 14px; }
 
+/* Simple dropdown menu */
+.dropdown-wrap { position: relative; display: inline-block; }
+.dropdown-menu {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  z-index: 10;
+  padding: 6px 0;
+}
+.menu-item {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+.menu-item:hover { background: #f6f6f6; }
+.menu-item.is-active { font-weight: 600; }
+
 /* Mobile: match Figma for 'Bộ lọc' */
 @media (max-width: 900px) {
   .results__header .sort {
