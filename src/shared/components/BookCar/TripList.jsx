@@ -1,7 +1,17 @@
 import TripCard from "./TripCard";
 import "../../styles/TripList.css";
 
-export default function TripList({ trips, expandedId, activeTab, onToggleTrip, onTabChange, showHeader = true, onToggleFilters, isNarrow = false }) {
+export default function TripList(props) {
+  const {
+    trips = [],
+    expandedId = null,
+    activeTab = "images",
+    onToggleTrip,
+    onTabChange,
+    showHeader = true,
+    onToggleFilters,
+    isNarrow = false,
+  } = props || {};
   function ResultsHeader() {
     const label = isNarrow ? "Bộ lọc" : "Sắp xếp theo tuyến đường";
     const clickable = Boolean(onToggleFilters);
@@ -33,14 +43,14 @@ export default function TripList({ trips, expandedId, activeTab, onToggleTrip, o
   return (
     <>
       {showHeader && <ResultsHeader />}
-      {trips.map((t) => (
+      {(trips || []).map((t, idx) => (
         <TripCard
-          key={t.id}
+          key={t?.id ?? idx}
           t={t}
           expanded={expandedId === t.id}
           activeTab={activeTab}
-          onToggle={() => onToggleTrip(t.id)}
-          onTabChange={onTabChange}
+          onToggle={() => onToggleTrip && onToggleTrip(t.id)}
+          onTabChange={onTabChange || (() => void 0)}
         />
       ))}
     </>

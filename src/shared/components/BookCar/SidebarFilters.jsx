@@ -1,23 +1,24 @@
 import "../../styles/SidebarFilters.css";
 
-export default function SidebarFilters({
-  showFilters,
-  onToggleCollapse,
-  popular,
-  onTogglePopular,
-  selectedOps,
-  onToggleOperator,
-  search,
-  onSearchChange,
-  filteredOperators,
-  onClear,
-  anyChecked,
-  selectedCount,
-}) {
+export default function SidebarFilters(props) {
+  const {
+    showFilters = true,
+    onToggleCollapse,
+    popular = { discount: false, vip: false },
+    onTogglePopular,
+    selectedOps = {},
+    onToggleOperator,
+    search = "",
+    onSearchChange,
+    filteredOperators = [],
+    onClear,
+    anyChecked = false,
+    selectedCount = 0,
+  } = props || {};
   return (
     <>
       <div className="filters-toggle">
-        <button className="btn btn--outline" onClick={onToggleCollapse}>
+        <button className="btn btn--outline" onClick={onToggleCollapse || (() => void 0)}>
           Bộ lọc
           {anyChecked && <span className="pill">{selectedCount}</span>}
         </button>
@@ -26,11 +27,11 @@ export default function SidebarFilters({
         <div className="filters__section">
           <h4 className="filters__title">Tiêu chí phổ biến</h4>
           <label className="checkbox">
-            <input type="checkbox" checked={popular.discount} onChange={onTogglePopular("discount")} /> Chuyến giảm
+            <input type="checkbox" checked={!!popular?.discount} onChange={onTogglePopular ? onTogglePopular("discount") : undefined} /> Chuyến giảm
             giá <span className="muted">(370)</span>
           </label>
           <label className="checkbox">
-            <input type="checkbox" checked={popular.vip} onChange={onTogglePopular("vip")} /> Xe VIP Limousine
+            <input type="checkbox" checked={!!popular?.vip} onChange={onTogglePopular ? onTogglePopular("vip") : undefined} /> Xe VIP Limousine
             <span className="muted">(433)</span>
           </label>
         </div>
@@ -59,16 +60,16 @@ export default function SidebarFilters({
             className="filters__search"
             placeholder="Tìm nhà xe"
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => (onSearchChange ? onSearchChange(e.target.value) : void 0)}
           />
-          {filteredOperators.map((name) => (
+          {(filteredOperators || []).map((name) => (
             <label className="checkbox" key={name}>
-              <input type="checkbox" checked={!!selectedOps[name]} onChange={onToggleOperator(name)} /> {name}
+              <input type="checkbox" checked={!!selectedOps[name]} onChange={onToggleOperator ? onToggleOperator(name) : undefined} /> {name}
             </label>
           ))}
         </div>
 
-        <button className="btn btn--ghost" onClick={onClear} disabled={!anyChecked}>
+        <button className="btn btn--ghost" onClick={onClear || (() => void 0)} disabled={!anyChecked}>
           Xoá đã chọn
         </button>
       </aside>

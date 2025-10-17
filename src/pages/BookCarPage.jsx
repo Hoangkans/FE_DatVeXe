@@ -85,14 +85,14 @@ export default function BookCarPage() {
   return (
     <MainLayout>
     <div className="bookcar">
-      {/* Route title */}
-      <div className="route-title">
-        Hà Nội <span>Đến</span> Hải Phòng
-      </div>
+      {/* Hero section: center title + form in the empty space */}
+      <section className="search-hero">
+        <div className="route-title">
+          Hà Nội <span>Đến</span> Hải Phòng
+        </div>
 
-      {/* Search box */}
-      <div className="searchbox">
-        <div className="searchbox__grid">
+        <div className="searchbox">
+          <div className="searchbox__grid">
           <LocationPicker
             label="Điểm Khởi Hành"
             placeholder="Chọn Điểm Khởi Hành"
@@ -120,8 +120,9 @@ export default function BookCarPage() {
           <button className="searchbox__button" onClick={handleSearch}>
             TÌM CHUYẾN XE
           </button>
+          </div>
         </div>
-      </div>
+      </section>
       <div className="bookcar__container">
         <SidebarFilters
           showFilters={showFilters}
