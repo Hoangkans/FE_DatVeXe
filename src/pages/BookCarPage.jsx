@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import "../shared/styles/BookCarPage.css";
 import MainLayout from "../shared/layouts/MainLayout";
 import hotlineImg from "../assets/hotline-bookcar.jpg";
@@ -31,11 +31,30 @@ export default function BookCarPage() {
     (popular.discount ? 1 : 0) + (popular.vip ? 1 : 0) + Object.values(selectedOps).filter(Boolean).length;
   const [expandedId, setExpandedId] = useState(null);
   const [activeTab, setActiveTab] = useState("images");
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return !window.matchMedia('(max-width: 900px)').matches; // collapse on narrow by default
+  });
   const [trips, setTrips] = useState([]);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
+  const [isNarrow, setIsNarrow] = useState(() => typeof window !== 'undefined' ? window.matchMedia('(max-width: 900px)').matches : false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 900px)');
+    const handler = (e) => setIsNarrow(e.matches);
+    mq.addEventListener ? mq.addEventListener('change', handler) : mq.addListener(handler);
+    return () => {
+      mq.removeEventListener ? mq.removeEventListener('change', handler) : mq.removeListener(handler);
+    };
+  }, []);
+  
+  useEffect(() => {
+    // Keep default behavior in sync with viewport
+    setShowFilters(!isNarrow);
+  }, [isNarrow]);
   const [locations] = useState(LOCATIONS);
   const handlePickDate = () => {
     setDate(new Date().toISOString().slice(0, 10));
@@ -66,14 +85,14 @@ export default function BookCarPage() {
   return (
     <MainLayout>
     <div className="bookcar">
-      {/* Route title */}
-      <div className="route-title">
-        <span>Hà Nội</span> Đến <span>Hải Phòng</span>
-      </div>
+      {/* Hero section: center title + form in the empty space */}
+      <section className="search-hero">
+        <div className="route-title">
+          Hà Nội <span>Đến</span> Hải Phòng
+        </div>
 
-      {/* Search box */}
-      <div className="searchbox">
-        <div className="searchbox__grid">
+        <div className="searchbox">
+          <div className="searchbox__grid">
           <LocationPicker
             label="Điểm Khởi Hành"
             placeholder="Chọn Điểm Khởi Hành"
@@ -101,8 +120,9 @@ export default function BookCarPage() {
           <button className="searchbox__button" onClick={handleSearch}>
             TÌM CHUYẾN XE
           </button>
+          </div>
         </div>
-      </div>
+      </section>
       <div className="bookcar__container">
         <SidebarFilters
           showFilters={showFilters}
@@ -124,6 +144,9 @@ export default function BookCarPage() {
             trips={trips}
             expandedId={expandedId}
             activeTab={activeTab}
+            showHeader={true}
+            isNarrow={isNarrow}
+            onToggleFilters={isNarrow ? (() => setShowFilters((s) => !s)) : undefined}
             onToggleTrip={(id) => {
               if (expandedId === id) setExpandedId(null);
               else {

@@ -3,23 +3,45 @@
 .results__header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
+  justify-content: center; /* center label + controls */
+  gap: 8px; /* bring them closer together */
 }
 
 .dropdown {
-  height: 34px;
+  height: 32px; /* compact */
   padding: 0 10px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #E9E9E9;
+  border: 1px solid #EBEBEB;
   background: #fff;
-  border-radius: 8px;
+  border-radius: 6px; /* match rest */
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
 }
 
 .dropdown .caret { font-size: 12px; color: #666666; }
+.dropdown > span:first-child { height: 20px; line-height: 20px; }
 .sort.link { font-size: 14px; }
 
-@media (max-width: 900px) { .results__header { flex-wrap: wrap; } }
+/* Mobile: match Figma for 'Bộ lọc' */
+@media (max-width: 900px) {
+  .results__header .sort {
+    width: auto;
+    height: 18px;
+    line-height: 18px;
+    color: #333333;
+    text-align: center;
+  }
+  .sort.link {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #333333;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 900px) { .results__header { flex-wrap: nowrap; justify-content: space-between; } }

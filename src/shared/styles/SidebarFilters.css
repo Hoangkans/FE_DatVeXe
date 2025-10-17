@@ -1,4 +1,4 @@
-/* SidebarFilters component styles */
+
 
 .filters-toggle {
   display: none;
@@ -125,8 +125,5 @@
     display: none;
   }
 
-  .filters-toggle {
-    display: flex;
-    justify-content: flex-end;
-  }
+  .filters-toggle { display: none !important; }
 }

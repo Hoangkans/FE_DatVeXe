@@ -27,7 +27,7 @@
 }
 
 .filters-toggle {
-  display: none;
+  display: none !important;
   margin-bottom: 12px;
 }
 
@@ -43,7 +43,6 @@
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  /* Nudge lower to align with first TripCard */
   margin-top: 56px;
 }
 
@@ -196,33 +195,58 @@
 .results__header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 12px 0 16px;
+  justify-content: center; /* center label + controls */
+  gap: 8px; /* bring them closer together */
+  margin: 20px 0 16px;
+  width: 100%;
+}
+
+/* Desktop: group label + toolbar near center */
+.results__header .sort {
+  flex: 0;
+  width: 165px; /* Figma width */
+  height: 20px; /* Figma height */
+  line-height: 20px; /* vertical middle */
+  font-size: 14px; /* Figma size */
+  font-weight: 400; /* regular */
+  text-align: center; /* Figma center */
+  color: var(--link); /* #428BCA */
+  white-space: nowrap;
 }
 
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* bring two dropdowns closer */
+  flex-shrink: 0;
 }
 
+.filters-inline { margin-left: 8px; }
+
 .dropdown {
-  height: 32px;
+  height: 32px; /* compact button */
   padding: 0 10px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background: #fff;
-  border: 1px solid #c0c0c0;
+  border: 1px solid #EBEBEB; /* match Figma stroke */
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 14px; /* text 14px */
+  font-weight: 400; /* regular */
+  color: #000; /* label color */
 }
 
 .dropdown .caret {
   font-size: 12px;
   color: var(--muted);
+}
+
+/* Ensure label text hugs 20px height */
+.dropdown > span:first-child {
+  height: 20px;
+  line-height: 20px;
 }
 
 .sort.link {
@@ -494,9 +518,12 @@
 .route-title {
   text-align: center;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 23.63px;
+  line-height: 1;
+  letter-spacing: 0;
   color: #1878AA;
-  margin: 4px 0 12px;
+  margin: 0 0 12px; /* tighter spacing to form */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .route-title span {
@@ -507,8 +534,8 @@
   border: 2px solid #1b87aa;
   border-radius: 6px;
   padding: 14px;
-  margin: 0 auto 12px;
-  max-width: 920px;
+  margin: 0 auto 12px; /* reduce gap to the section below */
+  max-width: 1100px;
   width: 100%;
   box-sizing: border-box;
   background: rgba(255,255,255,0.7);
@@ -528,12 +555,14 @@
     gap: 12px;
     padding: 12px;
   }
+  /* Hide toggle on tablet */
+  .filters-toggle { display: none !important; }
   .searchbox__grid {
     grid-template-columns: 1fr 1fr;
   }
   .searchbox__button {
     grid-column: 1 / -1;
-    height: 56px;
+    min-height: 80px; /* keep equal to tiles */
   }
   .route-title {
     font-size: 22px;
@@ -542,21 +571,41 @@
 
 .searchbox__item {
   background: #fff;
-  border: 1px solid #E0E0E0;
+  border: 1px solid #EBEBEB; /* match Figma stroke */
   border-radius: 6px;
-  padding: 14px;
+  padding: 0 24px; /* match Figma H padding */
+  min-height: 80px; /* match Figma height */
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+  transition: border-color .15s ease, transform .05s ease;
   position: relative;
 }
 
 .searchbox__item:hover,
 .searchbox__item:focus-within {
   border-color: #1b87aa;
-  box-shadow: 0 0 0 3px rgba(27, 135, 170, 0.12);
+}
+
+/* Blue underline indicator on hover/focus */
+.searchbox__item::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 48px;
+  height: 3px;
+  background: #1b87aa;
+  border-radius: 999px;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  transition: transform .15s ease;
+}
+.searchbox__item:hover::after,
+.searchbox__item:focus-within::after {
+  transform: translateX(-50%) scaleX(1);
 }
 
 .searchbox__item:active {
@@ -606,7 +655,7 @@
 
 .searchbox__value {
   text-align: center;
-  margin-top: 6px;
+  margin-top: 4px; /* Figma gap 4 */
   color: #757575;
 }
 
@@ -614,14 +663,15 @@
   background: #F9A401;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px; /* match tile radius */
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 64px;
+  min-height: 80px; /* match tile height */
+  padding: 0 24px; /* match tile horizontal padding */
   width: 100%;
   font-size: 16px;
   box-shadow: 0 2px 0 rgba(0,0,0,0.06);
@@ -658,13 +708,27 @@
     display: none;
   }
   
-  .filters-toggle {
-    display: flex;
-    justify-content: flex-end;
-  }
+  /* Hide toggle on mobile too – use header label */
+  .filters-toggle { display: none !important; }
   
   .results__header {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+  /* Mobile label styles */
+  .results__header .sort {
+    width: auto;
+    height: 18px; /* Figma height for 'Bộ lọc' */
+    line-height: 18px;
+    color: #333333; /* override desktop blue */
+    text-align: center;
+  }
+  .sort.link {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700; /* bold */
+    font-size: 16px; /* Figma size */
+    color: #333333;
+    cursor: pointer;
   }
 }
 
@@ -674,8 +738,8 @@
     padding: 0 8px;
     font-size: 13px;
   }
-  .searchbox__button { height: 52px; font-size: 15px; }
-  .searchbox__item { padding: 12px; }
+  .searchbox__button { min-height: 72px; font-size: 15px; }
+  .searchbox__item { padding: 0 16px; min-height: 72px; }
   .picker__menu { left: 0; right: 0; }
   
   .trip {
@@ -712,4 +776,15 @@
   .gallery img {
     width: 100%;
   }
+}
+/* Hero: center the route title and search form in the whitespace */
+.search-hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 16px 0; /* Menu → Title = 32px */
+  min-height: 0; /* no extra vertical centering height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* start at top of hero */
 }
