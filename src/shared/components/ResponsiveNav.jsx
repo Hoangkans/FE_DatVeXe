@@ -10,9 +10,10 @@ export default function ResponsiveNav() {
 
     const navLinks = [
         { title: 'TRANG CHỦ', path: '/' },
-        { title: 'GIỚI THIỆU', path: '/' },
-        { title: 'THONG TIN NHÀ XE', path: '/bus-company' },
-        { title: 'BẾN XE', path: 'bus-station' },
+        { title: 'GIỚI THIỆU', path: '/info' },
+        { title: 'ĐẶT XE', path: '/book-car' },
+        { title: 'THÔNG TIN NHÀ XE', path: '/bus-company' },
+        { title: 'BẾN XE', path: '/bus-station' },
         { title: 'TUYẾN ĐƯỜNG', path: '/bus-route' },
         { title: 'MUA VÉ', path: '/mua-ve' }
     ];

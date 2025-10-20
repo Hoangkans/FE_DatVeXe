@@ -1,9 +1,8 @@
 import { useSelector } from "react-redux";
-import MainLayout from "../shared/layouts/MainLayout";
+import MainLayout from "../../shared/layouts/MainLayout";
 
-import "../shared/styles/BusPage.css"
 export default function StationDetail() {
-    const station = useSelector((state) => state.station.selectedStation);
+    const station = useSelector((state) => state.post.selectedPost);
 
     return (
         <MainLayout>

@@ -5,9 +5,14 @@ import sample from "../assets/sample.png"
 import PaginationBar from "../shared/components/Pagination";
 import { useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSelectedPost } from "../config/redux/reducers/posts/postAction";
 import "../shared/styles/BusPage.css"
 
 export default function BusCompanyPage() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     const itemsPerPage = 8;
 
@@ -20,6 +25,10 @@ export default function BusCompanyPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });  //move to top
     };
 
+    const viewMore = (item) => {
+        dispatch(setSelectedPost(item));
+        navigate(`/company-detail/${item.title}`);
+    };
     return (
         <MainLayout>
             <div className="bus-company-list">
@@ -36,11 +45,22 @@ export default function BusCompanyPage() {
                 >
                     {currentItems.map((item, index) => (
                         <Grid item xs={12} sm={6} md={3} key={index}>
-                            <Card
-                                title={item.title}
-                                description={item.description}
-                                image={item.img}
-                            />
+                            <div
+                                onClick={() => viewMore(item)}
+                                style={{
+                                    cursor: "pointer",
+                                    transition: "transform 0.2s ease",
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+                            >
+
+                                <Card
+                                    title={item.title}
+                                    description={item.description}
+                                    image={item.img}
+                                />
+                            </div>
                         </Grid>
                     ))}
                 </Grid>

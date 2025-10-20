@@ -9,7 +9,9 @@ import HomePage from "../pages/HomePage"
 import BusCompanyPage from "../pages/BusCompanyPage"
 import BusStationPage from "../pages/BusStation"
 import BusRoutePage from "../pages/BusRoute"
-import StationDetail from "../pages/StationDetail"
+import StationDetail from "../pages/post/StationDetail"
+import CompanyDetail from "../pages/post/CompanyDetail";
+import RouteDetail from "../pages/post/RouteDetail";
 import InfoPage from "../pages/InfoPage"
 
 const routes = [
@@ -18,6 +20,8 @@ const routes = [
   { path: "/bus-station", component: BusStationPage},
   { path: "/bus-route", component: BusRoutePage},
   { path: "/station-detail/:title", component: StationDetail},
+  { path: "/company-detail/:title", component: CompanyDetail},
+  { path: "/route-detail/:title", component: RouteDetail},
   { path: "/info", component: InfoPage},
   
   { path: "/admin/login", component: AdminLogin },

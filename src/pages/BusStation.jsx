@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setSelectedStation } from "../config/redux/reducers/station/stationAction"
+import { setSelectedPost } from "../config/redux/reducers/posts/postAction"
 import "../shared/styles/BusPage.css"
 
 export default function BusStationPage() {
@@ -26,7 +26,7 @@ export default function BusStationPage() {
     };
 
     const viewMore = (item) => {
-        dispatch(setSelectedStation(item));
+        dispatch(setSelectedPost(item));
         navigate(`/station-detail/${item.title}`);
     };
 
@@ -49,19 +49,18 @@ export default function BusStationPage() {
                             <div
                                 onClick={() => viewMore(item)}
                                 style={{
-                                cursor: "pointer",
-                                transition: "transform 0.2s ease",
+                                    cursor: "pointer",
+                                    transition: "transform 0.2s ease",
                                 }}
                                 onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
                                 onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
                             >
 
-                            <Card
-                                title={item.title}
-                                description={item.description}
-                                image={item.img}
-                                onClick={() => viewMore(item)}
-                            />
+                                <Card
+                                    title={item.title}
+                                    description={item.description}
+                                    image={item.img}
+                                />
                             </div>
                         </Grid>
                     ))}
