@@ -56,18 +56,46 @@ export default function BookCarPage() {
     setShowFilters(!isNarrow);
   }, [isNarrow]);
   const [locations] = useState(LOCATIONS);
+  useEffect(() => {
+    // Show some trips by default so người dùng luôn thấy kết quả
+    setTrips(TRIPS);
+  }, []);
+
+  const normalize = (s = "") =>
+    String(s)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
   const handlePickDate = () => {
     setDate(new Date().toISOString().slice(0, 10));
   };
 
   const handleSearch = async () => {
     // Filter local mock data instead of calling services
-    const qFrom = from?.toLowerCase?.() || "";
-    const qTo = to?.toLowerCase?.() || "";
-    const results = TRIPS.filter((t) =>
-      (!qFrom || String(t.from).toLowerCase().includes(qFrom)) &&
-      (!qTo || String(t.to).toLowerCase().includes(qTo))
-    );
+    const qFrom = normalize(from);
+    const qTo = normalize(to);
+    let results = TRIPS.filter((t) => {
+      const f = normalize(t.from);
+      const toN = normalize(t.to);
+      return (!qFrom || f.includes(qFrom)) && (!qTo || toN.includes(qTo));
+    });
+
+    // Apply sidebar filters (popular + operators)
+    const selectedOperatorNames = Object.entries(selectedOps)
+      .filter(([, v]) => Boolean(v))
+      .map(([name]) => name);
+
+    if (popular?.discount) {
+      results = results.filter((t) => t?.discount === true);
+    }
+    if (popular?.vip) {
+      results = results.filter((t) => t?.vip === true);
+    }
+    if (selectedOperatorNames.length > 0) {
+      const set = new Set(selectedOperatorNames);
+      results = results.filter((t) => set.has(String(t?.operator)));
+    }
     setTrips(results);
     setExpandedId(null);
     setActiveTab("images");
@@ -107,15 +135,15 @@ export default function BookCarPage() {
             options={locations}
             onSelect={setTo}
           />
-          <div
-            className="searchbox__item"
-            role="button"
-            tabIndex={0}
-            onClick={handlePickDate}
-            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handlePickDate()}
-          >
+          <div className="searchbox__item" role="group" aria-label="Ngày khởi hành">
             <div className="searchbox__label">Ngày Khởi Hành</div>
-            <div className="searchbox__value">{date || "Chọn Ngày"}</div>
+            <input
+              className="searchbox__date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              onFocus={() => !date && handlePickDate()}
+            />
           </div>
           <button className="searchbox__button" onClick={handleSearch}>
             TÌM CHUYẾN XE
