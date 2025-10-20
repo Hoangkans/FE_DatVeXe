@@ -10,6 +10,7 @@ import BusCompanyPage from "../pages/BusCompanyPage"
 import BusStationPage from "../pages/BusStation"
 import BusRoutePage from "../pages/BusRoute"
 import StationDetail from "../pages/StationDetail"
+import InfoPage from "../pages/InfoPage"
 
 const routes = [
   { path: "/", component: HomePage},
@@ -17,6 +18,7 @@ const routes = [
   { path: "/bus-station", component: BusStationPage},
   { path: "/bus-route", component: BusRoutePage},
   { path: "/station-detail/:title", component: StationDetail},
+  { path: "/info", component: InfoPage},
   
   { path: "/admin/login", component: AdminLogin },
   { path: "/admin/register", component: AdminRegister },

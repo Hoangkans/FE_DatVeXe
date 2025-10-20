@@ -1,0 +1,251 @@
+.info-banner{
+    background-color: #D6FAFF;
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    flex-direction: column;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.banner-info{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 90%;
+    max-width: 1100px;
+    padding: 20px 30px;
+}
+.banner-claim p {
+    font-size: 80px;
+    font-weight: bold;
+    color: #f57c00;
+    margin: 0;
+    line-height: 92px;
+}
+.banner-info-link p{
+    font-weight: 700;
+}
+
+.banner-info-link-image{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* body */
+.info-maincontent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+/* Info Brand */
+.info-brand{
+    display:  flex;
+    flex-direction: column;
+    width: 90%;
+    max-width: 1100px;
+    margin-top: 100px;
+}
+.info-box-list{
+    width: 100%;
+    display: flex;
+    gap: 20px
+}
+.info-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-radius: 15px;
+    width: 350px;
+    color: #FFFFFF;
+    font-weight: 400;
+    font-size: 21.14px;
+    line-height: 35.2px;
+    text-align: justify;
+}
+.info-box strong{
+    font-weight: 700;
+}
+.info-box h5{
+    font-size: 24px;
+}
+.info-box-achieve{
+    display: flex;
+    flex-direction: column;
+}
+.info-box-achieve strong{
+    font-size: 37.34px;
+    font-weight: 700;
+}
+.info-brand h3{
+    font-size: 36px;
+    margin: 0
+}
+
+/* Info Reason */
+.info-reason-wrap{
+    margin-top: 50px;
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: space-between;
+}
+.reason-box{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.reason-box-item{
+    vertical-align: middle;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    line-height: 32px;
+    text-align: justify;
+}
+.reason-box-item h5{
+    color: #FF8D00;
+    font-size: 18px;
+    margin: 0;
+}
+.reason-box-item p{
+    color: #333333;
+    font-size: 16px;
+}
+.mascot{
+    width: 350px;
+    height: 450px;
+}
+
+.mascot-booking{
+    display: none;
+}
+
+/* Info Contact */
+.contact-info-wrapper{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1100px;
+}
+.contact-info-claim h3{
+    color: #FF8D00;
+    text-align: center;
+}
+.contact-info-claim p{
+    font-size: 20px;
+    line-height: 32px;
+    text-align: justify;
+}
+
+.Info-form-input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 0;
+    gap: 10px;
+}
+.Info-form-input h3{
+    color: #FF8D00;
+    text-align: center;
+}
+.Info-form-input form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1100px;
+    gap: 24px;
+}
+.Info-form-input .contact-input{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.Info-form-input label{
+    font-size: 16px;
+    font-weight: 700;
+}
+.Info-form-input input {
+    border: 1px solid #DDDDDD;
+    box-shadow: 0px 1px 2px 1px #0000001A inset;
+    height: 48px;
+}
+.Info-form-input button{
+    background-color: #1295DB;
+    margin-top: 20px;
+    color: white;
+    border: 1px solid #0000000D;
+    width: 350px;
+    height: 48px;
+    align-items: center;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+@media (max-width: 1200px) {
+    .banner-claim p{
+        font-size: 40px;
+        line-height: 50px;
+    }
+    .info-box-list{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .info-box{
+        width: 95%;
+    }
+    .info-box-achieve{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .mascot{
+        display: none;
+    }
+    .reason-box-item{
+        width: 420px;
+    }
+}
+@media (max-width: 960px) {
+    .info-brand h3{
+        text-align: center;
+    }
+    .banner-claim p{
+        font-size: 40px;
+        line-height: 50px;
+    }
+    .info-reason-wrap{
+        display: flex;
+        flex-direction: column;
+    }
+    .reason-box-item{
+        width: 100%;
+    }
+    .mascot-booking{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .mascot-booking img{
+        width: 200px;
+    }
+    .banner-claim p{
+        font-size: 25px;
+        line-height: 30px;
+    }
+    .banner-info-link-image img{
+        width:35px;
+    }
+}
