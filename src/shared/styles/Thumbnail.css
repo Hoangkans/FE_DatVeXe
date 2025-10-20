@@ -16,7 +16,6 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url('../../assets/thumbnail.png');
 }
 
 .thumbnail form {
@@ -169,5 +168,10 @@
     .MuiAutocomplete-root{
         width: 100% !important;
         text-align: center !important;
+    }
+}
+@media (min-width: 1300px) {
+    .thumbnail form{
+        max-height: 100px;
     }
 }
