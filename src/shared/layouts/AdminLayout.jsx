@@ -5,6 +5,10 @@ import logo from "../../assets/logo.png";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import PlaceIcon from "@mui/icons-material/Place";
+import PeopleIcon from "@mui/icons-material/People";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
 
 export default function AdminLayout({ children }) {
   return (
@@ -32,6 +36,22 @@ export default function AdminLayout({ children }) {
             <NavLink to="/admin/stations" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <PlaceIcon className="icon" />
               <span>Bến xe</span>
+            </NavLink>
+            <NavLink to="/admin/users" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <PeopleIcon className="icon" />
+              <span>Người dùng</span>
+            </NavLink>
+            <NavLink to="/admin/tickets" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <ConfirmationNumberIcon className="icon" />
+              <span>Vé xe</span>
+            </NavLink>
+            <NavLink to="/admin/schedules" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <CalendarMonthIcon className="icon" />
+              <span>Lịch trình</span>
+            </NavLink>
+            <NavLink to="/admin/buses" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <AirportShuttleIcon className="icon" />
+              <span>Xe</span>
             </NavLink>
           </nav>
         </div>
