@@ -7,9 +7,13 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PhoneIcon from '@mui/icons-material/Phone';
 
 import ResponsiveNav from "./ResponsiveNav";
+import SearchBar from "./Search/SearchBar";
+import { useState } from "react";
 
 export default function Header() {
-
+    const [openSearch, setOpenSearch] = useState(false)
+    const handleOpenSearch = () => setOpenSearch(true)
+    const handleCloseSearch = () => setOpenSearch(false)
     return (
         <div className="Header">
             <div className="upHeader">
@@ -43,20 +47,31 @@ export default function Header() {
                     <Link to="/bus-company">THÔNG TIN NHÀ XE</Link>
                     <Link to="/bus-station">BẾN XE</Link>
                     <Link to="/bus-route">TUYẾN ĐƯỜNG</Link>
-                    <Link>KIỂM TRA VÉ</Link>
+                    <Link to="/ticket-check">KIỂM TRA VÉ</Link>
                 </div>
                 <div className="header-search">
-                    <SearchIcon  
+                    <SearchIcon
+                        onClick = {handleOpenSearch}  
                         sx={{
                             color: 'white', 
                             backgroundColor: '#FFA901',
                             p: 1,
-                            borderRadius: 1
-                        }}
+                            borderRadius: 1,
+
+                            '&:hover': {
+                                backgroundColor: '#FFBB33',
+                                cursor: 'pointer',
+                            }
+                        }}  
                     />
                 </div>
             </div>
             <ResponsiveNav className="naviagtionNav"/>
+
+            <SearchBar
+                open={openSearch}
+                handleClose={handleCloseSearch}
+            />
         </div>
     )
 }

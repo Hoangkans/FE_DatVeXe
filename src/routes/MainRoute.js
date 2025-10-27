@@ -13,6 +13,7 @@ import StationDetail from "../pages/post/StationDetail"
 import CompanyDetail from "../pages/post/CompanyDetail";
 import RouteDetail from "../pages/post/RouteDetail";
 import InfoPage from "../pages/InfoPage"
+import TicketCheck from "../pages/TicketCheck";
 
 const routes = [
   { path: "/", component: HomePage},
@@ -23,6 +24,7 @@ const routes = [
   { path: "/company-detail/:title", component: CompanyDetail},
   { path: "/route-detail/:title", component: RouteDetail},
   { path: "/info", component: InfoPage},
+  { path: "/ticket-check", component: TicketCheck},
   
   { path: "/admin/login", component: AdminLogin },
   { path: "/admin/register", component: AdminRegister },

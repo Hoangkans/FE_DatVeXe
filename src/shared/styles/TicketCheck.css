@@ -1,0 +1,99 @@
+.ticket-check-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 0;
+}
+.check-overlay{
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
+    max-width: 1100px;
+}
+.check-overlay .form-input-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 350px;
+}
+.check-overlay .form-input{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.check-overlay .form-input form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+.check-overlay .form-input form button{
+    background-color: #0071B7;
+    color: #FFFFFF;
+    border: 1px solid #0071B7;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 32px;
+}
+.check-overlay .form-input form button:hover{
+    background-color: #018ce2;
+}
+.check-overlay .form-input form button:active{
+    transform: scale(1.02);
+}
+.check-overlay .form-input h2{
+    color:#0071B7
+}
+.check-overlay .form-input form input{
+    border-radius: 4px;
+    border: 1px solid #DDDDDD;
+    box-shadow: #0000001A;
+    font-size: 12px;
+    padding: 15px 10px;
+}
+.check-overlay .form-input form input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    box-shadow: #0000001A;
+    outline: none;
+}
+.form-input-wrapper .caution{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 16px;
+    background-color: #EEEEEE;
+    margin-top: 16px;
+    font-size: 14px;
+}
+.form-input-wrapper .caution h5{
+    margin: 0;
+    font-size: 14px;
+}
+.form-input-wrapper .caution p{
+    margin: 0;
+    text-align: center;
+    line-height: 20px;
+}
+
+.ticket-check-wrapper .check-result{
+    width: 100%;
+    max-width: 730px;
+}
+.ticket-check-wrapper .check-result p{
+    background-color: #DFF0D8;
+    text-align: center;
+    padding: 10px 0;
+    color: #3C763D;
+    line-height: 20px;
+}
+.ticket-check-wrapper .check-result img{
+    width: 100%;
+    
+}
