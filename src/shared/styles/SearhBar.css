@@ -42,17 +42,17 @@
     display: flex;
     align-items: center;
     background-color: rgba(245, 245, 245, 0.281); 
-    padding: 20px 15px; 
+    padding: 20px ; 
     border-radius: 50px; 
     width: 80%;
-    max-width: 900px;
+    max-width: 600px;
 }
 
 .searchbar input {
     flex-grow: 1; 
     border: none;
     outline: none;
-    font-size: 20px;
+    font-size: 24px;
     background: transparent;
     color: white;
 }
@@ -71,5 +71,5 @@
 
 .search-icon-wrapper .MuiSvgIcon-root {
     color: white;
-    font-size: 2rem !important;
+    font-size: 2.2rem !important;
 }
