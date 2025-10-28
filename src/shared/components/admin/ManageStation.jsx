@@ -117,13 +117,7 @@ export default function ManageStation() {
     setShowModal(false);
   }
 
-  const stats = useMemo(() => {
-    const total = rows.length;
-    const active = rows.filter((r) => r.status === "active").length;
-    const totalCapacity = rows.reduce((s, r) => s + r.capacity.total, 0);
-    const parking = rows.reduce((s, r) => s + r.capacity.used, 0);
-    return { total, active, totalCapacity, parking };
-  }, [rows]);
+  // Stats card removed
 
   return (
     <div className="manage-station">
@@ -197,12 +191,7 @@ export default function ManageStation() {
         </table>
       </div>
 
-      <div className="station-stats">
-        <div className="admin-stat-card"><div className="admin-stat-title">Tổng số bến xe</div><div className="admin-stat-value">{stats.total}</div></div>
-        <div className="admin-stat-card"><div className="admin-stat-title">Đang hoạt động</div><div className="admin-stat-value">{stats.active}</div></div>
-        <div className="admin-stat-card"><div className="admin-stat-title">Tổng sức chứa</div><div className="admin-stat-value">{stats.totalCapacity}</div></div>
-        <div className="admin-stat-card"><div className="admin-stat-title">Xe đang đậu</div><div className="admin-stat-value">{stats.parking}</div></div>
-      </div>
+      {/* Stats section removed per request */}
 
       {showModal && (
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>

@@ -1,0 +1,50 @@
+/* Header */
+.manage-ticket .head .title { font-size: 16px; font-weight: 600; color: #0f172a; }
+.manage-ticket .head .sub { color: #64748b; font-size: 12px; margin: 4px 0 10px; }
+
+/* Toolbar */
+.manage-ticket .toolbar { display: flex; gap: 12px; align-items: center; }
+.manage-ticket .toolbar .search { flex: 1; position: relative; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px 10px 8px 34px; }
+.manage-ticket .toolbar .search .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+.manage-ticket .toolbar .search input { width: 100%; border: 0; outline: none; font-size: 13px; color: #0f172a; }
+.manage-ticket .btn-primary { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 10px; padding: 8px 12px; cursor: pointer; background: #0f172a; color: #fff; font-size: 13px; }
+
+/* Table */
+.manage-ticket .table-wrap { margin-top: 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; }
+.manage-ticket .ticket-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.manage-ticket .ticket-table thead th { text-align: left; background: #f8fafc; color: #64748b; font-weight: 500; padding: 10px 12px; }
+.manage-ticket .ticket-table tbody td { padding: 12px; border-top: 1px solid #f1f5f9; color: #0f172a; vertical-align: top; }
+.manage-ticket .ticket-table tbody tr:hover { background: #fafafa; }
+.manage-ticket .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+.manage-ticket .muted { color: #94a3b8; font-size: 11px; }
+.manage-ticket .customer { white-space: nowrap; }
+
+/* Badges */
+.manage-ticket .seat-badge { padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; color: #334155; background: #e2e8f0; }
+.manage-ticket .seat-badge.type-standard { background: #eef2ff; color: #3730a3; }
+.manage-ticket .seat-badge.type-vip { background: #dbeafe; color: #1d4ed8; }
+.manage-ticket .seat-badge.type-luxury { background: #f5f3ff; color: #6d28d9; }
+
+.manage-ticket .status-badge { padding: 2px 8px; font-size: 11px; border-radius: 999px; border: 1px solid transparent; }
+.manage-ticket .status-badge.is-booked { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+.manage-ticket .status-badge.is-canceled { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+
+/* Footer */
+.manage-ticket .empty { padding: 14px; color: #64748b; font-size: 12px; }
+.manage-ticket .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-top: 1px solid #f1f5f9; }
+.manage-ticket .btn-page { border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; width: 32px; height: 28px; cursor: pointer; color: #0f172a; }
+.manage-ticket .btn-page:disabled { opacity: .5; cursor: default; }
+.manage-ticket .pager { display: inline-flex; gap: 8px; align-items: center; }
+.manage-ticket .page-text { color: #64748b; font-size: 12px; }
+
+/* Modal */
+.manage-ticket .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: flex; align-items: flex-start; justify-content: center; padding-top: 60px; z-index: 50; }
+.manage-ticket .modal { width: 680px; max-width: calc(100% - 24px); background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; }
+.manage-ticket .modal-header { font-weight: 600; font-size: 16px; color: #0f172a; }
+.manage-ticket .modal-sub { color: #64748b; font-size: 12px; margin-top: 2px; margin-bottom: 10px; }
+.manage-ticket .form-grid { display: grid; gap: 10px; margin-top: 6px; grid-template-columns: 1fr 1fr; }
+.manage-ticket .form-grid label { display: grid; gap: 6px; }
+.manage-ticket .form-grid input, .manage-ticket .form-grid select { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 10px; font-size: 13px; }
+.manage-ticket .field-error { color: #b91c1c; font-size: 11px; }
+.manage-ticket .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+
