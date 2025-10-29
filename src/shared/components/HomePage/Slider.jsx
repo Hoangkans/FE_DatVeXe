@@ -1,18 +1,25 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
-import sample from "../../../assets/sample.png"
+import { fetchBusImage } from "../../../services/Bus/BusApi"
 import "../../styles/HomePage.css"
 
 export default function SliderContent() {
-    const routes = [
-        { id: 1, name: "Sài Gòn - Vũng Tàu", price: "150.000đ", img:`${sample}` },
-        { id: 2, name: "Sài Gòn - Mũi Né", price: "180.000đ", img:`${sample}` },
-        { id: 3, name: "Sài Gòn - Nha Trang", price: "240.000đ", img:`${sample}` },
-        { id: 4, name: "Nha Trang - Đà Lạt", price: "200.000đ", img:`${sample}`},
-        { id: 5, name: "Nha Trang - Đà Lạt", price: "200.000đ", img:`${sample}`},
-    ];
+    const [bus, setBus] = useState([]);
+
+    useEffect(() => {
+        const loadBusData = async () => {
+            try {
+                const data = await fetchBusImage();
+                setBus(data || []);
+            }catch (err){
+                console.log("Failed to fectch bus data: ",err)
+                return [];
+            }
+        }
+        loadBusData();
+    }, [])
 
     const scrollRef = useRef(null);
 
@@ -37,12 +44,12 @@ export default function SliderContent() {
                     </button>
 
                     <div className="routes-slider" ref={scrollRef}>
-                        {routes.map((route) => (
-                            <div key={route.id} className="route-card">
-                                <img src={route.img} alt={route.name} />
+                        {bus?.map((item) => (
+                            <div key={item.id} className="route-card">
+                                <img src={item.image_url} alt={item.bus.name} />
                                 <div className="route-info">
-                                    <h3>{route.name}</h3>
-                                    <p className="price">{route.price}</p>
+                                    <h3>{item.bus.name}</h3>
+                                    <p className="price">{item.bus.descriptions}</p>
                                 </div>
                             </div>
                         ))}

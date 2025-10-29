@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setSelectedPost } from "../config/redux/reducers/posts/postAction";
+import { setSelectedPost } from "../config/redux/reducers/posts/postSlice";
 import "../shared/styles/BusPage.css"
 
 export default function BusCompanyPage() {

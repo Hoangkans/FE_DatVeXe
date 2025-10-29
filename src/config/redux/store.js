@@ -1,11 +1,11 @@
-import { combineReducers, createStore } from "redux";
-import counterReducer from "../redux/reducers/counterReducer"
-import postReducer from "./reducers/posts/stationReducer";
+import { configureStore } from '@reduxjs/toolkit';
 
-const rootReducer = combineReducers({
-    counter: counterReducer,
-    post: postReducer,
-})
+import postReducer from "../redux/reducers/posts/postSlice"; 
 
-const store = createStore(rootReducer)
-export default store
+const store = configureStore({
+    reducer: {
+        post: postReducer, 
+    },
+});
+
+export default store;
