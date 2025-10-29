@@ -5,8 +5,8 @@ import hotlineImg from "../assets/hotline-bookcar.jpg";
 import SidebarFilters from "../shared/components/BookCar/SidebarFilters";
 import TripList from "../shared/components/BookCar/TripList";
 import LocationPicker from "../shared/components/BookCar/LocationPicker";
-import LOCATIONS from "../mock/data/locations.json";
-import TRIPS from "../mock/data/trips.json";
+import { getLocations } from "../services/location.service";
+import { searchTrips } from "../services/trip.service";
 
 
 export default function BookCarPage() {
@@ -36,6 +36,7 @@ export default function BookCarPage() {
     return !window.matchMedia('(max-width: 900px)').matches; // collapse on narrow by default
   });
   const [trips, setTrips] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
@@ -55,48 +56,62 @@ export default function BookCarPage() {
     // Keep default behavior in sync with viewport
     setShowFilters(!isNarrow);
   }, [isNarrow]);
-  const [locations] = useState(LOCATIONS);
+  const [locations, setLocations] = useState([]);
   useEffect(() => {
-    // Show some trips by default so người dùng luôn thấy kết quả
-    setTrips(TRIPS);
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await getLocations();
+        if (mounted) setLocations(Array.isArray(data) ? data : []);
+      } catch (e) {
+        if (mounted) setLocations([]);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const normalize = (s = "") =>
-    String(s)
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim();
+  // Load default trips on first render so the list isn't empty
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await searchTrips({});
+        if (mounted) setTrips(Array.isArray(data) ? data : []);
+      } catch (e) {
+        if (mounted) setTrips([]);
+      }
+    })();
+    return () => { mounted = false };
+  }, []);
+
   const handlePickDate = () => {
     setDate(new Date().toISOString().slice(0, 10));
   };
 
   const handleSearch = async () => {
-    // Filter local mock data instead of calling services
-    const qFrom = normalize(from);
-    const qTo = normalize(to);
-    let results = TRIPS.filter((t) => {
-      const f = normalize(t.from);
-      const toN = normalize(t.to);
-      return (!qFrom || f.includes(qFrom)) && (!qTo || toN.includes(qTo));
-    });
+    let results = [];
+    try {
+      const data = await searchTrips({ from, to, date });
+      results = Array.isArray(data) ? data : [];
+    } catch (e) {
+      results = [];
+    }
 
     // Apply sidebar filters (popular + operators)
     const selectedOperatorNames = Object.entries(selectedOps)
       .filter(([, v]) => Boolean(v))
       .map(([name]) => name);
 
-    if (popular?.discount) {
-      results = results.filter((t) => t?.discount === true);
-    }
-    if (popular?.vip) {
-      results = results.filter((t) => t?.vip === true);
-    }
+    if (popular?.discount) results = results.filter((t) => t?.discount === true);
+    if (popular?.vip) results = results.filter((t) => t?.vip === true);
     if (selectedOperatorNames.length > 0) {
       const set = new Set(selectedOperatorNames);
       results = results.filter((t) => set.has(String(t?.operator)));
     }
     setTrips(results);
+    setHasSearched(true);
     setExpandedId(null);
     setActiveTab("images");
   };
@@ -173,6 +188,7 @@ export default function BookCarPage() {
             expandedId={expandedId}
             activeTab={activeTab}
             showHeader={true}
+            showEmpty={hasSearched}
             isNarrow={isNarrow}
             onToggleFilters={isNarrow ? (() => setShowFilters((s) => !s)) : undefined}
             onToggleTrip={(id) => {

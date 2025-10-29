@@ -9,6 +9,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+import CollectionsIcon from "@mui/icons-material/Collections";
 
 export default function AdminLayout({ children }) {
   return (
@@ -52,6 +53,10 @@ export default function AdminLayout({ children }) {
             <NavLink to="/admin/buses" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <AirportShuttleIcon className="icon" />
               <span>Xe</span>
+            </NavLink>
+            <NavLink to="/admin/banners" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <CollectionsIcon className="icon" />
+              <span>Banner</span>
             </NavLink>
           </nav>
         </div>

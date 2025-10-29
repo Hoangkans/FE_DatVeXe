@@ -8,6 +8,7 @@ import AdminUsers from "../pages/admin/Users";
 import AdminTickets from "../pages/admin/Tickets";
 import AdminSchedules from "../pages/admin/Schedules";
 import AdminBuses from "../pages/admin/Buses";
+import AdminBanners from "../pages/admin/Banners";
 
 import HomePage from "../pages/HomePage"
 import BusCompanyPage from "../pages/BusCompanyPage"
@@ -30,8 +31,8 @@ const routes = [
   { path: "/info", component: InfoPage},
   { path: "/ticket-check", component: TicketCheck},
   
-  { path: "/admin/login", component: AdminLogin },
-  { path: "/admin/register", component: AdminRegister },
+  { path: "/login", component: AdminLogin },
+  { path: "/register", component: AdminRegister },
   { path: "/admin", component: AdminDashboard },
   { path: "/admin/stations", component: AdminStations },
   { path: "/admin/operators", component: AdminOperators },
@@ -39,6 +40,7 @@ const routes = [
   { path: "/admin/tickets", component: AdminTickets },
   { path: "/admin/schedules", component: AdminSchedules },
   { path: "/admin/buses", component: AdminBuses },
+  { path: "/admin/banners", component: AdminBanners },
   { path: "/book-car", component: BookCarPage }
 ]
 

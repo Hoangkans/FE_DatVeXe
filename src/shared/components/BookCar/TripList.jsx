@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import TripCard from "./TripCard";
 import "../../styles/TripList.css";
-import SORTS from "../../../mock/data/sort-options.json";
+import SORTS from "../../constants/sortOptions";
 
 export default function TripList(props) {
   const {
@@ -11,6 +11,7 @@ export default function TripList(props) {
     onToggleTrip,
     onTabChange,
     showHeader = true,
+    showEmpty = true,
     onToggleFilters,
     isNarrow = false,
   } = props || {};
@@ -167,7 +168,7 @@ export default function TripList(props) {
   return (
     <>
       {showHeader && <ResultsHeader />}
-      {displayedTrips.length === 0 && (
+      {showEmpty && displayedTrips.length === 0 && (
         <div className="muted" style={{ padding: 16 }}>
           Không tìm thấy chuyến phù hợp. Vui lòng thử lại với tiêu chí khác.
         </div>

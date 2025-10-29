@@ -1,0 +1,257 @@
+/* Header */
+.manage-banner .head .title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.manage-banner .head .sub {
+  color: #64748b;
+  font-size: 12px;
+  margin: 4px 0 10px;
+}
+
+/* Toolbar */
+.manage-banner .toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.manage-banner .toolbar .search {
+  flex: 1;
+  position: relative;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px 10px 8px 34px;
+}
+
+.manage-banner .toolbar .search .search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.manage-banner .toolbar .search input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.manage-banner .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: #0f172a;
+  color: #fff;
+  font-size: 13px;
+}
+
+/* Table */
+.manage-banner .table-wrap {
+  margin-top: 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.manage-banner .banner-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.manage-banner .banner-table thead th {
+  text-align: left;
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 500;
+  padding: 10px 12px;
+}
+
+.manage-banner .banner-table tbody td {
+  padding: 12px;
+  border-top: 1px solid #f1f5f9;
+  color: #0f172a;
+  vertical-align: middle;
+}
+
+.manage-banner .banner-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.manage-banner .mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.manage-banner .muted {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.manage-banner .banner-thumb {
+  width: 120px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Actions */
+.manage-banner .row-actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.manage-banner .btn-ghost,
+.manage-banner .btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #0f172a;
+}
+
+.manage-banner .btn-danger {
+  color: #b91c1c;
+}
+
+/* Footer */
+.manage-banner .empty {
+  padding: 14px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.manage-banner .table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.manage-banner .btn-page {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 8px;
+  width: 32px;
+  height: 28px;
+  cursor: pointer;
+  color: #0f172a;
+}
+
+.manage-banner .btn-page:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+.manage-banner .pager {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.manage-banner .page-text {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Modal */
+.manage-banner .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 60px;
+  z-index: 50;
+}
+
+.manage-banner .modal {
+  width: 640px;
+  max-width: calc(100% - 24px);
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+}
+
+.manage-banner .modal-header {
+  font-weight: 600;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.manage-banner .modal-sub {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+
+.manage-banner .form-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 6px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.manage-banner .form-grid label {
+  display: grid;
+  gap: 6px;
+}
+
+.manage-banner .form-grid input,
+.manage-banner .form-grid select {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.manage-banner .field-hint {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.manage-banner .field-error {
+  color: #b91c1c;
+  font-size: 11px;
+}
+
+.manage-banner .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+.manage-banner .modal-actions .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: #fff;
+  color: #0f172a;
+  font-size: 13px;
+}

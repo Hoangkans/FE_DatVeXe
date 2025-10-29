@@ -1,14 +1,30 @@
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import bg from "../../../assets/thumbnail.png"
-import { routeData } from "../../../services/Datamock/bookingData"
+import { useEffect, useState } from 'react';
+import { getLocations } from "../../../services/location.service";
 import PlaceSelect from './PlaceSelectment';
 import CalendarPicker from './CalendarPick';
 import "../../styles/Thumbnail.css"
-import { useState } from 'react';
 
 export default function Thumbnail() {
     const [date, setDate] = useState();
+    const [options, setOptions] = useState([]);
+
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            try {
+                const locs = await getLocations();
+                const arr = Array.isArray(locs) ? locs : [];
+                const mapped = arr.map((name, idx) => ({ id: idx + 1, destination: String(name) }));
+                if (mounted) setOptions(mapped);
+            } catch (e) {
+                if (mounted) setOptions([]);
+            }
+        })();
+        return () => { mounted = false };
+    }, []);
 
     return (
         <div className="thumbnail">
@@ -18,7 +34,7 @@ export default function Thumbnail() {
                     <h4>Diểm khởi hành</h4>
                     <div className='select-wrapper'>
                         <PlaceSelect
-                            options={routeData}
+                            options={options}
                             placeholder='Chọn điểm đi'
                         />
                     </div>
@@ -27,7 +43,7 @@ export default function Thumbnail() {
                     <h4>Điểm đến</h4>
                     <div className='select-wrapper'>
                         <PlaceSelect
-                            options={routeData}
+                            options={options}
                             placeholder="Chọn điểm đến"
                         />
                     </div>
