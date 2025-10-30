@@ -181,6 +181,7 @@
     border: 1px solid #DDDDDD;
     box-shadow: 0px 1px 2px 1px #0000001A inset;
     height: 48px;
+    outline: none;
 }
 .Info-form-input button{
     background-color: #1295DB;
