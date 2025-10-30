@@ -15,14 +15,7 @@ export default function ManagerBusList() {
   const [isEdit, setIsEdit] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  const initialRows = useMemo(
-    () => [
-      { id: 1, name: "Xe khách 01", plate: "51A-12345", desc: "Giường nằm 40 chỗ", capacity: 40, companyId: 10, createdAt: "2025-10-01", updatedAt: "2025-10-20" },
-      { id: 2, name: "Xe ký 01", plate: "51B-67890", desc: "Ghế ngồi 45 chỗ", capacity: 45, companyId: 11, createdAt: "2025-09-22", updatedAt: "2025-10-19" },
-      { id: 3, name: "Xe khách 02", plate: "51C-11111", desc: "Ghế ngồi 35 chỗ", capacity: 35, companyId: 10, createdAt: "2025-09-15", updatedAt: "2025-10-18" },
-    ],
-    []
-  );
+  const initialRows = useMemo(() => [], []);
 
   const [rows, setRows] = useState(initialRows);
   const [form, setForm] = useState({ name: "", plate: "", desc: "", capacity: "", companyId: "" });

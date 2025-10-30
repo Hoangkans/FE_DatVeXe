@@ -12,17 +12,7 @@ export default function ManagerSchedule() {
   const [page, setPage] = useState(1);
   const perPage = 10;
 
-  const initialRows = useMemo(
-    () => [
-      { id: 6, routeId: 106, busId: 6, routeName: "Đà Nẵng - Hội An", busName: "Xe ký 03", plate: "51F-44444", departAt: "2025-10-28T09:00:00", arriveAt: "2025-10-28T11:00:00", seatsEmpty: 12, seatsTotal: 30, status: "available" },
-      { id: 4, routeId: 104, busId: 4, routeName: "Hà Nội - Ninh Bình", busName: "Xe ký 02", plate: "51D-22222", departAt: "2025-10-28T09:00:00", arriveAt: "2025-10-28T11:30:00", seatsEmpty: 15, seatsTotal: 40, status: "available" },
-      { id: 2, routeId: 102, busId: 2, routeName: "Hà Nội - Hải Phòng", busName: "Xe ký 01", plate: "51B-67890", departAt: "2025-10-28T08:00:00", arriveAt: "2025-10-28T10:00:00", seatsEmpty: 0, seatsTotal: 45, status: "full" },
-      { id: 1, routeId: 101, busId: 1, routeName: "Sài Gòn - Đà Lạt", busName: "Xe khách 01", plate: "51A-12345", departAt: "2025-10-28T06:00:00", arriveAt: "2025-10-28T10:30:00", seatsEmpty: 25, seatsTotal: 40, status: "available" },
-      { id: 3, routeId: 103, busId: 3, routeName: "Sài Gòn - Vũng Tàu", busName: "Xe khách 02", plate: "51C-11111", departAt: "2025-10-27T14:30:00", arriveAt: "2025-10-27T16:30:00", seatsEmpty: 35, seatsTotal: 35, status: "available" },
-      { id: 5, routeId: 105, busId: 5, routeName: "Sài Gòn - Phan Thiết", busName: "Xe khách 03", plate: "51E-33333", departAt: "2025-10-26T07:00:00", arriveAt: "2025-10-26T11:00:00", seatsEmpty: 0, seatsTotal: 45, status: "canceled" },
-    ],
-    []
-  );
+  const initialRows = useMemo(() => [], []);
 
   const [rows, setRows] = useState(initialRows);
   const [showModal, setShowModal] = useState(false);

@@ -18,14 +18,7 @@ export default function ManagerUser() {
   const [isEdit, setIsEdit] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  const initialRows = useMemo(
-    () => [
-      { id: 1, firstName: "An", lastName: "Nguyen", email: "an.nguyen@example.com", phone: "0901234567", status: "active", createdAt: "2024-06-01", updatedAt: "2024-06-21" },
-      { id: 2, firstName: "Binh", lastName: "Tran", email: "binh.tran@example.com", phone: "0902222333", status: "blocked", createdAt: "2024-05-12", updatedAt: "2024-07-02" },
-      { id: 3, firstName: "Chi", lastName: "Le", email: "chi.le@example.com", phone: "0918888999", status: "active", createdAt: "2024-07-18", updatedAt: "2024-07-20" },
-    ],
-    []
-  );
+  const initialRows = useMemo(() => [], []);
 
   const [rows, setRows] = useState(initialRows);
 

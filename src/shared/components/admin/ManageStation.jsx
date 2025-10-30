@@ -7,47 +7,7 @@ import "../../styles/AdminManageStation.css";
 
 export default function ManageStation() {
   const [query, setQuery] = useState("");
-  const initialRows = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Bến xe Miền Đông",
-        city: "TP. Hồ Chí Minh",
-        address: "292 Đinh Bộ Lĩnh, P.26, Q.Bình Thạnh",
-        type: "Liên tỉnh",
-        capacity: { used: 98, total: 150 },
-        status: "active",
-      },
-      {
-        id: 2,
-        name: "Bến xe Miền Tây",
-        city: "TP. Hồ Chí Minh",
-        address: "395 Kinh Dương Vương, P.An Lạc, Q.Bình Tân",
-        type: "Liên tỉnh",
-        capacity: { used: 145, total: 200 },
-        status: "active",
-      },
-      {
-        id: 3,
-        name: "Bến xe An Sương",
-        city: "TP. Hồ Chí Minh",
-        address: "Quốc lộ 22, P.Tân Thới Nhất, Q.12",
-        type: "Nội thành",
-        capacity: { used: 45, total: 80 },
-        status: "active",
-      },
-      {
-        id: 4,
-        name: "Bến xe Chợ Lớn",
-        city: "TP. Hồ Chí Minh",
-        address: "350 Trần Hưng Đạo, P.2, Q.5",
-        type: "Nội thành",
-        capacity: { used: 0, total: 60 },
-        status: "maintenance",
-      },
-    ],
-    []
-  );
+  const initialRows = useMemo(() => [], []);
 
   const [rows, setRows] = useState(initialRows);
   const [showModal, setShowModal] = useState(false);

@@ -8,14 +8,7 @@ import "../../styles/AdminManageBus.css";
 
 export default function ManageBus() {
   const [query, setQuery] = useState("");
-  const initialRows = useMemo(
-    () => [
-      { id: 1, name: "Xe tải 01", type: "Xe tải", plate: "51A-12345", brand: "Hyundai", color: "Trắng", status: "active" },
-      { id: 2, name: "Xe khách 01", type: "Xe khách", plate: "51B-67890", brand: "Thaco", color: "Xanh", status: "active" },
-      { id: 3, name: "Xe tải 02", type: "Xe tải", plate: "51C-11111", brand: "Isuzu", color: "Đỏ", status: "maintenance" },
-    ],
-    []
-  );
+  const initialRows = useMemo(() => [], []);
   const [rows, setRows] = useState(initialRows);
   const [showAdd, setShowAdd] = useState(false); // modal visible
   const [isEdit, setIsEdit] = useState(false);

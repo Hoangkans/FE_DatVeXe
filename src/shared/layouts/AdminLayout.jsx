@@ -10,6 +10,7 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
 import CollectionsIcon from "@mui/icons-material/Collections";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 export default function AdminLayout({ children }) {
   return (
@@ -57,6 +58,10 @@ export default function AdminLayout({ children }) {
             <NavLink to="/admin/banners" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <CollectionsIcon className="icon" />
               <span>Banner</span>
+            </NavLink>
+            <NavLink to="/admin/payment-providers" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <AccountBalanceWalletIcon className="icon" />
+              <span>Payment provider</span>
             </NavLink>
           </nav>
         </div>

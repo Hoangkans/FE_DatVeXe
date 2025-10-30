@@ -13,19 +13,7 @@ export default function ManagerTicket() {
   const [page, setPage] = useState(1);
   const perPage = 10;
 
-  const initialRows = useMemo(
-    () => [
-      { id: 7, scheduleId: 1, seatId: 18, customer: "Đặng Văn G", route: "Sài Gòn - Đà Lạt", departAt: "2025-10-28T06:00:00", arriveAt: "2025-10-28T10:30:00", seatType: "LUXURY", price: 350000, status: "booked", bookedAt: "2025-10-27T10:15:00" },
-      { id: 6, scheduleId: 6, seatId: 3, customer: "Vũ Thị F", route: "Đà Nẵng - Hội An", departAt: "2025-10-28T10:00:00", arriveAt: "2025-10-28T11:00:00", seatType: "STANDARD", price: 50000, status: "booked", bookedAt: "2025-10-27T08:30:00" },
-      { id: 5, scheduleId: 4, seatId: 20, customer: "Hoàng Văn E", route: "Hà Nội - Ninh Bình", departAt: "2025-10-28T11:30:00", arriveAt: "2025-10-28T13:45:00", seatType: "VIP", price: 150000, status: "booked", bookedAt: "2025-10-26T13:45:00" },
-      { id: 3, scheduleId: 2, seatId: 8, customer: "Lê Văn C", route: "Hà Nội - Hải Phòng", departAt: "2025-10-28T08:00:00", arriveAt: "2025-10-28T10:00:00", seatType: "LUXURY", price: 200000, status: "booked", bookedAt: "2025-10-26T09:20:00" },
-      { id: 8, scheduleId: 2, seatId: 25, customer: "Bùi Thị H", route: "Hà Nội - Hải Phòng", departAt: "2025-10-28T08:00:00", arriveAt: "2025-10-28T10:00:00", seatType: "STANDARD", price: 150000, status: "canceled", bookedAt: "2025-10-26T16:20:00" },
-      { id: 2, scheduleId: 1, seatId: 15, customer: "Trần Thị B", route: "Sài Gòn - Đà Lạt", departAt: "2025-10-28T06:00:00", arriveAt: "2025-10-28T10:30:00", seatType: "STANDARD", price: 250000, status: "booked", bookedAt: "2025-10-25T15:00:00" },
-      { id: 1, scheduleId: 1, seatId: 12, customer: "Nguyễn Văn A", route: "Sài Gòn - Đà Lạt", departAt: "2025-10-28T06:00:00", arriveAt: "2025-10-28T10:30:00", seatType: "VIP", price: 300000, status: "booked", bookedAt: "2025-10-25T14:30:00" },
-      { id: 4, scheduleId: 3, seatId: 5, customer: "Phạm Thị D", route: "Sài Gòn - Vũng Tàu", departAt: "2025-10-27T14:30:00", arriveAt: "2025-10-27T16:30:00", seatType: "STANDARD", price: 120000, status: "canceled", bookedAt: "2025-10-24T11:15:00" },
-    ],
-    []
-  );
+  const initialRows = useMemo(() => [], []);
 
   const [rows, setRows] = useState(initialRows);
   const [showModal, setShowModal] = useState(false);
