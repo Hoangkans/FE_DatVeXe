@@ -2,7 +2,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import bg from "../../../assets/thumbnail.png"
 import { useEffect, useState } from 'react';
-import { getLocations } from "../../../services/location.service";
 import PlaceSelect from './PlaceSelectment';
 import CalendarPicker from './CalendarPick';
 import "../../styles/Thumbnail.css"

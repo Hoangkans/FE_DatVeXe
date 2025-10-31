@@ -5,9 +5,6 @@ import hotlineImg from "../assets/hotline-bookcar.jpg";
 import SidebarFilters from "../shared/components/BookCar/SidebarFilters";
 import TripList from "../shared/components/BookCar/TripList";
 import LocationPicker from "../shared/components/BookCar/LocationPicker";
-import { getLocations } from "../services/location.service";
-import { searchTrips } from "../services/trip.service";
-
 
 export default function BookCarPage() {
   const operatorList = useMemo(
