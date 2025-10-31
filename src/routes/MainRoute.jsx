@@ -38,10 +38,10 @@ const routes = [
   { path: "/admin/stations", component: AdminStations },
   { path: "/admin/operators", component: AdminOperators },
   { path: "/admin/users", component: AdminUsers },
-  { path: "/admin/tickets", component: AdminTickets },
+  { path: "/admin/tickets", component:AdminTickets },
   { path: "/admin/schedules", component: AdminSchedules },
   { path: "/admin/buses", component: AdminBuses },
-  { path: "/admin/banners", component: AdminBanners },
+  { path: "/admin/banners", component:AdminBanners },
   { path: "/admin/payment-providers", component: AdminPaymentProviders },
   { path: "/book-car", component: BookCarPage }
 ]

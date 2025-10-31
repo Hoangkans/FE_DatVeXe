@@ -1,24 +1,45 @@
-import api from "../../config/axios/axiosCongif";
+export { login } from "./login";
+export { logout } from "./logout";
+export { register } from "./register";
 
-export const login = async (email, password) => {
-    try {
-        // Thay link nay bang link backend real
-        const response = await api.post('/auth/login', {
-            email: email,
-            password: password
-        }) 
+// Auth helpers migrated from shared/utils/auth.js
+export function getToken() {
+  return localStorage.getItem("token");
+}
 
-        if (response.data && response.data.token){
-            localStorage.setItem('authToken', response.data.token)
-            if (response.data.user){
-                localStorage.setItem('user', JSON.stringify(response.data.user))
-            }
-            return response.data;
-        } else {
-            throw new Error("Invalid response from backend!")
-        }
-    } catch (err){
-        console.log("Login failed: ", err.response?.data || err.message)
-        throw err;
-    }
+export function setToken(token) {
+  if (token) localStorage.setItem("token", token);
+}
+
+export function clearToken() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+}
+
+export function setUser(user) {
+  try {
+    localStorage.setItem("user", JSON.stringify(user));
+  } catch (_) {
+    // ignore
+  }
+}
+
+export function getUser() {
+  try {
+    const raw = localStorage.getItem("user");
+    return raw ? JSON.parse(raw) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+export function isAuthenticated() {
+  return Boolean(getToken());
+}
+
+export function hasRole(role) {
+  const user = getUser();
+  if (!user) return false;
+  const roles = Array.isArray(user.roles) ? user.roles : [user.role || user.roles].filter(Boolean);
+  return roles.includes(role);
 }
