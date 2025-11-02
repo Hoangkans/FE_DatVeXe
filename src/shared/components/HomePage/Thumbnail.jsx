@@ -2,6 +2,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import bg from "../../../assets/thumbnail.png"
 import { useEffect, useState } from 'react';
+// Local stub to keep component working after removing services
+const getLocations = async () => [];
 import PlaceSelect from './PlaceSelectment';
 import CalendarPicker from './CalendarPick';
 import "../../styles/Thumbnail.css"

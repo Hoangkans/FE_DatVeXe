@@ -1,4 +1,5 @@
 import { useNavigate, NavLink } from "react-router-dom";
+import { logout } from "../../services/auth/auth.service";
 
 import "../styles/AdminLayout.css";
 import logo from "../../assets/logo.png";
@@ -13,6 +14,7 @@ import CollectionsIcon from "@mui/icons-material/Collections";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 export default function AdminLayout({ children }) {
+  const navigate = useNavigate();
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
@@ -68,7 +70,18 @@ export default function AdminLayout({ children }) {
 
         <div className="admin-footer">
           <div className="user-line"></div>
-          <button className="logout-btn">Đăng xuất</button>
+          <button
+            className="logout-btn"
+            onClick={() => {
+              try {
+                logout();
+              } finally {
+                navigate('/login');
+              }
+            }}
+          >
+            Đăng xuất
+          </button>
         </div>
       </aside>
       <main className="admin-content">

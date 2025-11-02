@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { login as loginApi } from "../../../../services/auth/auth.service";
 import "../../../styles/admin/Login.css";
 
 export default function AdminLogin() {
@@ -19,12 +20,15 @@ export default function AdminLogin() {
     }
     setLoading(true);
     try {
-      await new Promise((r) => setTimeout(r, 600));
-      setToken("demo-token");
-      setUser({ email, roles: ["ADMIN"] });
+      // Call backend auth API; service will persist token/user
+      const res = await loginApi(email, password);
+      if (!res || !res.token) {
+        throw new Error("Phản hồi không hợp lệ từ máy chủ");
+      }
       navigate("/admin");
-    } catch (_) {
-      setError("Đăng nhập thất bại, thử lại sau");
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || "Đăng nhập thất bại, thử lại sau";
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -96,7 +100,7 @@ export default function AdminLogin() {
 
       <div className="auth-switch">
         <span>Bạn chưa có tài khoản?</span>
-        <Link to="/admin/register" className="auth-link">Tạo tài khoản</Link>
+        <Link to="/register" className="auth-link">Tạo tài khoản</Link>
       </div>
     </div>
   );

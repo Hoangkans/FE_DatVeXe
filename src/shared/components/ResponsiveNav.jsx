@@ -80,6 +80,6 @@ export default function ResponsiveNav() {
             <Toolbar sx={{ display: { xs: 'block', md: 'none' } }} />
         </>
     );
-};
+}
 
 

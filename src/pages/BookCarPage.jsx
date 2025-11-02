@@ -5,6 +5,10 @@ import hotlineImg from "../assets/hotline-bookcar.jpg";
 import SidebarFilters from "../shared/components/BookCar/SidebarFilters";
 import TripList from "../shared/components/BookCar/TripList";
 import LocationPicker from "../shared/components/BookCar/LocationPicker";
+// Local stubs to keep the page working after removing services
+const getLocations = async () => [];
+const searchTrips = async () => [];
+
 
 export default function BookCarPage() {
   const operatorList = useMemo(
