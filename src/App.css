@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@media print {
+	body {
+		margin: 0 !important;
+	}
+}
+
+:root {
+	--ck-content-font-family: 'Lato'!important;
+}
+
+.main-container {
+	font-family: var(--ck-content-font-family) !important;
+	width: fit-content !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+	width: 100%;
+    max-width: 900px;
+}

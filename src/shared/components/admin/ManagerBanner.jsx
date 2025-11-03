@@ -293,7 +293,6 @@ export default function ManagerBanner() {
             <div className="modal-sub">{isEdit ? "Cập nhật thông tin banner" : "Nhập thông tin banner hiển thị"}</div>
             <div className="form-grid">
               
-              {/* --- THIS IS THE NEW UPLOAD FIELD --- */}
               <label>
                 <span>Ảnh Banner *</span>
                 <input 
@@ -342,7 +341,7 @@ export default function ManagerBanner() {
                   value={form.position} 
                   onChange={(e) => setForm({ ...form, position: e.target.value })} 
                   placeholder="VD: Trang chủ - Banner chính" 
-                  disabled={isUploading}  // Disable while uploading
+                  disabled={isUploading}
                 />
                 {errors.position ? <div className="field-error">{errors.position}</div> : <div className="field-hint">Mô tả vị trí banner sẽ được hiển thị. Tối đa 100 ký tự.</div>}
               </label>

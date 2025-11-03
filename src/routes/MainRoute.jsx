@@ -20,6 +20,7 @@ import CompanyDetail from "../pages/post/CompanyDetail";
 import RouteDetail from "../pages/post/RouteDetail";
 import InfoPage from "../pages/InfoPage"
 import TicketCheck from "../pages/TicketCheck";
+import ArticlePage from "../pages/admin/ArticlePage";
 
 const routes = [
   { path: "/", component: HomePage},
@@ -31,6 +32,7 @@ const routes = [
   { path: "/route-detail/:title", component: RouteDetail},
   { path: "/info", component: InfoPage},
   { path: "/ticket-check", component: TicketCheck},
+  { path: "/article", component: ArticlePage},
   
   { path: "/login", component: AdminLogin },
   { path: "/register", component: AdminRegister },
