@@ -8,7 +8,6 @@ import logo from '../../assets/logo.png';
 export default function ResponsiveNav() {
     const [open, setOpen] = useState(false);
     const toggleDrawer = (state) => () => setOpen(state);
-
     
     const navLinks = [
         { title: 'TRANG CHỦ', path: '/' },

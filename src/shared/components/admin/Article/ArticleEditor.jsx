@@ -60,7 +60,7 @@ import {
 
 import 'ckeditor5/ckeditor5.css';
 
-import "../../../App.css"
+import "../../../../App.css"
 
 /**
  * Create a free account with a trial: https://portal.ckeditor.com/checkout?plan=free
@@ -105,6 +105,7 @@ export default function App() {
 						'insertTable',
 						'highlight',
 						'blockQuote',
+						'imageInsert',
 						'codeBlock',
 						'|',
 						'alignment',
