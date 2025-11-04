@@ -63,6 +63,29 @@
 .header-search{
     padding: 5px
 }
+.search-responsive{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 25px;
+}
+.search-responsive-wrapper{
+    width: 90%;
+    display: flex;
+    background-color: white;
+    border-radius: 45px;
+    align-items: center;
+    justify-content: center;
+}
+.search-responsive input{
+    width: 60%;
+    border: none;
+    outline: none;
+    padding: 18px  10px;
+    font-size: 14px;
+    border-radius: 45px;
+}
 
 @media (max-width: 1200px) {
     .header-nav {

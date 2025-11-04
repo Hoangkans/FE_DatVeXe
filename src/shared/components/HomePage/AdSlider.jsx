@@ -1,21 +1,44 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { fetchBanner } from "../../../services/banner/adminBanner";
 
-import sample from "../../../assets/sample.png"
 import "../../styles/Slider.css"
 
 export default function AdSlider() {
-    const routes = [
-        { id: 1, name: "Sài Gòn - Vũng Tàu", price: "150.000đ", img:`${sample}` },
-        { id: 2, name: "Sài Gòn - Mũi Né", price: "180.000đ", img:`${sample}` },
-        { id: 3, name: "Sài Gòn - Nha Trang", price: "240.000đ", img:`${sample}` },
-        { id: 4, name: "Nha Trang - Đà Lạt", price: "200.000đ", img:`${sample}`},
-        { id: 5, name: "Nha Trang - Đà Lạt", price: "200.000đ", img:`${sample}`},
-    ];
-
+    const [banners, setBanners] = useState([]);   
     const scrollRef = useRef(null);
+    
+     useEffect(() => {
+        loadBanners();
+    }, []);
 
+    const loadBanners = async () => {
+        try {
+        const responseData = await fetchBanner();
+
+        let bannerList = [];
+        if (Array.isArray(responseData)) {
+            bannerList = responseData;
+        } else if (responseData && Array.isArray(responseData.data)) {
+            bannerList = responseData.data;
+        }
+        
+        const mappedData = bannerList.map(banner => ({
+            id: banner.id,
+            image: banner.banner_url ,
+            position: banner.position
+        }));
+        
+        const homepageBanner = mappedData.filter(banner=> {
+            return banner.position === 'homepage'
+        })
+        setBanners(homepageBanner)
+        } catch (error) {
+            console.error("Error loading banners:", error);
+        } 
+    };
+    
     const scroll = (dir) => {
         const container = scrollRef.current;
         const card = container.querySelector(".route-card-ad");
@@ -37,9 +60,9 @@ export default function AdSlider() {
                     </button>
 
                     <div className="routes-slider-ad" ref={scrollRef}>
-                        {routes.map((route) => (
-                            <div key={route.id} className="route-card-ad">
-                                <img src={route.img} alt={route.name} />
+                        {banners.map((banner) => (
+                            <div key={banner.id} className="route-card-ad">
+                                <img src={banner.image} />
                             </div>
                         ))}
                     </div>

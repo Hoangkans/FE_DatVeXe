@@ -5,7 +5,6 @@
 		margin: 0 !important;
 	}
 }
-
 :root {
 	--ck-content-font-family: 'Lato'!important;
 }
@@ -16,7 +15,6 @@
 	margin-left: auto !important;
 	margin-right: auto !important;
 }
-
 .editor-container_classic-editor .editor-container__editor {
 	width: 100%;
     max-width: 900px;

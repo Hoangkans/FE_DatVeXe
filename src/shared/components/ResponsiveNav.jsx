@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Drawer, IconButton, Box, List, ListItemButton, ListItemText, AppBar, Toolbar} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
@@ -64,14 +65,39 @@ export default function ResponsiveNav() {
             >
 
                 <List style={{ marginTop: 20 }}>
+                    <div className='search-responsive'>
+                        <div className='search-responsive-wrapper'>
+                            <input 
+                                type="text" 
+                                placeholder='Tìm kiếm'
+                            />
+                            <SearchIcon
+                                sx={{
+                                    color: '#FFBB33',                     
+                                    p: 1,
+                                    borderRadius: 1,
+
+                                    '&:hover': {
+                                        cursor: 'pointer',
+                                    }
+                                }}  
+                            />
+                        </div> 
+                    </div>
+                    
                     {navLinks.map((link) => (
                         <ListItemButton
+                            style={{
+                                borderBottom: '1px solid white',
+                            }}
                             key={link.title}
                             component={Link}
                             to={link.path}
                             onClick={toggleDrawer(false)}
                         >
-                            <ListItemText primary={link.title} />
+                            <ListItemText 
+                                primary={link.title} 
+                            />
                         </ListItemButton>
                     ))}
                 </List>
