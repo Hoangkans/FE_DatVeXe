@@ -1,25 +1,16 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 
-import { fetchBusImage } from "../../../services/Bus/BusApi"
 import "../../styles/HomePage.css"
 
-export default function SliderContent() {
-    const [bus, setBus] = useState([]);
-
-    useEffect(() => {
-        const loadBusData = async () => {
-            try {
-                const data = await fetchBusImage();
-                setBus(data || []);
-            }catch (err){
-                console.log("Failed to fectch bus data: ",err)
-                return [];
-            }
-        }
-        loadBusData();
-    }, [])
+export default function SliderContent({
+    title,
+    items = [],
+    getImageUrl,
+    getTitle,
+    getSubtitle
+}) {
 
     const scrollRef = useRef(null);
 
@@ -37,19 +28,19 @@ export default function SliderContent() {
     return (
         <>
             <div className="slide-content">
-                <h2 className="title-accent"> Ưu đãi nổi bật</h2>
+                <h2 className="title-accent"> {title} </h2>
                 <div className="slider-wrapper">
                     <button className="arrow left" onClick={() => scroll("left")}>
                         <ArrowBackIosNewIcon />
                     </button>
 
                     <div className="routes-slider" ref={scrollRef}>
-                        {bus?.map((item) => (
+                        {items?.map((item) => (
                             <div key={item.id} className="route-card">
-                                <img src={item.image_url} alt={item.bus.name} />
+                                <img src={getImageUrl(item)} alt={getTitle(item)} />
                                 <div className="route-info">
-                                    <h3>{item.bus.name}</h3>
-                                    <p className="price">{item.bus.descriptions}</p>
+                                    <h3>{getTitle(item)}</h3>
+                                    <p className="price">{getSubtitle(item)}</p>
                                 </div>
                             </div>
                         ))}

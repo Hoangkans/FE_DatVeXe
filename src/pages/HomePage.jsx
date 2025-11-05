@@ -4,7 +4,8 @@ import Thumbnail from "../shared/components/HomePage/Thumbnail"
 import SliderContent from "../shared/components/HomePage/Slider";
 import AdSlider from "../shared/components/HomePage/AdSlider";
 import TopReview from "../shared/components/HomePage/TopReview";
-
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"
 import "../shared/styles/HomePage.css"
 
 import icon1 from "../assets/claim.png"
@@ -19,6 +20,9 @@ import afamily from "../assets/brand/afamily.png";
 import baria from "../assets/brand/baria.png";
 import danang from "../assets/brand/danang.png";
 
+import { fetchPopularBuses } from "../config/redux/thunks/Bus/Popular";
+import { fetchPopularStations } from "../config/redux/thunks/Bus/Popular";
+
 export default function HomePage() {
     const prize = [
         { name: "24h", src: img24h },
@@ -29,20 +33,51 @@ export default function HomePage() {
         { name: "danang", src: danang },
     ];
 
+    const dispatch = useDispatch();
+
+    const busData = useSelector((state) => state.buses.data)
+    const busStatus = useSelector((state) => state.buses.status)
+    const stationData = useSelector((state) => state.stations.data)
+    const stationStatus = useSelector((state) => state.stations.status)
+
+    useEffect(() => {
+        if (busStatus === 'idle') {
+            dispatch(fetchPopularBuses());
+        }
+        if (stationStatus === 'idle') {
+            dispatch(fetchPopularStations());
+        }
+    }, [busStatus, stationStatus, dispatch])
+
     return (
         <MainLayout>
             <div className="body-main">
                 <div className="thumnail-wrapper">
                     <Thumbnail/>
                 </div>
-                <SliderContent/>
+                <SliderContent
+                    title="Nhà xe phổ biến"
+                    items={busData}
+                    getImageUrl={(item) => item.image_url}
+                    getTitle={(item) => item.bus.name}
+                    getSubtitle={(item) => item.bus.descriptions}
+                />
+                
                 <AdSlider/>
-                <SliderContent/>
+                
+                <SliderContent
+                    title="Bến xe phổ biến"
+                    items={stationData}
+                    getImageUrl={(item) => item.image} 
+                    getTitle={(item) => item.name}
+                    getSubtitle={(item) => item.descriptions}
+                />
+
                 <h2 className="title-accent">Top Review</h2>   
                 <TopReview/>
-                <SliderContent/>
+                
 
-                <h2 className="title-accent">Nền tảng kết nối người dùng và nhà xe</h2>   
+                <h2 className="title-accent" style={{marginTop: 50}}>Nền tảng kết nối người dùng và nhà xe</h2>   
                 <div className="claim-section">
                     <div className="claim-item">
                         <div className="claim-card">

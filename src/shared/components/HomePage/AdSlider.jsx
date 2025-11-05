@@ -1,7 +1,7 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useRef, useState, useEffect } from "react";
-import { fetchBanner } from "../../../services/banner/adminBanner";
+import { fetchBanner } from "../../../services/banner/userBanner";
 
 import "../../styles/Slider.css"
 
@@ -53,7 +53,7 @@ export default function AdSlider() {
     return (
         <>
             <div className="slide-content-ad">
-                <h2 className="title-accent-ad"> Tuyến Đường Phổ Biến </h2>
+                <h2 className="title-accent-ad"> Ưu đãi nổi bất </h2>
                 <div className="slider-wrapper-ad">
                     <button className="arrow left" onClick={() => scroll("left")}>
                         <ArrowBackIosNewIcon />
