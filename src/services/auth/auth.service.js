@@ -2,7 +2,6 @@ export { login } from "./login";
 export { logout } from "./logout";
 export { register } from "./register";
 
-// Auth helpers migrated from shared/utils/auth.js
 export function getToken() {
   return localStorage.getItem("token");
 }

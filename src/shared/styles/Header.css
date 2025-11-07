@@ -86,9 +86,56 @@
     font-size: 14px;
     border-radius: 45px;
 }
+.login-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.login-group a{
+    color:white;
+    text-decoration: none;
+    padding: 5px
+}
+.login-group:hover{
+    cursor: pointer;
+}
+.login-group::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    transform: translateX(-50%);
+    background-color: currentColor;
+    transition: width 0.6s ease; 
+}
+.login-group:hover::after {
+    width: 100%;
+}
+.login-group .user-name{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.login-group .user-name button{
+    background-color: red;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    padding: 3px 8px;
+}
 
 @media (max-width: 1200px) {
     .header-nav {
+        display: none;
+    }
+    .login-group{
+        display: none;
+    }
+    .just-a-line{
         display: none;
     }
 }

@@ -21,7 +21,6 @@ export const stationSlice = createSlice({
             .addCase(fetchPopularStations.fulfilled, (state, action) => {
                 state.status = 'succeeded'
                 state.data = action.payload.data;
-                console.log(action.payload.data)
             })
             .addCase(fetchPopularStations.rejected, (state, action) => {
                 state.status = 'failed'

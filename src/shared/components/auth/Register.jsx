@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { register as registerApi } from "../../../../services/auth/auth.service";
-import "../../../styles/admin/Register.css";
+import { register as registerApi } from "../../../services/auth/auth.service";
+import "../../styles/admin/Register.css";
 
 export default function AdminRegister() {
   const navigate = useNavigate();

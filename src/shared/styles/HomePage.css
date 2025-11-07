@@ -197,6 +197,37 @@
     margin: 10px 0 0 0;
 }
 
+.login-responsive .user-name{
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    font-size: 20px;
+}
+.login-responsive .user-name button{
+    padding: 10px 0;
+    border: none;
+    color: white;
+    font-weight: 800;
+    background-color: #ffb300 ;
+}
+.login-responsive .user-name-task{
+    text-align: center;
+    font-size: 25px;
+}
+
+.login-responsive a{
+    text-decoration: none;
+    color: white;
+    
+}
+.login-responsive{
+    width: 100%;
+    max-width: 235px;
+    position:  fixed;
+    bottom: 0;
+    padding-bottom: 30px;
+}
+
 @keyframes scroll {
     0% {
         transform: translateX(0);

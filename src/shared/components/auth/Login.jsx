@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login as loginApi } from "../../../../services/auth/auth.service";
-import "../../../styles/admin/Login.css";
+import { login as loginApi } from "../../../services/auth/auth.service";
+import { changeName } from "../../../config/redux/reducers/user/userSlice";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import "../../styles/admin/Login.css";
+import { useDispatch } from "react-redux";
 
 export default function AdminLogin() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,9 +31,14 @@ export default function AdminLogin() {
       if (!res || !res.token) {
         throw new Error("Phản hồi không hợp lệ từ máy chủ");
       }
-      navigate("/admin");
+
+      const userData = res.user
+      dispatch(changeName(userData))
+      toast.success("Đăng nhập thành công!");
+      navigate("/");
     } catch (err) {
       const msg = err?.response?.data?.message || err?.message || "Đăng nhập thất bại, thử lại sau";
+      toast.error("Đăng nhập that bai!");
       setError(msg);
     } finally {
       setLoading(false);

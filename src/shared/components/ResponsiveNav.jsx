@@ -5,10 +5,27 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { logOut } from '../../config/redux/reducers/user/userSlice';
+
 export default function ResponsiveNav() {
     const [open, setOpen] = useState(false);
     const toggleDrawer = (state) => () => setOpen(state);
     
+    const {userInfo} = useSelector((state) => state.user)
+
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        try {
+            toast.info("You have logout!, login for and specific features!")
+            dispatch(logOut())
+        }catch(err){
+            console.error("Failed to logout", err)
+        }
+    }
+
     const navLinks = [
         { title: 'TRANG CHỦ', path: '/' },
         { title: 'GIỚI THIỆU', path: '/info' },
@@ -16,7 +33,7 @@ export default function ResponsiveNav() {
         { title: 'THÔNG TIN NHÀ XE', path: '/bus-company' },
         { title: 'BẾN XE', path: '/bus-station' },
         { title: 'TUYẾN ĐƯỜNG', path: '/bus-route' },
-        { title: 'KIỂM TRA VÉ', path: '/ticket-check' }
+        { title: 'KIỂM TRA VÉ', path: '/ticket-check' },
     ];
 
     return (
@@ -99,6 +116,19 @@ export default function ResponsiveNav() {
                             />
                         </ListItemButton>
                     ))}
+
+                    <div className='login-responsive' >  
+                        {userInfo ? (
+                            <div className="user-name">
+                                <p>HELLO, <strong> {userInfo.fullName}</strong> </p>
+                                <button onClick={() => handleLogout()}>ĐĂNG XUẤT</button>
+                            </div>
+                        ):(
+                            <div className='user-name-task'>
+                                <Link to="/login">ĐĂNG NHẬP</Link>
+                            </div>
+                        )}
+                    </div>
                 </List>
             </Drawer>
 

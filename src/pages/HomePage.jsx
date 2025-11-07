@@ -51,6 +51,7 @@ export default function HomePage() {
 
     return (
         <MainLayout>
+            
             <div className="body-main">
                 <div className="thumnail-wrapper">
                     <Thumbnail/>
