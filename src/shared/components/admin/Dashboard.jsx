@@ -7,7 +7,7 @@ import "../../styles/AdminDashboard.css";
 
 /* ---- Local UI helpers inlined to keep dashboard self-contained ---- */
 
-function StatCard({ title, value, trend, trendType = "up", icon }) {
+function StatCard({ title, value, trend = null, trendType = "up", icon = null }) {
   return (
     <div className="admin-stat-card">
       <div className="admin-stat-icon">{icon}</div>
@@ -32,11 +32,7 @@ StatCard.propTypes = {
   icon: PropTypes.node,
 };
 
-StatCard.defaultProps = {
-  trend: null,
-  trendType: "up",
-  icon: null,
-};
+// defaultProps removed for function component — using default parameters instead
 
 function BarChart({ title, data = [], labels = [] }) {
   const w = 600; const h = 240; const pad = 28; const innerW = w - pad * 2; const innerH = h - pad * 2;
