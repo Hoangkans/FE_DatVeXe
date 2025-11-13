@@ -22,7 +22,7 @@ export const busSlice = createSlice({
             })
             .addCase(fetchPopularBuses.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.data = action.payload;
+                state.data = action.payload.data;
             })
             .addCase(fetchPopularBuses.rejected, (state, action) => {
                 state.status = 'failed'

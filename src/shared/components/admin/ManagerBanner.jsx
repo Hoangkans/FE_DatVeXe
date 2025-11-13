@@ -36,7 +36,7 @@ export default function ManagerBanner() {
 
   const loadBanners = async () => {
     setIsLoading(true);
-    setApiError(null); // Clear previous errors
+    setApiError(null); 
     try {
       const responseData = await fetchBanner();
 

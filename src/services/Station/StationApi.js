@@ -2,7 +2,7 @@ import api from "../../config/axios/axiosCongif";
 
 async function fetchBusStation() {
     try {
-        const response = await api.get('/user/stations/all')
+        const response = await api.get('/user/stations/popular')
         return response.data;
     }catch(err) {
         console.error("Loi khi lay du lieu stations: ",err)

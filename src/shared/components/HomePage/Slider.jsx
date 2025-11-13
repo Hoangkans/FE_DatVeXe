@@ -6,7 +6,7 @@ import "../../styles/HomePage.css"
 
 export default function SliderContent({
     title,
-    items = [],
+    items = null,
     getImageUrl,
     getTitle,
     getSubtitle
