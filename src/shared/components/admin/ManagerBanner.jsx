@@ -23,8 +23,10 @@ export default function ManagerBanner() {
   const [apiError, setApiError] = useState(null); 
 
   const [isUploading, setIsUploading] = useState(false);
-  const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
-  const UPLOAD_PRESET = import.meta.env.VITE_CLOUD_UPLOAD_PRESET;
+  const CLOUD_NAME =
+    import.meta.env.VITE_CLOUD_NAME?.trim() || "dmcfssn9h";
+  const UPLOAD_PRESET =
+    import.meta.env.VITE_CLOUD_UPLOAD_PRESET?.trim() || "ml_default";
   
   const [form, setForm] = useState({ url: "", position: "" });
   const [errors, setErrors] = useState({});

@@ -4,6 +4,16 @@ import { fetchBusCompanies, createBusCompany, updateBusCompany, deleteBusCompany
 import "../../shared/styles/AdminManageOperators.css";
 import SearchIcon from "@mui/icons-material/Search";
 
+const isValidUrl = (value) => {
+  if (!value) return false;
+  try {
+    const parsed = new URL(value);
+    return Boolean(parsed.href);
+  } catch (err) {
+    return false;
+  }
+};
+
 export default function AdminOperators() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -15,6 +25,12 @@ export default function AdminOperators() {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: "", image: "", description: "" });
   const [formErr, setFormErr] = useState({});
+  const CLOUD_NAME =
+    import.meta.env.VITE_CLOUD_NAME?.trim() || "dmcfssn9h";
+  const UPLOAD_PRESET =
+    import.meta.env.VITE_CLOUD_UPLOAD_PRESET?.trim() || "ml_default";
+  const [uploading, setUploading] = useState(false);
+  const canUploadImages = Boolean(CLOUD_NAME && UPLOAD_PRESET);
 
   useEffect(() => {
     let ignore = false;
@@ -79,6 +95,11 @@ export default function AdminOperators() {
   function validate() {
     const e = {};
     if (!form.name.trim()) e.name = "Vui lòng nhập tên nhà xe";
+    if (!form.image.trim()) {
+      e.image = "Vui lòng chọn hình ảnh cho nhà xe";
+    } else if (!isValidUrl(form.image)) {
+      e.image = "Đường dẫn hình ảnh không hợp lệ";
+    }
     return e;
   }
 
@@ -91,9 +112,9 @@ export default function AdminOperators() {
       const payload = {
         name: form.name,
         company_name: form.name,
-        image: form.image || null,
-        description: form.description || null,
-        descriptions: form.description || null,
+        image: form.image.trim() || null,
+        description: form.description?.trim() || null,
+        descriptions: form.description?.trim() || null,
       };
       if (isEdit && editingId != null) {
         const res = await updateBusCompany(editingId, payload);
@@ -128,6 +149,58 @@ export default function AdminOperators() {
       return;
     }
     setRows((prev) => prev.filter((r) => r.id !== item.id));
+  }
+
+  async function handleFileSelect(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!canUploadImages) {
+      alert("Chưa cấu hình Cloudinary để tải ảnh.");
+      event.target.value = "";
+      return;
+    }
+
+    setUploading(true);
+    setFormErr((prev) => {
+      const next = { ...prev };
+      delete next.image;
+      return next;
+    });
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Không thể tải ảnh. Vui lòng thử lại.");
+      }
+
+      const data = await response.json();
+      const imageUrl = data.secure_url || data.url;
+      if (!imageUrl) {
+        throw new Error("Cloudinary không trả về URL ảnh.");
+      }
+
+      setForm((prev) => ({ ...prev, image: imageUrl }));
+    } catch (err) {
+      console.error("Lỗi upload ảnh nhà xe:", err);
+      setFormErr((prev) => ({
+        ...prev,
+        image: err?.message || "Không thể tải ảnh lên Cloudinary.",
+      }));
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
   }
 
 
@@ -214,8 +287,31 @@ export default function AdminOperators() {
                   {formErr.name && <div className="field-error">{formErr.name}</div>}
                 </label>
                 <label>
-                  <span>Hình ảnh (URL)</span>
-                  <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://..." />
+                  <span>Hình ảnh (logo)</span>
+                  <div className="file-input-row">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={!canUploadImages || uploading}
+                      onChange={handleFileSelect}
+                    />
+                    {uploading && (
+                      <span className="uploading-text">Đang tải ảnh...</span>
+                    )}
+                  </div>
+                  {!uploading && form.image && (
+                    <div className="field-hint url-preview">
+                      {form.image}
+                    </div>
+                  )}
+                  {!canUploadImages && (
+                    <div className="field-hint">
+                      Cloudinary chưa được cấu hình, vui lòng cấu hình env để tải ảnh.
+                    </div>
+                  )}
+                  {formErr.image && (
+                    <div className="field-error">{formErr.image}</div>
+                  )}
                 </label>
                 <label style={{ gridColumn: "1 / span 2" }}>
                   <span>Mô tả</span>
