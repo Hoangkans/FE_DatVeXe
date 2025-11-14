@@ -1,10 +1,11 @@
 import MainLayout from "../shared/layouts/MainLayout"
 import Card from "../shared/components/Card"
 import { Grid } from "@mui/material";
-import sample from "../assets/sample.png"
-import PaginationBar from "../shared/components/Pagination";
-import { useState } from "react";
 
+import PaginationBar from "../shared/components/Pagination";
+import { useState, useEffect } from "react";
+
+import { fetchBusStation } from "../services/Station/StationApi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSelectedPost } from "../config/redux/reducers/posts/postSlice";
@@ -13,8 +14,25 @@ import "../shared/styles/BusPage.css"
 export default function BusStationPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [itemData, setItemData] = useState([]);
     const [page, setPage] = useState(1);
     const itemsPerPage = 8;
+
+    useEffect( () => {
+        const loadBusStations = async () => {
+            const result = await fetchBusStation();
+            const stations = result.data;
+            const mappedData = stations.map((station, index) => ({
+                title: station.name,
+                description: station.descriptions,   
+                img: station.image,
+                wallpaper: station.wallpaper,
+                location: station.location,
+            }));
+            setItemData(mappedData);
+        }
+        loadBusStations();
+    }, [])
 
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -40,7 +58,7 @@ export default function BusStationPage() {
                     spacing={4} 
                     justifyContent="center" 
                     sx={{
-                        maxWidth: "1800px", 
+                        maxWidth: "1500px", 
                         margin: "0 auto",
                     }}
                 >
@@ -82,55 +100,3 @@ export default function BusStationPage() {
     )
 }
 
-const itemData = [
-    {
-        img: `${sample}`,
-        title: 'Sai Gon',
-        description: '287 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Vung Tau',
-        description: '93 bai viet',  
-    },
-    {
-        img: `${sample}`,
-        title: 'Ha Noi',
-        description: '612 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Da Lat',
-        description: '87 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Quy Nhon',
-        description: '81 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Nha Trang',
-        description: '557 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Da Nang',
-        description: '570 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Phan Thiet',
-        description: '276 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Con Dao',
-        description: '111 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Phu Quoc',
-        description: '136 bai viet',
-    }
-];

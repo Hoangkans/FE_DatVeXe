@@ -1,9 +1,10 @@
 import MainLayout from "../shared/layouts/MainLayout"
 import Card from "../shared/components/Card"
 import { Grid } from "@mui/material";
-import sample from "../assets/sample.png"
+import sample from "../assets/image-hodler.png"
 import PaginationBar from "../shared/components/Pagination";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchRoute } from "../services/Route/userRoute";
 
 import "../shared/styles/BusPage.css"
 import { useNavigate } from "react-router-dom";
@@ -13,12 +14,31 @@ import { setSelectedPost } from "../config/redux/reducers/posts/postSlice";
 export default function BusRoutePage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [itemData, setItemData] = useState([]);
     const [page, setPage] = useState(1);
     const itemsPerPage = 8;
 
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentItems = itemData.slice(startIndex, endIndex);
+
+    useEffect( () =>{
+        const loadRoute = async () => {
+            const routes = await fetchRoute();
+            const mappedData = routes.map((route, index) => ({ 
+                title: route.departure_station.location,
+                description: route.arrival_station.location,    
+                img: route.departure_station.image || sample,
+                depart: route.departure_station.name,
+                arrive: route.arrival_station.name,
+                distance: route.distance,
+                duration: route.duration,
+                price: route.price,
+            }));
+            setItemData(mappedData);
+        }
+        loadRoute();
+    }, [])
 
     const handleChange = (e, value) => {
         setPage(value);
@@ -58,7 +78,7 @@ export default function BusRoutePage() {
 
                                 <Card
                                     title={item.title}
-                                    description={item.description}
+                                    description={`to ${item.description}`}
                                     image={item.img}
                                 />
                             </div>
@@ -77,55 +97,3 @@ export default function BusRoutePage() {
     )
 }
 
-const itemData = [
-    {
-        img: `${sample}`,
-        title: 'Sai Gon',
-        description: '287 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Vung Tau',
-        description: '93 bai viet',  
-    },
-    {
-        img: `${sample}`,
-        title: 'Ha Noi',
-        description: '612 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Da Lat',
-        description: '87 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Quy Nhon',
-        description: '81 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Nha Trang',
-        description: '557 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Da Nang',
-        description: '570 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Phan Thiet',
-        description: '276 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Con Dao',
-        description: '111 bai viet',
-    },
-    {
-        img: `${sample}`,
-        title: 'Phu Quoc',
-        description: '136 bai viet',
-    }
-];

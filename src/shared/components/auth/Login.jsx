@@ -31,11 +31,15 @@ export default function AdminLogin() {
       if (!res || !res.token) {
         throw new Error("Phản hồi không hợp lệ từ máy chủ");
       }
-
       const userData = res.user
       dispatch(changeName(userData))
       toast.success("Đăng nhập thành công!");
-      navigate("/");
+
+      if (userData.roles.includes("ROLE_ADMIN")) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       const msg = err?.response?.data?.message || err?.message || "Đăng nhập thất bại, thử lại sau";
       toast.error("Đăng nhập that bai!");

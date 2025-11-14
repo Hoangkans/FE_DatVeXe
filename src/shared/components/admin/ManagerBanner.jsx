@@ -336,7 +336,7 @@ export default function ManagerBanner() {
               
               {/* --- THIS IS THE POSITION FIELD --- */}
               <label>
-                <span>Vị trí hiển thị *</span>
+                <span>Vị trí hiển thị</span>
                 <input 
                   value={form.position} 
                   onChange={(e) => setForm({ ...form, position: e.target.value })} 
