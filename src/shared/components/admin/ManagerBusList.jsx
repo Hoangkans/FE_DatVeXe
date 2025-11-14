@@ -1,9 +1,37 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import "../../styles/AdminManageBusList.css";
+import {
+  fetchBuses,
+  createBus,
+  updateBus,
+  deleteBus,
+} from "../../../services/Bus/BusAdminApi";
+
+const mapBusResponse = (payload) => {
+  if (!payload) return null;
+  const source = payload.data ?? payload;
+  const company = source.company ?? source.bus_company ?? source.company_id;
+  return {
+    id: source.id,
+    name: source.name ?? "",
+    plate: source.license_plate ?? source.plate ?? "",
+    desc: source.descriptions ?? source.description ?? "",
+    capacity: source.capacity ?? 0,
+    companyId:
+      (typeof company === "object" ? company?.id : company) ??
+      source.companyId ??
+      "",
+    companyName:
+      (typeof company === "object" ? company?.name : source.company_name) ?? "",
+    createdAt: source.created_at ?? source.createdAt ?? "",
+    updatedAt: source.updated_at ?? source.updatedAt ?? "",
+    raw: source,
+  };
+};
 
 export default function ManagerBusList() {
   const [query, setQuery] = useState("");
@@ -14,12 +42,44 @@ export default function ManagerBusList() {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
-  const initialRows = useMemo(() => [], []);
-
-  const [rows, setRows] = useState(initialRows);
-  const [form, setForm] = useState({ name: "", plate: "", desc: "", capacity: "", companyId: "" });
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    plate: "",
+    desc: "",
+    capacity: "",
+    companyId: "",
+  });
   const [errors, setErrors] = useState({});
+
+  const loadBuses = useCallback(async () => {
+    setLoading(true);
+    setFetchError("");
+    try {
+      const response = await fetchBuses();
+      const list = Array.isArray(response)
+        ? response
+        : response?.data ?? response?.items ?? [];
+      setRows(list.map(mapBusResponse).filter(Boolean));
+    } catch (err) {
+      console.error("Lỗi tải danh sách xe:", err);
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Không thể tải danh sách xe.";
+      setFetchError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadBuses();
+  }, [loadBuses]);
 
   function openAdd() {
     setIsEdit(false);
@@ -32,13 +92,33 @@ export default function ManagerBusList() {
   function openEdit(r) {
     setIsEdit(true);
     setEditingId(r.id);
-    setForm({ name: r.name, plate: r.plate, desc: r.desc, capacity: r.capacity, companyId: r.companyId });
+    setForm({
+      name: r.name || "",
+      plate: r.plate || "",
+      desc: r.desc || "",
+      capacity: r.capacity?.toString() ?? "",
+      companyId:
+        r.companyId === undefined || r.companyId === null
+          ? ""
+          : String(r.companyId),
+    });
     setErrors({});
     setShowModal(true);
   }
 
-  function removeRow(r) {
-    if (window.confirm(`Xóa xe "${r.name}" (${r.plate})?`)) setRows(rows.filter((x) => x.id !== r.id));
+  async function removeRow(r) {
+    if (!window.confirm(`Xóa xe "${r.name}" (${r.plate})?`)) return;
+    try {
+      await deleteBus(r.id);
+      setRows((prev) => prev.filter((x) => x.id !== r.id));
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Không thể xóa xe.";
+      alert(message);
+    }
   }
 
   function validate() {
@@ -46,39 +126,76 @@ export default function ManagerBusList() {
     if (!form.name.trim()) e.name = "Vui lòng nhập tên xe";
     if (!form.plate.trim()) e.plate = "Vui lòng nhập biển số";
     if (form.capacity === "" || Number(form.capacity) <= 0) e.capacity = "Sức chứa > 0";
-    if (form.companyId === "") e.companyId = "Nhập company ID";
+    if (form.companyId) {
+      const companyValue = Number(form.companyId);
+      if (Number.isNaN(companyValue) || companyValue <= 0) {
+        e.companyId = "Company ID phải là số dương";
+      }
+    }
     return e;
   }
 
-  function submit() {
+  async function submit() {
     const e = validate();
     setErrors(e);
     if (Object.keys(e).length) return;
-    const now = new Date().toISOString().slice(0, 10);
-    if (isEdit && editingId != null) {
-      setRows(rows.map((r) => (r.id === editingId ? { ...r, ...form, capacity: Number(form.capacity), companyId: Number(form.companyId), updatedAt: now } : r)));
+    const payload = {
+      name: form.name.trim(),
+      capacity: Number(form.capacity),
+      license_plate: form.plate.trim(),
+      descriptions: form.desc.trim() || undefined,
+      company: form.companyId ? Number(form.companyId) : undefined,
+    };
+    setIsSubmitting(true);
+    try {
+      if (isEdit && editingId != null) {
+        const response = await updateBus(editingId, payload);
+        const updated = mapBusResponse(response?.data ?? response);
+        if (updated) {
+          setRows((prev) =>
+            prev.map((r) => (r.id === editingId ? updated : r))
+          );
+        } else {
+          await loadBuses();
+        }
+      } else {
+        const response = await createBus(payload);
+        const created = mapBusResponse(response?.data ?? response);
+        setRows((prev) => (created ? [created, ...prev] : prev));
+      }
       setShowModal(false);
-      return;
+      setForm({ name: "", plate: "", desc: "", capacity: "", companyId: "" });
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Không thể lưu xe.";
+      alert(message);
+    } finally {
+      setIsSubmitting(false);
     }
-    const nextId = Math.max(0, ...rows.map((r) => r.id)) + 1;
-    setRows([{ id: nextId, ...form, capacity: Number(form.capacity), companyId: Number(form.companyId), createdAt: now, updatedAt: now }, ...rows]);
-    setShowModal(false);
   }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = rows.filter((r) => {
-      const matches = !q ||
-        r.id.toString().includes(q) ||
-        r.name.toLowerCase().includes(q) ||
-        r.plate.toLowerCase().includes(q) ||
-        r.companyId.toString().includes(q);
+      const idText = (r.id ?? "").toString();
+      const name = r.name?.toLowerCase() ?? "";
+      const plate = r.plate?.toLowerCase() ?? "";
+      const companyId = (r.companyId ?? "").toString();
+      const matches =
+        !q ||
+        idText.includes(q) ||
+        name.includes(q) ||
+        plate.includes(q) ||
+        companyId.includes(q);
       return matches;
     });
     list = [...list].sort((a, b) => {
       const dir = sortDir === "asc" ? 1 : -1;
-      const av = a[sortBy];
-      const bv = b[sortBy];
+      const av = a[sortBy] ?? "";
+      const bv = b[sortBy] ?? "";
       return av > bv ? dir : av < bv ? -dir : 0;
     });
     return list;
@@ -135,28 +252,65 @@ export default function ManagerBusList() {
             </tr>
           </thead>
           <tbody>
-            {paged.map((r) => (
-              <tr key={r.id}>
-                <td>{r.id}</td>
-                <td>{r.name}</td>
-                <td className="mono">{r.plate}</td>
-                <td>{r.desc}</td>
-                <td>{r.capacity}</td>
-                <td>{r.companyId}</td>
-                <td>{r.createdAt}</td>
-                <td>{r.updatedAt}</td>
-                <td>
-                  <div className="row-actions">
-                    <button className="btn-ghost" onClick={() => openEdit(r)}><EditIcon fontSize="inherit" /><span>Sửa</span></button>
-                    <button className="btn-danger" onClick={() => removeRow(r)}><DeleteIcon fontSize="inherit" /><span>Xóa</span></button>
-                  </div>
+            {loading && (
+              <tr>
+                <td colSpan="9" className="loading-cell">
+                  Đang tải dữ liệu xe...
                 </td>
               </tr>
-            ))}
+            )}
+            {!loading && fetchError && (
+              <tr>
+                <td colSpan="9" className="error-cell">
+                  {fetchError}
+                </td>
+              </tr>
+            )}
+            {!loading && !fetchError && paged.length === 0 && (
+              <tr>
+                <td colSpan="9" className="empty">
+                  Không có xe phù hợp.
+                </td>
+              </tr>
+            )}
+            {!loading &&
+              !fetchError &&
+              paged.map((r) => (
+                <tr key={r.id}>
+                  <td>{r.id}</td>
+                  <td>{r.name}</td>
+                  <td className="mono">{r.plate}</td>
+                  <td>{r.desc}</td>
+                  <td>{r.capacity}</td>
+                  <td>{r.companyId || "—"}</td>
+                  <td>{r.createdAt || "—"}</td>
+                  <td>{r.updatedAt || "—"}</td>
+                  <td>
+                    <div className="row-actions">
+                      <button
+                        className="btn-ghost"
+                        onClick={() => openEdit(r)}
+                      >
+                        <EditIcon fontSize="inherit" />
+                        <span>Sửa</span>
+                      </button>
+                      <button
+                        className="btn-danger"
+                        onClick={() => removeRow(r)}
+                      >
+                        <DeleteIcon fontSize="inherit" />
+                        <span>Xóa</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
-        {filtered.length === 0 && <div className="empty">Hiển thị 1 - 0 trong tổng số 0 xe</div>}
-        {filtered.length > 0 && (
+        {filtered.length === 0 && !loading && !fetchError && (
+          <div className="empty">Không có dữ liệu xe.</div>
+        )}
+        {filtered.length > 0 && !loading && !fetchError && (
           <div className="table-footer">
             <div className="info">Hiển thị {start + 1} - {Math.min(end, filtered.length)} trong tổng số {filtered.length} xe</div>
             <div className="pager">
@@ -169,7 +323,10 @@ export default function ManagerBusList() {
       </div>
 
       {showModal && (
-        <div className="modal-backdrop" onClick={() => setShowModal(false)}>
+        <div
+          className="modal-backdrop"
+          onClick={() => !isSubmitting && setShowModal(false)}
+        >
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">{isEdit ? "Sửa xe" : "Thêm xe"}</div>
             <div className="modal-sub">{isEdit ? "Cập nhật thông tin xe" : "Nhập thông tin xe vào hệ thống"}</div>
@@ -200,8 +357,10 @@ export default function ManagerBusList() {
               </label>
             </div>
             <div className="modal-actions">
-              <button className="btn-ghost" onClick={() => setShowModal(false)}>Hủy</button>
-              <button className="btn-primary" onClick={submit}>{isEdit ? "Lưu" : "Thêm"}</button>
+              <button className="btn-ghost" onClick={() => setShowModal(false)} disabled={isSubmitting}>Hủy</button>
+              <button className="btn-primary" onClick={submit} disabled={isSubmitting}>
+                {isSubmitting ? "Đang lưu..." : (isEdit ? "Lưu" : "Thêm")}
+              </button>
             </div>
           </div>
         </div>
