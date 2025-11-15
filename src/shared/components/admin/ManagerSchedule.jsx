@@ -10,7 +10,6 @@ import {
   createSchedule,
   updateSchedule,
   deleteSchedule,
-  updateScheduleSeats,
 } from "../../../services/Road/Schedulesadmin";
 
 const STATUS_TO_API = {
@@ -19,113 +18,105 @@ const STATUS_TO_API = {
   canceled: "CANCELLED",
 };
 
-const toUiStatus = (value) => {
-  const normalized = (value || "").toString().toLowerCase();
+const STATUS_TEXT = {
+  available: "Còn chỗ",
+  full: "Hết chỗ",
+  canceled: "Đã hủy",
+};
+
+const STATUS_BADGE = {
+  available: "is-available",
+  full: "is-full",
+  canceled: "is-canceled",
+};
+
+const normalizeStatus = (value) => {
+  const normalized = (value || "available").toString().toLowerCase();
   if (normalized === "full") return "full";
-  if (normalized === "cancelled" || normalized === "canceled") return "canceled";
+  if (normalized === "canceled" || normalized === "cancelled") return "canceled";
   return "available";
 };
 
-const toApiStatus = (value) => STATUS_TO_API[value] || "AVAILABLE";
-
-const toText = (value) => {
-  if (value === undefined || value === null) return "";
-  return String(value);
-};
-
-const formatDatetimeLocal = (value) => {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  const pad = (n) => String(n).padStart(2, "0");
-  const year = date.getFullYear();
-  const month = pad(date.getMonth() + 1);
-  const day = pad(date.getDate());
-  const hours = pad(date.getHours());
-  const minutes = pad(date.getMinutes());
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
-
-const mapScheduleResponse = (payload) => {
-  if (!payload) return null;
-  const source = payload.data ?? payload;
-  const route = source.route ?? source.route_info;
-  const bus = source.bus ?? source.bus_info;
-
-  const routeId =
-    source.route_id ??
-    source.routeId ??
-    route?.id ??
-    source.route_name ??
-    "";
-  const busId =
-    source.bus_id ??
-    source.busId ??
-    bus?.id ??
-    source.bus_identifier ??
-    "";
-  const routeName = toText(
-    route?.name ?? source.route_name ?? (routeId ? `Tuyến #${routeId}` : "")
-  );
-  const busName = toText(bus?.name ?? source.bus_name ?? "");
-  const plate = toText(
-    bus?.license_plate ??
-      source.plate ??
-      source.license_plate ??
-      source.bus_plate ??
-      ""
-  );
-  const departAt = source.departure_time ?? source.departAt ?? "";
-  const arriveAt = source.arrival_time ?? source.arriveAt ?? "";
-  const seatsEmpty = Number(source.available_seat ?? source.seatsEmpty ?? 0);
-  const seatsTotal = Number(source.total_seats ?? source.seatsTotal ?? 0);
-
-  return {
-    id: source.id,
-    routeId,
-    busId,
-    routeName,
-    busName,
-    plate,
-    departAt,
-    arriveAt,
-    seatsEmpty,
-    seatsTotal,
-    status: toUiStatus(source.status),
-    raw: source,
-  };
-};
-
-const createEmptyForm = () => ({
-  routeId: "",
-  busId: "",
-  routeName: "",
-  busName: "",
-  plate: "",
-  departAt: "",
-  arriveAt: "",
-  seatsEmpty: "",
-  seatsTotal: "",
-  status: "available",
-});
-
-const safeDatePart = (value) => {
+const formatDate = (value) => {
   if (!value) return "—";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "—";
   return date.toLocaleDateString("vi-VN");
 };
 
-const safeTimePart = (value) => {
+const formatTime = (value) => {
   if (!value) return "—";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "—";
   return date.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
 };
 
-const percent = (empty, total) => {
-  if (!total) return 0;
-  return Math.round((Number(empty) / Number(total)) * 100);
+const toText = (value, fallback = "") => {
+  if (value === undefined || value === null) return fallback;
+  return String(value);
+};
+
+const toFormState = (schedule) => ({
+  routeId: schedule?.routeId?.toString() ?? "",
+  busId: schedule?.busId?.toString() ?? "",
+  totalSeats:
+    schedule?.seatsTotal === undefined || schedule?.seatsTotal === null
+      ? ""
+      : schedule.seatsTotal.toString(),
+  status: schedule?.status ?? "available",
+  departAt: schedule?.departAt ?? "",
+  arriveAt: schedule?.arriveAt ?? "",
+  routeName: schedule?.routeName ?? "",
+  busName: schedule?.busName ?? "",
+  plate: schedule?.plate ?? "",
+  seatsEmpty:
+    schedule?.seatsEmpty === undefined || schedule?.seatsEmpty === null
+      ? ""
+      : schedule.seatsEmpty.toString(),
+});
+
+const createEmptyForm = () =>
+  toFormState({
+    routeId: "",
+    busId: "",
+    seatsTotal: "",
+    status: "available",
+    routeName: "",
+    busName: "",
+    plate: "",
+    seatsEmpty: "",
+    departAt: "",
+    arriveAt: "",
+  });
+
+const mapSchedule = (payload) => {
+  if (!payload) return null;
+  const source = payload.data ?? payload;
+  const route = source.route ?? source.route_info;
+  const bus = source.bus ?? source.bus_info;
+
+  const routeId =
+    route?.id ?? source.route_id ?? source.routeId ?? source.route_name ?? "";
+  const busId = bus?.id ?? source.bus_id ?? source.busId ?? "";
+  const routeNameRaw =
+    route?.name ?? source.route_name ?? (routeId ? `Tuyến #${routeId}` : "");
+  const busNameRaw = bus?.name ?? source.bus_name ?? "";
+  const plateRaw =
+    bus?.license_plate ?? source.plate ?? source.license_plate ?? source.bus_plate ?? "";
+
+  return {
+    id: source.id,
+    routeId,
+    routeName: toText(routeNameRaw),
+    busId,
+    busName: toText(busNameRaw),
+    plate: toText(plateRaw),
+    departAt: source.departure_time ?? source.departAt ?? "",
+    arriveAt: source.arrival_time ?? source.arriveAt ?? "",
+    seatsEmpty: Number(source.available_seat ?? source.seatsEmpty ?? 0),
+    seatsTotal: Number(source.total_seats ?? source.seatsTotal ?? 0),
+    status: normalizeStatus(source.status),
+  };
 };
 
 export default function ManagerSchedule() {
@@ -142,7 +133,7 @@ export default function ManagerSchedule() {
   const [isEdit, setIsEdit] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isFetchingDetail, setIsFetchingDetail] = useState(false);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [form, setForm] = useState(createEmptyForm());
   const [errors, setErrors] = useState({});
 
@@ -154,14 +145,11 @@ export default function ManagerSchedule() {
       const list = Array.isArray(response)
         ? response
         : response?.data ?? response?.items ?? [];
-      setRows(list.map(mapScheduleResponse).filter(Boolean));
+      setRows(list.map(mapSchedule).filter(Boolean));
     } catch (err) {
       console.error("Lỗi tải danh sách lịch trình:", err);
       const message =
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        err?.message ||
-        "Không thể tải danh sách lịch trình.";
+        err?.response?.data?.message || err?.message || "Không thể tải danh sách lịch trình.";
       setFetchError(message);
     } finally {
       setLoading(false);
@@ -172,182 +160,93 @@ export default function ManagerSchedule() {
     loadSchedules();
   }, [loadSchedules]);
 
-  function openAdd() {
+  const openAdd = () => {
     setIsEdit(false);
     setEditingId(null);
     setForm(createEmptyForm());
     setErrors({});
-    setIsFetchingDetail(false);
     setShowModal(true);
-  }
-
-  async function openEdit(r) {
-    setIsEdit(true);
-    setEditingId(r.id);
-    setErrors({});
-    setForm({
-      routeId: r.routeId?.toString() ?? "",
-      busId: r.busId?.toString() ?? "",
-      routeName: r.routeName ?? "",
-      busName: r.busName ?? "",
-      plate: r.plate ?? "",
-      departAt: r.departAt ?? "",
-      arriveAt: r.arriveAt ?? "",
-      seatsEmpty:
-        r.seatsEmpty === undefined || r.seatsEmpty === null
-          ? ""
-          : r.seatsEmpty.toString(),
-      seatsTotal:
-        r.seatsTotal === undefined || r.seatsTotal === null
-          ? ""
-          : r.seatsTotal.toString(),
-      status: r.status ?? "available",
-    });
-    setShowModal(true);
-    setIsFetchingDetail(true);
-    try {
-      const response = await fetchScheduleDetail(r.id);
-      const detail = mapScheduleResponse(response?.data ?? response);
-      if (detail) {
-        setForm({
-          routeId: detail.routeId?.toString() ?? "",
-          busId: detail.busId?.toString() ?? "",
-          routeName: detail.routeName ?? "",
-          busName: detail.busName ?? "",
-          plate: detail.plate ?? "",
-          departAt: detail.departAt ?? "",
-          arriveAt: detail.arriveAt ?? "",
-          seatsEmpty:
-            detail.seatsEmpty === undefined || detail.seatsEmpty === null
-              ? ""
-              : detail.seatsEmpty.toString(),
-          seatsTotal:
-            detail.seatsTotal === undefined || detail.seatsTotal === null
-              ? ""
-              : detail.seatsTotal.toString(),
-          status: detail.status ?? "available",
-        });
-      }
-    } catch (err) {
-      console.error("Không thể tải chi tiết lịch trình:", err);
-      alert(
-        err?.response?.data?.message ||
-          err?.response?.data?.error ||
-          err?.message ||
-          "Không thể tải chi tiết lịch trình."
-      );
-    } finally {
-      setIsFetchingDetail(false);
-    }
-  }
-
-  async function removeRow(r) {
-    if (!window.confirm(`Xóa lịch trình #${r.id}?`)) return;
-    try {
-      await deleteSchedule(r.id);
-      await loadSchedules();
-    } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        err?.message ||
-        "Không thể xóa lịch trình.";
-      alert(message);
-    }
-  }
-
-  function validate() {
-    const e = {};
-    if (!String(form.routeId).trim()) e.routeId = "Nhập route ID";
-    if (!String(form.busId).trim()) e.busId = "Nhập bus ID";
-    if (form.seatsTotal === "" || Number(form.seatsTotal) <= 0)
-      e.seatsTotal = "Tổng chỗ > 0";
-    return e;
-  }
-
-  const handleDateChange = (field, value) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value ? new Date(value).toISOString() : "",
-    }));
   };
 
-  async function submit() {
-    const e = validate();
-    setErrors(e);
-    if (Object.keys(e).length) return;
+  const openEdit = async (row) => {
+    setIsEdit(true);
+    setEditingId(row.id);
+    setErrors({});
+    setForm(toFormState(row));
+    setShowModal(true);
+    setIsDetailLoading(true);
+    try {
+      const response = await fetchScheduleDetail(row.id);
+      const detail = mapSchedule(response?.data ?? response);
+      if (detail) setForm(toFormState(detail));
+    } catch (err) {
+      console.error("Không thể tải chi tiết lịch trình:", err);
+      alert(err?.response?.data?.message || err?.message || "Không thể tải chi tiết lịch trình.");
+    } finally {
+      setIsDetailLoading(false);
+    }
+  };
+
+  const removeRow = async (row) => {
+    if (!window.confirm(`Xóa lịch trình #${row.id}?`)) return;
+    try {
+      await deleteSchedule(row.id);
+      await loadSchedules();
+    } catch (err) {
+      alert(err?.response?.data?.message || err?.message || "Không thể xóa lịch trình.");
+    }
+  };
+
+  const validate = () => {
+    const next = {};
+    if (!form.routeId.trim()) next.routeId = "Vui lòng nhập Route ID";
+    if (!form.busId.trim()) next.busId = "Vui lòng nhập Bus ID";
+    if (!form.totalSeats.trim() || Number(form.totalSeats) <= 0)
+      next.totalSeats = "Tổng chỗ phải lớn hơn 0";
+    return next;
+  };
+
+  const handleSubmit = async () => {
+    const validation = validate();
+    setErrors(validation);
+    if (Object.keys(validation).length) return;
 
     const payload = {
       route_id: Number(form.routeId),
       bus_id: Number(form.busId),
-      total_seats: Number(form.seatsTotal),
-      status: toApiStatus(form.status),
+      total_seats: Number(form.totalSeats),
+      status: STATUS_TO_API[form.status] || "AVAILABLE",
     };
 
     setIsSubmitting(true);
     try {
       if (isEdit && editingId != null) {
-        const currentRow = rows.find((r) => r.id === editingId);
-        const currentTotal = Number(form.seatsTotal);
-        const prevTotal = currentRow?.seatsTotal;
-        const shouldUseSeatPatch =
-          typeof prevTotal === "number" &&
-          !Number.isNaN(prevTotal) &&
-          prevTotal !== currentTotal;
-
-        const updatePayload = {
-          route_id: payload.route_id,
-          bus_id: payload.bus_id,
-          status: payload.status,
-        };
-
-        if (!shouldUseSeatPatch) {
-          updatePayload.total_seats = payload.total_seats;
-        }
-
-        if (form.departAt) {
-          updatePayload.departure_time = form.departAt;
-        }
-        if (form.arriveAt) {
-          updatePayload.arrival_time = form.arriveAt;
-        }
-
-        await updateSchedule(editingId, updatePayload);
-
-        if (shouldUseSeatPatch) {
-          await updateScheduleSeats(editingId, payload.total_seats);
-        }
+        await updateSchedule(editingId, payload);
       } else {
         await createSchedule(payload);
       }
-
       await loadSchedules();
       setShowModal(false);
       setForm(createEmptyForm());
     } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        err?.message ||
-        "Không thể lưu lịch trình.";
-      alert(message);
+      alert(err?.response?.data?.message || err?.message || "Không thể lưu lịch trình.");
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let list = rows.filter((r) => {
-      const idText = (r.id ?? "").toString();
-      const routeId = (r.routeId ?? "").toString();
-      const busId = (r.busId ?? "").toString();
-      const routeName = r.routeName?.toLowerCase() ?? "";
-      const busName = r.busName?.toLowerCase() ?? "";
-      const plate = r.plate?.toLowerCase() ?? "";
+    const filteredRows = rows.filter((row) => {
+      const id = row.id?.toString() ?? "";
+      const routeId = row.routeId?.toString() ?? "";
+      const busId = row.busId?.toString() ?? "";
+      const routeName = row.routeName?.toLowerCase() ?? "";
+      const busName = row.busName?.toLowerCase() ?? "";
+      const plate = row.plate?.toLowerCase() ?? "";
+      if (!q) return true;
       return (
-        !q ||
-        idText.includes(q) ||
+        id.includes(q) ||
         routeId.includes(q) ||
         busId.includes(q) ||
         routeName.includes(q) ||
@@ -355,42 +254,45 @@ export default function ManagerSchedule() {
         plate.includes(q)
       );
     });
-    list = [...list].sort((a, b) => {
+
+    const sorted = [...filteredRows].sort((a, b) => {
       const dir = sortDir === "asc" ? 1 : -1;
       const av = a[sortBy] ?? "";
       const bv = b[sortBy] ?? "";
-      return av > bv ? dir : av < bv ? -dir : 0;
+      if (av > bv) return dir;
+      if (av < bv) return -dir;
+      return 0;
     });
-    return list;
+    return sorted;
   }, [rows, query, sortBy, sortDir]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
-  const pageSafe = Math.min(page, totalPages);
-  const start = (pageSafe - 1) * perPage;
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * perPage;
   const end = start + perPage;
   const paged = filtered.slice(start, end);
 
-  function toggleSort(key) {
-    if (sortBy === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else {
+  const toggleSort = (key) => {
+    if (sortBy === key) {
+      setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
       setSortBy(key);
       setSortDir("asc");
     }
-  }
+  };
 
-  function sortLabel(key, label) {
-    return (
-      <span style={{ cursor: "pointer" }} onClick={() => toggleSort(key)}>
-        {label}
-      </span>
-    );
-  }
+  const sortLabel = (key, label) => (
+    <span className="sortable" onClick={() => toggleSort(key)}>
+      {label}
+      {sortBy === key ? (sortDir === "asc" ? " ▲" : " ▼") : ""}
+    </span>
+  );
 
   return (
     <div className="manage-schedule">
       <div className="head">
         <div className="title">Quản lý lịch trình</div>
-        <div className="sub">Quản lý thông tin lịch trình xe</div>
+        <div className="sub">Theo dõi và cấu hình các chuyến xe</div>
       </div>
 
       <div className="toolbar">
@@ -402,7 +304,7 @@ export default function ManagerSchedule() {
               setQuery(e.target.value);
               setPage(1);
             }}
-            placeholder="Tìm kiếm theo ID, tuyến, xe, biển số..."
+            placeholder="Tìm theo ID, tuyến, xe, biển số..."
           />
         </div>
         <button className="btn-primary" onClick={openAdd}>
@@ -416,92 +318,77 @@ export default function ManagerSchedule() {
           <thead>
             <tr>
               <th>{sortLabel("id", "ID")}</th>
-              <th>{sortLabel("routeId", "Route ID")}</th>
-              <th>{sortLabel("busId", "Bus ID")}</th>
-              <th>{sortLabel("routeName", "Tuyến xe")}</th>
-              <th>{sortLabel("busName", "Xe")}</th>
+              <th>{sortLabel("routeId", "Route")}</th>
+              <th>{sortLabel("busId", "Bus")}</th>
+              <th>Tuyến xe</th>
+              <th>Xe</th>
               <th>{sortLabel("departAt", "Khởi hành")}</th>
               <th>{sortLabel("arriveAt", "Đến nơi")}</th>
               <th>{sortLabel("seatsEmpty", "Chỗ trống")}</th>
               <th>{sortLabel("seatsTotal", "Tổng chỗ")}</th>
               <th>Trạng thái</th>
-              <th style={{ width: 100 }}>Thao tác</th>
+              <th style={{ width: 120 }}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan="11" className="loading-cell">
-                  Đang tải dữ liệu lịch trình...
+                <td colSpan={11} className="loading-cell">
+                  Đang tải dữ liệu...
                 </td>
               </tr>
             )}
             {!loading && fetchError && (
               <tr>
-                <td colSpan="11" className="error-cell">
+                <td colSpan={11} className="error-cell">
                   {fetchError}
                 </td>
               </tr>
             )}
             {!loading && !fetchError && paged.length === 0 && (
               <tr>
-                <td colSpan="11" className="empty">
-                  Không có lịch trình nào phù hợp.
+                <td colSpan={11} className="empty">
+                  Không có lịch trình nào.
                 </td>
               </tr>
             )}
-            {!loading &&
-              !fetchError &&
-              paged.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.id}</td>
-                  <td>{r.routeId || "—"}</td>
-                  <td>{r.busId || "—"}</td>
-                  <td>{r.routeName || "—"}</td>
+            {!loading && !fetchError &&
+              paged.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.id}</td>
+                  <td>{row.routeId || "—"}</td>
+                  <td>{row.busId || "—"}</td>
+                  <td>{row.routeName || "—"}</td>
                   <td>
-                    <div>{r.busName || "—"}</div>
-                    <div className="muted">{r.plate || ""}</div>
+                    <div>{row.busName || "—"}</div>
+                    <div className="muted">{row.plate || ""}</div>
                   </td>
                   <td>
-                    <div>{safeDatePart(r.departAt)}</div>
-                    <div className="muted">{safeTimePart(r.departAt)}</div>
+                    <div>{formatDate(row.departAt)}</div>
+                    <div className="muted">{formatTime(row.departAt)}</div>
                   </td>
                   <td>
-                    <div>{safeDatePart(r.arriveAt)}</div>
-                    <div className="muted">{safeTimePart(r.arriveAt)}</div>
+                    <div>{formatDate(row.arriveAt)}</div>
+                    <div className="muted">{formatTime(row.arriveAt)}</div>
                   </td>
                   <td>
-                    <div>
-                      {r.seatsEmpty ?? 0}{" "}
-                      <span className="muted">
-                        ({percent(r.seatsEmpty, r.seatsTotal)}%)
-                      </span>
-                    </div>
+                    {row.seatsEmpty}{" "}
+                    <span className="muted">
+                      ({row.seatsTotal ? Math.round((row.seatsEmpty / row.seatsTotal) * 100) : 0}%)
+                    </span>
                   </td>
-                  <td>{r.seatsTotal ?? 0}</td>
+                  <td>{row.seatsTotal}</td>
                   <td>
-                    <span
-                      className={`status-badge ${
-                        r.status === "available"
-                          ? "is-available"
-                          : r.status === "full"
-                          ? "is-full"
-                          : "is-canceled"
-                      }`}
-                    >
-                      {r.status === "available"
-                        ? "Còn chỗ"
-                        : r.status === "full"
-                        ? "Hết chỗ"
-                        : "Đã hủy"}
+                    <span className={`status-badge ${STATUS_BADGE[row.status]}`}>
+                      {STATUS_TEXT[row.status]}
                     </span>
                   </td>
                   <td>
                     <div className="row-actions">
-                      <button className="btn-ghost" onClick={() => openEdit(r)}>
+                      <button className="btn-ghost" onClick={() => openEdit(row)}>
                         <EditIcon fontSize="inherit" />
                       </button>
-                      <button className="btn-danger" onClick={() => removeRow(r)}>
+                      <button className="btn-danger" onClick={() => removeRow(row)}>
                         <DeleteIcon fontSize="inherit" />
                       </button>
                     </div>
@@ -510,29 +397,27 @@ export default function ManagerSchedule() {
               ))}
           </tbody>
         </table>
-        {filtered.length === 0 && !loading && !fetchError && (
-          <div className="empty">Không có dữ liệu lịch trình.</div>
-        )}
+
         {filtered.length > 0 && !loading && !fetchError && (
           <div className="table-footer">
             <div className="info">
-              Hiển thị {start + 1} - {Math.min(end, filtered.length)} trong tổng số {filtered.length} lịch trình
+              Hiển thị {start + 1}-{Math.min(end, filtered.length)} trong tổng số {filtered.length} lịch trình
             </div>
             <div className="pager">
               <button
                 className="btn-page"
-                disabled={pageSafe <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                onClick={() => setPage((prev) => Math.max(1, prev - 1))}
               >
                 &lt;
               </button>
               <div className="page-text">
-                Trang {pageSafe} / {totalPages}
+                Trang {currentPage} / {totalPages}
               </div>
               <button
                 className="btn-page"
-                disabled={pageSafe >= totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages}
+                onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
               >
                 &gt;
               </button>
@@ -544,22 +429,14 @@ export default function ManagerSchedule() {
       {showModal && (
         <div
           className="modal-backdrop"
-          onClick={() => !isSubmitting && !isFetchingDetail && setShowModal(false)}
+          onClick={() => !isSubmitting && !isDetailLoading && setShowModal(false)}
         >
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              {isEdit ? "Sửa lịch trình" : "Thêm lịch trình"}
-            </div>
+            <div className="modal-header">{isEdit ? "Sửa lịch trình" : "Thêm lịch trình"}</div>
             <div className="modal-sub">
-              {isEdit
-                ? "Cập nhật thông tin lịch trình"
-                : "Nhập thông tin lịch trình vào hệ thống"}
+              {isEdit ? "Cập nhật thông tin lịch trình" : "Nhập lịch trình mới"}
             </div>
-            {isFetchingDetail && (
-              <div className="modal-loading-hint">
-                Đang tải thông tin chi tiết...
-              </div>
-            )}
+            {isDetailLoading && <div className="modal-loading-hint">Đang tải chi tiết...</div>}
 
             <div className="form-grid">
               <label>
@@ -567,8 +444,8 @@ export default function ManagerSchedule() {
                 <input
                   value={form.routeId}
                   onChange={(e) => setForm((prev) => ({ ...prev, routeId: e.target.value }))}
-                  placeholder="VD: 101"
-                  disabled={isSubmitting || isFetchingDetail}
+                  placeholder="VD: 12"
+                  disabled={isSubmitting || isDetailLoading}
                 />
                 {errors.routeId && <div className="field-error">{errors.routeId}</div>}
               </label>
@@ -577,69 +454,52 @@ export default function ManagerSchedule() {
                 <input
                   value={form.busId}
                   onChange={(e) => setForm((prev) => ({ ...prev, busId: e.target.value }))}
-                  placeholder="VD: 1"
-                  disabled={isSubmitting || isFetchingDetail}
+                  placeholder="VD: 5"
+                  disabled={isSubmitting || isDetailLoading}
                 />
                 {errors.busId && <div className="field-error">{errors.busId}</div>}
               </label>
               <label>
-                <span>Tuyến xe</span>
-                <input value={form.routeName} readOnly disabled placeholder="Tự động từ backend" />
+                <span>Tên tuyến</span>
+                <input value={form.routeName} readOnly disabled placeholder="Tự động từ hệ thống" />
               </label>
               <label>
                 <span>Tên xe</span>
-                <input value={form.busName} readOnly disabled placeholder="Tự động từ backend" />
+                <input value={form.busName} readOnly disabled placeholder="Tự động từ hệ thống" />
               </label>
               <label>
                 <span>Biển số</span>
-                <input value={form.plate} readOnly disabled placeholder="Biển số tự động từ xe" />
+                <input value={form.plate} readOnly disabled placeholder="Tự động từ hệ thống" />
               </label>
               <label>
                 <span>Khởi hành</span>
-                <input
-                  type="datetime-local"
-                  value={formatDatetimeLocal(form.departAt)}
-                  onChange={(e) => handleDateChange("departAt", e.target.value)}
-                  disabled={!isEdit || isSubmitting || isFetchingDetail}
-                />
-                {!isEdit && (
-                  <div className="field-hint">Lịch trình mới sẽ tự tạo thời gian khởi hành.</div>
-                )}
+                <input value={`${formatDate(form.departAt)} ${formatTime(form.departAt)}`} readOnly disabled />
               </label>
               <label>
                 <span>Đến nơi</span>
-                <input
-                  type="datetime-local"
-                  value={formatDatetimeLocal(form.arriveAt)}
-                  onChange={(e) => handleDateChange("arriveAt", e.target.value)}
-                  disabled={!isEdit || isSubmitting || isFetchingDetail}
-                />
-                {!isEdit && (
-                  <div className="field-hint">Hệ thống tự động tính thời gian đến.</div>
-                )}
+                <input value={`${formatDate(form.arriveAt)} ${formatTime(form.arriveAt)}`} readOnly disabled />
               </label>
               <label>
                 <span>Chỗ trống</span>
-                <input type="number" min="0" value={form.seatsEmpty} readOnly disabled />
-                <div className="field-hint">Tự động theo vé đã bán.</div>
+                <input value={form.seatsEmpty || "—"} readOnly disabled />
               </label>
               <label>
                 <span>Tổng chỗ</span>
                 <input
                   type="number"
-                  min="1"
-                  value={form.seatsTotal}
-                  onChange={(e) => setForm((prev) => ({ ...prev, seatsTotal: e.target.value }))}
-                  disabled={isSubmitting || isFetchingDetail}
+                  min={1}
+                  value={form.totalSeats}
+                  onChange={(e) => setForm((prev) => ({ ...prev, totalSeats: e.target.value }))}
+                  disabled={isSubmitting || isDetailLoading}
                 />
-                {errors.seatsTotal && <div className="field-error">{errors.seatsTotal}</div>}
+                {errors.totalSeats && <div className="field-error">{errors.totalSeats}</div>}
               </label>
               <label>
                 <span>Trạng thái</span>
                 <select
                   value={form.status}
                   onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value }))}
-                  disabled={isSubmitting || isFetchingDetail}
+                  disabled={isSubmitting || isDetailLoading}
                 >
                   <option value="available">Còn chỗ</option>
                   <option value="full">Hết chỗ</option>
@@ -647,18 +507,19 @@ export default function ManagerSchedule() {
                 </select>
               </label>
             </div>
+
             <div className="modal-actions">
               <button
                 className="btn-ghost"
                 onClick={() => setShowModal(false)}
-                disabled={isSubmitting || isFetchingDetail}
+                disabled={isSubmitting || isDetailLoading}
               >
                 Hủy
               </button>
               <button
                 className="btn-primary"
-                onClick={submit}
-                disabled={isSubmitting || isFetchingDetail}
+                onClick={handleSubmit}
+                disabled={isSubmitting || isDetailLoading}
               >
                 {isSubmitting ? "Đang lưu..." : isEdit ? "Lưu" : "Thêm"}
               </button>
