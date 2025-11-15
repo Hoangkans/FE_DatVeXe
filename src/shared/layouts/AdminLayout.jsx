@@ -9,6 +9,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import PeopleIcon from "@mui/icons-material/People";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AltRouteIcon from "@mui/icons-material/AltRoute";
 import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -52,6 +53,10 @@ export default function AdminLayout({ children }) {
             <NavLink to="/admin/schedules" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <CalendarMonthIcon className="icon" />
               <span>Lịch trình</span>
+            </NavLink>
+            <NavLink to="/admin/routes" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <AltRouteIcon className="icon" />
+              <span>Tuyến đường</span>
             </NavLink>
             <NavLink to="/admin/buses" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <AirportShuttleIcon className="icon" />

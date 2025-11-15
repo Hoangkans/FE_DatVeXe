@@ -4,7 +4,7 @@ import { Grid } from "@mui/material";
 import sample from "../assets/image-hodler.png"
 import PaginationBar from "../shared/components/Pagination";
 import { useState, useEffect } from "react";
-import { fetchRoute } from "../services/Route/userRoute";
+import { fetchRoute } from "../services/Route/RouterAdminApi";
 
 import "../shared/styles/BusPage.css"
 import { useNavigate } from "react-router-dom";

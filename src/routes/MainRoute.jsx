@@ -10,6 +10,7 @@ import AdminSchedules from "../pages/admin/Schedules";
 import AdminBuses from "../pages/admin/Buses";
 import AdminBanners from "../pages/admin/Banners";
 import AdminPaymentProviders from "../pages/admin/PaymentProviders";
+import AdminRoutes from "../pages/admin/Routes";
 
 import HomePage from "../pages/HomePage"
 import BusCompanyPage from "../pages/BusCompanyPage"
@@ -42,6 +43,7 @@ const routes = [
   { path: "/admin/users", component: AdminUsers },
   { path: "/admin/tickets", component:AdminTickets },
   { path: "/admin/schedules", component: AdminSchedules },
+  { path: "/admin/routes", component: AdminRoutes },
   { path: "/admin/buses", component: AdminBuses },
   { path: "/admin/banners", component:AdminBanners },
   { path: "/admin/payment-providers", component: AdminPaymentProviders },
