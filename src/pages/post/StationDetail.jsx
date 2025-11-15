@@ -9,16 +9,20 @@ export default function StationDetail() {
             <div className="station-detail">
                 <div className="station-header"
                     style={{
-                        backgroundImage: `url(${station.img})`,
+                        backgroundImage: `url(${station.wallpaper})`,
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
+                        backgroundColor: "rgba(0, 0, 0, 0.52)",
+                        backgroundBlendMode: "darken",
                     }}
                 >
                     <h2>BẾN XE</h2>
                     <h2>{station.title}</h2>
                 </div>
                 <div className="station-content">
+                    <p>{station.title}</p>
+                    <p>{station.location}</p>
                     <img src={station.img} alt={station.title} />
                     <p>{station.description}</p>
                 </div>

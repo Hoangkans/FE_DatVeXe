@@ -56,12 +56,13 @@ export default function HomePage() {
                 <div className="thumnail-wrapper">
                     <Thumbnail/>
                 </div>
+                
                 <SliderContent
                     title="Nhà xe phổ biến"
                     items={busData}
-                    getImageUrl={(item) => item.image_url}
-                    getTitle={(item) => item.bus.name}
-                    getSubtitle={(item) => item.bus.descriptions}
+                    getImageUrl={(item) => item.image}
+                    getTitle={(item) => item.company_name}
+                    getSubtitle={(item) => item.descriptions}
                 />
                 
                 <AdSlider/>

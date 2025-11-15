@@ -60,6 +60,11 @@
     font-size: 1.6rem;
     letter-spacing: 1px;
 }
+.station-header p {
+    margin: 0;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+}
 
 
 .station-content {

@@ -38,7 +38,7 @@ export default function ManagerBanner() {
 
   const loadBanners = async () => {
     setIsLoading(true);
-    setApiError(null); // Clear previous errors
+    setApiError(null); 
     try {
       const responseData = await fetchBanner();
 
@@ -338,7 +338,7 @@ export default function ManagerBanner() {
               
               {/* --- THIS IS THE POSITION FIELD --- */}
               <label>
-                <span>Vị trí hiển thị *</span>
+                <span>Vị trí hiển thị</span>
                 <input 
                   value={form.position} 
                   onChange={(e) => setForm({ ...form, position: e.target.value })} 

@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import AdminLayout from "../../shared/layouts/AdminLayout";
-import { fetchBusCompanies, createBusCompany, updateBusCompany, deleteBusCompany } from "../../services/Bus/BusCompanyAPI";
+import {
+  fetchBusCompanies,
+  createBusCompany,
+  updateBusCompany,
+  deleteBusCompany,
+} from "../../services/Bus/BusCompanyAPI";
 import "../../shared/styles/AdminManageOperators.css";
 import SearchIcon from "@mui/icons-material/Search";
+import { use } from "react";
 
 const isValidUrl = (value) => {
   if (!value) return false;
@@ -16,7 +22,7 @@ const isValidUrl = (value) => {
 
 export default function AdminOperators() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // Dùng cho lỗi tải dữ liệu chung
   const [rows, setRows] = useState([]);
   const [query, setQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -24,38 +30,73 @@ export default function AdminOperators() {
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: "", image: "", description: "" });
-  const [formErr, setFormErr] = useState({});
-  const CLOUD_NAME =
-    import.meta.env.VITE_CLOUD_NAME?.trim() || "dmcfssn9h";
-  const UPLOAD_PRESET =
-    import.meta.env.VITE_CLOUD_UPLOAD_PRESET?.trim() || "ml_default";
-  const [uploading, setUploading] = useState(false);
-  const canUploadImages = Boolean(CLOUD_NAME && UPLOAD_PRESET);
+  const [formErr, setFormErr] = useState({}); 
 
-  useEffect(() => {
-    let ignore = false;
-    const load = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchBusCompanies({ page: 1, limit: 20 });
-        if (!ignore) {
-  
-          const list = Array.isArray(data)
-            ? data
-            : (data?.content ?? data?.data ?? data?.items ?? []);
-          setRows(list);
-          setError("");
-        }
-      } catch (e) {
-        const serverMsg = e?.response?.data?.message || e?.response?.data?.error;
-        if (!ignore) setError(serverMsg || e?.message || "Không thể tải dữ liệu");
-      } finally {
-        if (!ignore) setLoading(false);
-      }
-    };
-    load();
-    return () => { ignore = true; };
+  const [isUploading, setIsUploading] = useState(false);
+  const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+  const UPLOAD_PRESET = import.meta.env.VITE_CLOUD_UPLOAD_PRESET;
+
+  async function loadData() {
+    setLoading(true);
+    try {
+      const data = await fetchBusCompanies({ page: 1, limit: 20 });
+      const list = Array.isArray(data)
+        ? data
+        : data?.content ?? data?.data ?? data?.items ?? [];
+      setRows(list);
+      setError("");
+    } catch (e) {
+      const serverMsg = e?.response?.data?.message || e?.response?.data?.error;
+      setError(serverMsg || e?.message || "Không thể tải dữ liệu");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect( () => {
+    loadData();
   }, []);
+
+  const handleFileSelect = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    // SỬA LỖI: Dùng setFormErr để xóa lỗi ảnh (nếu có) thay vì setError
+    setFormErr((prev) => ({ ...prev, image: undefined }));
+    // setApiError(null); // <-- Đã xóa
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+
+      setForm((prevForm) => ({ ...prevForm, image: data.secure_url }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setFormErr((prev) => ({
+        ...prev,
+        image: "Lỗi: Không thể tải ảnh lên.",
+      }));
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
 
   const filteredRows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -110,29 +151,24 @@ export default function AdminOperators() {
     setSaving(true);
     try {
       const payload = {
-        name: form.name,
         company_name: form.name,
-        image: form.image.trim() || null,
-        description: form.description?.trim() || null,
-        descriptions: form.description?.trim() || null,
+        image: form.image || null,
+        descriptions: form.description || null,
       };
       if (isEdit && editingId != null) {
         const res = await updateBusCompany(editingId, payload);
-        const updated = res?.data || res || payload;
-        setRows((prev) => prev.map((r) => (r.id === editingId ? { ...r, ...updated } : r)));
+        const updated = res?.data || res || { ...payload, id: editingId }; 
+        setRows((prev) =>
+          prev.map((r) => (r.id === editingId ? { ...r, ...updated } : r))
+        );
       } else {
-        const res = await createBusCompany(payload);
-        const created = res?.data || res || payload;
-        // ensure an id exists for UI keying
-        if (!created.id) {
-          const nextId = Math.max(0, ...rows.map((r) => r.id || 0)) + 1;
-          created.id = nextId;
-        }
-        setRows((prev) => [created, ...prev]);
+        await createBusCompany(payload);
+        await loadData();
       }
       setShowModal(false);
     } catch (err) {
-      const serverMsg = err?.response?.data?.message || err?.response?.data?.error;
+      const serverMsg =
+        err?.response?.data?.message || err?.response?.data?.error;
       setFormErr({ _server: serverMsg || err?.message || "Không thể lưu" });
     } finally {
       setSaving(false);
@@ -140,81 +176,38 @@ export default function AdminOperators() {
   }
 
   async function handleDelete(item) {
-    if (!window.confirm(`Xóa nhà xe "${item.company_name || item.name}"?`)) return;
+    if (!window.confirm(`Xóa nhà xe "${item.company_name || item.name}"?`))
+      return;
     try {
       await deleteBusCompany(item.id);
     } catch (err) {
-      const serverMsg = err?.response?.data?.message || err?.response?.data?.error;
+      const serverMsg =
+        err?.response?.data?.message || err?.response?.data?.error;
       alert(serverMsg || err?.message || "Không thể xóa");
       return;
     }
     setRows((prev) => prev.filter((r) => r.id !== item.id));
   }
 
-  async function handleFileSelect(event) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    if (!canUploadImages) {
-      alert("Chưa cấu hình Cloudinary để tải ảnh.");
-      event.target.value = "";
-      return;
-    }
-
-    setUploading(true);
-    setFormErr((prev) => {
-      const next = { ...prev };
-      delete next.image;
-      return next;
-    });
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", UPLOAD_PRESET);
-
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Không thể tải ảnh. Vui lòng thử lại.");
-      }
-
-      const data = await response.json();
-      const imageUrl = data.secure_url || data.url;
-      if (!imageUrl) {
-        throw new Error("Cloudinary không trả về URL ảnh.");
-      }
-
-      setForm((prev) => ({ ...prev, image: imageUrl }));
-    } catch (err) {
-      console.error("Lỗi upload ảnh nhà xe:", err);
-      setFormErr((prev) => ({
-        ...prev,
-        image: err?.message || "Không thể tải ảnh lên Cloudinary.",
-      }));
-    } finally {
-      setUploading(false);
-      event.target.value = "";
-    }
-  }
-
-
   return (
     <AdminLayout>
       <div className="manage-operators">
         <div className="head">
-          <h1 className="title" style={{ margin: 0 }}>Quản lý nhà xe</h1>
-          <button onClick={openAdd} className="btn-primary">+ Thêm nhà xe</button>
+          <h1 className="title" style={{ margin: 0 }}>
+            Quản lý nhà xe
+          </h1>
+          <button onClick={openAdd} className="btn-primary">
+            + Thêm nhà xe
+          </button>
         </div>
         <div className="toolbar">
           <div className="search">
             <SearchIcon className="search-icon" fontSize="small" />
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Tìm theo ID, tên, mô tả..." />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Tìm theo ID, tên, mô tả..."
+            />
           </div>
         </div>
 
@@ -228,99 +221,190 @@ export default function AdminOperators() {
             <table className="operators-table">
               <thead>
                 <tr>
-                <th>ID</th>
-                <th>Tên nhà xe</th>
-                <th>Hình ảnh</th>
-                <th>Mô tả</th>
-                <th>Ngày tạo</th>
-                <th>Cập nhật</th>
-                <th style={{ width: 140 }}>Thao tác</th>
+                  <th>ID</th>
+                  <th>Tên nhà xe</th>
+                  <th>Hình ảnh</th>
+                  <th>Mô tả</th>
+                  <th>Ngày tạo</th>
+                  <th>Cập nhật</th>
+                  <th style={{ width: 140 }}>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredRows.map((r) => (
                   <tr key={r.id}>
-                  <td>{r.id}</td>
-                  <td>{r.company_name || r.name}</td>
-                  <td>
-                    {r.image ? (
-                      <img src={r.image} alt={r.company_name || r.name} style={{ width: 64, height: 40, objectFit: "cover", borderRadius: 4 }} />
-                    ) : (
-                      <span style={{ color: "#64748b" }}>—</span>
-                    )}
-                  </td>
-                  <td style={{ maxWidth: 480 }}>
-                    <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                      {r.descriptions || r.description || ""}
-                    </span>
-                  </td>
-                  <td>{r.created_at || r.createdAt || ""}</td>
-                  <td>{r.updated_at || r.updatedAt || ""}</td>
-                  <td>
-                    <div className="row-actions">
-                      <button onClick={() => openEdit(r)} className="btn-ghost">Sửa</button>
-                      <button onClick={() => handleDelete(r)} className="btn-danger">Xóa</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-               {filteredRows.length === 0 && (
-                <tr><td colSpan={7} style={{ padding: 12, color: '#64748b' }}>Không có dữ liệu</td></tr>
-               )}
+                    <td>{r.id}</td>
+                    <td>{r.company_name || r.name}</td>
+                    <td>
+                      {r.image ? (
+                        <img
+                          src={r.image}
+                          alt={r.company_name || r.name}
+                          style={{
+                            width: 64,
+                            height: 40,
+                            objectFit: "cover",
+                            borderRadius: 4,
+                          }}
+                        />
+                      ) : (
+                        <span style={{ color: "#64748b" }}>—</span>
+                      )}
+                    </td>
+                    <td style={{ maxWidth: 480 }}>
+                      <span
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {r.descriptions || r.description || ""}
+                      </span>
+                    </td>
+                    <td>{r.created_at || r.createdAt || ""}</td>
+                    <td>{r.updated_at || r.updatedAt || ""}</td>
+                    <td>
+                      <div className="row-actions">
+                        <button onClick={() => openEdit(r)} className="btn-ghost">
+                          Sửa
+                        </button>
+                        <button
+                          onClick={() => handleDelete(r)}
+                          className="btn-danger"
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {filteredRows.length === 0 && (
+                  <tr>
+                    <td colSpan={7} style={{ padding: 12, color: "#64748b" }}>
+                      Không có dữ liệu
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         )}
 
         {showModal && (
-          <div className="modal-backdrop" onClick={() => !saving && setShowModal(false)}>
+          <div
+            className="modal-backdrop"
+            onClick={() => !saving && setShowModal(false)}
+          >
             <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">{isEdit ? "Sửa nhà xe" : "Thêm nhà xe"}</div>
-              <div className="modal-sub">{isEdit ? "Cập nhật thông tin nhà xe" : "Nhập thông tin nhà xe"}</div>
+              <div className="modal-header">
+                {isEdit ? "Sửa nhà xe" : "Thêm nhà xe"}
+              </div>
+              <div className="modal-sub">
+                {isEdit ? "Cập nhật thông tin nhà xe" : "Nhập thông tin nhà xe"}
+              </div>
               {formErr._server && (
-                <div style={{ color: "#b91c1c", fontSize: 12, marginBottom: 8 }}>{formErr._server}</div>
+                <div
+                  style={{ color: "#b91c1c", fontSize: 12, marginBottom: 8 }}
+                >
+                  {formErr._server}
+                </div>
               )}
               <div className="form-grid">
                 <label>
                   <span>Tên nhà xe</span>
-                  <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="VD: Nhà xe ABC" />
-                  {formErr.name && <div className="field-error">{formErr.name}</div>}
+                  <input
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm({ ...form, name: e.target.value })
+                    }
+                    placeholder="VD: Nhà xe ABC"
+                  />
+                  {formErr.name && (
+                    <div className="field-error">{formErr.name}</div>
+                  )}
                 </label>
+
                 <label>
-                  <span>Hình ảnh (logo)</span>
-                  <div className="file-input-row">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      disabled={!canUploadImages || uploading}
-                      onChange={handleFileSelect}
-                    />
-                    {uploading && (
-                      <span className="uploading-text">Đang tải ảnh...</span>
-                    )}
-                  </div>
-                  {!uploading && form.image && (
-                    <div className="field-hint url-preview">
-                      {form.image}
+                  <span>Ảnh nhà xe</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    disabled={isUploading}
+                  />
+
+                  {isUploading && (
+                    <div className="field-hint">Đang tải lên...</div>
+                  )}
+
+                  {form.image && !isUploading && (
+                    <div style={{ marginTop: "10px" }}>
+                      <img
+                        src={form.image}
+                        alt="Banner preview"
+                        style={{
+                          width: "100%",
+                          maxHeight: "150px",
+                          objectFit: "contain",
+                          border: "1px solid #ddd",
+                          borderRadius: "4px",
+                        }}
+                      />
+                      <input
+                        type="text"
+                        value={form.image}
+                        readOnly
+                        disabled
+                        style={{
+                          backgroundColor: "#f4f4f4",
+                          marginTop: "5px",
+                          color: "#333",
+                        }}
+                        placeholder="Cloudinary URL"
+                      />
                     </div>
                   )}
-                  {!canUploadImages && (
-                    <div className="field-hint">
-                      Cloudinary chưa được cấu hình, vui lòng cấu hình env để tải ảnh.
-                    </div>
-                  )}
-                  {formErr.image && (
+
+                  {formErr.image ? (
                     <div className="field-error">{formErr.image}</div>
+                  ) : (
+                    <div className="field-hint">Chọn 1 ảnh để tải lên.</div>
                   )}
                 </label>
+
                 <label style={{ gridColumn: "1 / span 2" }}>
                   <span>Mô tả</span>
-                  <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} placeholder="Mô tả ngắn..." />
+                  <textarea
+                    value={form.description}
+                    onChange={(e) =>
+                      setForm({ ...form, description: e.target.value })
+                    }
+                    rows={3}
+                    placeholder="Mô tả ngắn..."
+                  />
                 </label>
               </div>
               <div className="modal-actions">
-                <button onClick={() => !saving && setShowModal(false)} className="btn-ghost" disabled={saving}>Hủy</button>
-                <button onClick={handleSave} className="btn-primary" disabled={saving}>{saving ? "Đang lưu..." : (isEdit ? "Lưu" : "Thêm")}</button>
+                <button
+                  onClick={() => !saving && setShowModal(false)}
+                  className="btn-ghost"
+                  disabled={saving}
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="btn-primary"
+                  disabled={saving || isUploading} 
+                >
+                  {saving
+                    ? "Đang lưu..."
+                    : isEdit
+                    ? "Lưu"
+                    : "Thêm"}
+                </button>
               </div>
             </div>
           </div>
@@ -329,5 +413,3 @@ export default function AdminOperators() {
     </AdminLayout>
   );
 }
-
-// styles moved to: ../../shared/styles/AdminManageOperators.css

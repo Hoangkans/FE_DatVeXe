@@ -24,5 +24,17 @@ api.interceptors.request.use(
 
 )
 
+api.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (err) => {
+        if (err.response && err.response.status === 401){
+            console.error("Unauthorized! Log out....")
+            localStorage.removeItem('token');
+        }
+        return Promise.reject(err)
+    }
+)
 
 export default api

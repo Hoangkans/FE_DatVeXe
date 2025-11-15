@@ -12,12 +12,16 @@ export default function CompanyDetail() {
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
+                        backgroundColor: "rgba(0, 0, 0, 0.52)",
+                        backgroundBlendMode: "darken",
                     }}
                 >
                     <h2>NHÀ XE</h2>
                     <h2>{company.title}</h2>
                 </div>
                 <div className="station-content">
+                    <p>{company.title}</p>
+                    <p>{company.description}</p>
                     <img src={company.img} alt={company.title} />
                     <p>{company.description}</p>
                 </div>
