@@ -16,9 +16,9 @@ export default function ManagerBanner() {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState(null);
 
   const [rows, setRows] = useState([]);
-  
   const [isLoading, setIsLoading] = useState(true);
   const [apiError, setApiError] = useState(null); 
 
@@ -28,7 +28,7 @@ export default function ManagerBanner() {
   const UPLOAD_PRESET =
     import.meta.env.VITE_CLOUD_UPLOAD_PRESET?.trim() || "ml_default";
   
-  const [form, setForm] = useState({ url: "", position: "" });
+  const [form, setForm] = useState({ url: "", position: "", status: "active" });
   const [errors, setErrors] = useState({});
 
   
@@ -55,6 +55,7 @@ export default function ManagerBanner() {
         id: banner.id,
         url: banner.banner_url, 
         position: banner.position,
+        status: banner.status,
         image: banner.banner_url 
       }));
       
@@ -71,7 +72,7 @@ export default function ManagerBanner() {
   function openAdd() {
     setIsEdit(false);
     setEditingId(null);
-    setForm({ url: "", position: "" });
+    setForm({ url: "", position: "", status: "active" });
     setErrors({});
     setApiError(null); 
     setShowModal(true);
@@ -80,12 +81,31 @@ export default function ManagerBanner() {
   function openEdit(r) {
     setIsEdit(true);
     setEditingId(r.id);
-    setForm({ url: r.url || "", position: r.position || "" });
+    setForm({ url: r.url || "", position: r.position || "" , status: r.status || "active"});
     setErrors({});
     setApiError(null); 
     setShowModal(true);
   }
 
+  async function handleStatusChange(r, newStatus) {
+    setApiError(null);
+    setUpdatingStatusId(r.id); // Disable this row's select
+
+    try {
+      await updateBanner(r.id, {
+        banner_url: r.url,
+        position: r.position,
+        status: newStatus
+      });
+      await loadBanners(); 
+    } catch (error) {
+      console.error("Error updating status:", error);
+      setApiError("Lỗi: Không thể cập nhật trạng thái.");
+      await loadBanners();
+    } finally {
+      setUpdatingStatusId(null); // Re-enable the select
+    }
+  }
   async function removeRow(r) {
     if (window.confirm(`Xóa banner #${r.id}?`)) {
       setApiError(null); 
@@ -105,6 +125,8 @@ export default function ManagerBanner() {
     if (form.url && form.url.length > 255) e.url = "URL tối đa 255 ký tự";
     if (!form.position.trim()) e.position = "Vui lòng nhập vị trí hiển thị";
     if (form.position && form.position.length > 100) e.position = "Vị trí tối đa 100 ký tự";
+    if (!form.status.trim()) e.status = "Vui lòng nhập trạng thái";
+    if (form.status && form.status.length > 100) e.status = "Trạng thái tối đa 100 ký tự";
     return e;
   }
 
@@ -157,12 +179,14 @@ export default function ManagerBanner() {
       if (isEdit && editingId != null) {
         await updateBanner(editingId, {
           banner_url: form.url,
-          position: form.position
+          position: form.position,
+          status: form.status || "active"
         });
       } else {
         await createBanner({
           banner_url: form.url,
-          position: form.position
+          position: form.position,
+          status: form.status || "active"
         });
       }
       
@@ -181,7 +205,8 @@ export default function ManagerBanner() {
         r.id?.toString().includes(q) ||
         (r.image || "").toLowerCase().includes(q) ||
         (r.url || "").toLowerCase().includes(q) ||  
-        (r.position || "").toLowerCase().includes(q);
+        (r.position || "").toLowerCase().includes(q) ||
+        (r.status || "").toLowerCase().includes(q);
       return matches;
     });
     
@@ -243,6 +268,7 @@ export default function ManagerBanner() {
               <th>Hình ảnh</th>
               <th>{sortLabel("url", "Banner URL")}</th>
               <th>{sortLabel("position", "Vị trí hiển thị")}</th>
+              <th>{sortLabel("status", "Trạng thái")}</th>
               <th style={{ width: 120 }}>Thao tác</th>
             </tr>
           </thead>
@@ -264,6 +290,16 @@ export default function ManagerBanner() {
                   </td>
                   <td className="mono">{r.url}</td>
                   <td>{r.position}</td>
+                  <td>
+                    <select 
+                      value={r.status}
+                      onChange={(e) => handleStatusChange(r, e.target.value)}
+                      disabled={updatingStatusId === r.id}
+                    >
+                      <option value="active">ACTIVE</option>
+                      <option value="inactive">INACTIVE</option>
+                    </select>
+                  </td>
                   <td>
                     <div className="row-actions">
                       <button className="btn-ghost" onClick={() => openEdit(r)}><EditIcon fontSize="inherit" /><span>Sửa</span></button>
@@ -336,7 +372,6 @@ export default function ManagerBanner() {
                 {errors.url ? <div className="field-error">{errors.url}</div> : <div className="field-hint">Chọn 1 ảnh để tải lên.</div>}
               </label>
               
-              {/* --- THIS IS THE POSITION FIELD --- */}
               <label>
                 <span>Vị trí hiển thị</span>
                 <input 
@@ -346,6 +381,14 @@ export default function ManagerBanner() {
                   disabled={isUploading}
                 />
                 {errors.position ? <div className="field-error">{errors.position}</div> : <div className="field-hint">Mô tả vị trí banner sẽ được hiển thị. Tối đa 100 ký tự.</div>}
+              </label>
+
+              <label>
+                <span>Trạng thái <em className="req">*</em></span>
+                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                  <option value="active">ACTIVE</option>
+                  <option value="inactive">INACTIVE</option>
+                </select>
               </label>
             </div>
             

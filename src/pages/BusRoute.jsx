@@ -60,7 +60,7 @@ export default function BusRoutePage() {
                     spacing={4} 
                     justifyContent="center" 
                     sx={{
-                        maxWidth: "1800px", 
+                        maxWidth: "1500px", 
                         margin: "0 auto",
                     }}
                 >
