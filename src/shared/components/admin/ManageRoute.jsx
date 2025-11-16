@@ -8,7 +8,7 @@ import {
   createRoute,
   updateRoute,
   deleteRoute,
-} from "../../../services/Route/RouterAdminApi";
+} from "../../../services/Route/RouteAdminApi";
 import { fetchStations } from "../../../services/Station/StationAdminApi";
 import "../../styles/AdminManageRoute.css";
 

@@ -13,6 +13,7 @@ import AltRouteIcon from "@mui/icons-material/AltRoute";
 import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import EventSeatIcon from "@mui/icons-material/EventSeat";
 
 export default function AdminLayout({ children }) {
   const navigate = useNavigate();
@@ -61,6 +62,10 @@ export default function AdminLayout({ children }) {
             <NavLink to="/admin/buses" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <AirportShuttleIcon className="icon" />
               <span>Xe</span>
+            </NavLink>
+            <NavLink to="/admin/seats" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
+              <EventSeatIcon className="icon" />
+              <span>Ghế</span>
             </NavLink>
             <NavLink to="/admin/banners" className={({ isActive }) => `admin-nav-link ${isActive ? 'is-active' : ''}`}>
               <CollectionsIcon className="icon" />

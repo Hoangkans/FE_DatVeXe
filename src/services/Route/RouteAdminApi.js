@@ -1,4 +1,4 @@
-﻿import api from "../../config/axios/axiosCongif";
+import api from "../../config/axios/axiosCongif";
 
 const ADMIN_BASE = "/admin/routes";
 const USER_BASE = "/user/routes";
@@ -9,7 +9,7 @@ export async function fetchRoute(params = {}) {
     return response.data;
   } catch (err) {
     console.error(
-      "Loi khi lay danh sach tuyen duong (user):",
+      "Lỗi khi lấy danh sách tuyến đường (user):",
       err?.response?.status,
       err?.response?.data || err?.message
     );
@@ -23,7 +23,7 @@ export async function fetchRoutes(params = {}) {
     return response.data;
   } catch (err) {
     console.error(
-      "Loi khi lay danh sach tuyen duong (admin):",
+      "Lỗi khi lấy danh sách tuyến đường (admin):",
       err?.response?.status,
       err?.response?.data || err?.message
     );
@@ -37,7 +37,7 @@ export async function fetchRouteDetail(routeId) {
     return response.data;
   } catch (err) {
     console.error(
-      "Loi khi lay chi tiet tuyen duong:",
+      "Lỗi khi lấy chi tiết tuyến đường:",
       err?.response?.status,
       err?.response?.data || err?.message
     );
@@ -51,7 +51,7 @@ export async function createRoute(payload) {
     return response.data;
   } catch (err) {
     console.error(
-      "Loi khi tao tuyen duong:",
+      "Lỗi khi tạo tuyến đường:",
       err?.response?.status,
       err?.response?.data || err?.message
     );
@@ -65,7 +65,7 @@ export async function updateRoute(routeId, payload) {
     return response.data;
   } catch (err) {
     console.error(
-      "Loi khi cap nhat tuyen duong:",
+      "Lỗi khi cập nhật tuyến đường:",
       err?.response?.status,
       err?.response?.data || err?.message
     );
@@ -79,7 +79,7 @@ export async function deleteRoute(routeId) {
     return response.data;
   } catch (err) {
     console.error(
-      "Loi khi xoa tuyen duong:",
+      "Lỗi khi xóa tuyến đường:",
       err?.response?.status,
       err?.response?.data || err?.message
     );

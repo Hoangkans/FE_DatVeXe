@@ -8,6 +8,7 @@ import AdminUsers from "../pages/admin/Users";
 import AdminTickets from "../pages/admin/Tickets";
 import AdminSchedules from "../pages/admin/Schedules";
 import AdminBuses from "../pages/admin/Buses";
+import AdminSeats from "../pages/admin/Seats";
 import AdminBanners from "../pages/admin/Banners";
 import AdminPaymentProviders from "../pages/admin/PaymentProviders";
 import AdminRoutes from "../pages/admin/Routes";
@@ -45,6 +46,7 @@ const routes = [
   { path: "/admin/schedules", component: AdminSchedules },
   { path: "/admin/routes", component: AdminRoutes },
   { path: "/admin/buses", component: AdminBuses },
+  { path: "/admin/seats", component: AdminSeats },
   { path: "/admin/banners", component:AdminBanners },
   { path: "/admin/payment-providers", component: AdminPaymentProviders },
   { path: "/book-car", component: BookCarPage }
