@@ -63,17 +63,17 @@ const toFormState = (schedule) => ({
     schedule?.seatsTotal === undefined || schedule?.seatsTotal === null
       ? ""
       : schedule.seatsTotal.toString(),
-  status: schedule?.status ?? "available",
-  departAt: schedule?.departAt ?? "",
-  arriveAt: schedule?.arriveAt ?? "",
-  routeName: schedule?.routeName ?? "",
-  busName: schedule?.busName ?? "",
-  plate: schedule?.plate ?? "",
-  seatsEmpty:
-    schedule?.seatsEmpty === undefined || schedule?.seatsEmpty === null
-      ? ""
-      : schedule.seatsEmpty.toString(),
-});
+        status: schedule?.status ?? "available",
+        departAt: schedule?.departAt ?? "",
+        arriveAt: schedule?.arriveAt ?? "",
+        routeName: schedule?.routeName ?? "",
+        busName: schedule?.busName ?? "",
+        plate: schedule?.plate ?? "",
+        seatsEmpty:
+          schedule?.seatsEmpty === undefined || schedule?.seatsEmpty === null
+            ? ""
+            : schedule.seatsEmpty.toString(),
+      });
 
 const createEmptyForm = () =>
   toFormState({

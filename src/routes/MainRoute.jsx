@@ -1,17 +1,6 @@
 import BookCarPage from "../pages/BookCarPage"; 
 import LoginPage from "../pages/auth/Login";
 import RegisterPage from "../pages/Auth/Register";
-import AdminDashboard from "../pages/admin/Dashboard";
-import AdminStations from "../pages/admin/Stations";
-import AdminOperators from "../pages/admin/Operators";
-import AdminUsers from "../pages/admin/Users";
-import AdminTickets from "../pages/admin/Tickets";
-import AdminSchedules from "../pages/admin/Schedules";
-import AdminBuses from "../pages/admin/Buses";
-import AdminSeats from "../pages/admin/Seats";
-import AdminBanners from "../pages/admin/Banners";
-import AdminPaymentProviders from "../pages/admin/PaymentProviders";
-import AdminRoutes from "../pages/admin/Routes";
 
 import HomePage from "../pages/HomePage"
 import BusCompanyPage from "../pages/BusCompanyPage"
@@ -23,6 +12,9 @@ import RouteDetail from "../pages/post/RouteDetail";
 import InfoPage from "../pages/InfoPage"
 import TicketCheck from "../pages/TicketCheck";
 import ArticlePage from "../pages/admin/ArticlePage";
+import ProfilePage from "../pages/ProfilePage";
+
+import NotFoundPage from "../pages/NotFoundPage";
 
 const routes = [
   { path: "/", component: HomePage},
@@ -38,18 +30,10 @@ const routes = [
   
   { path: "/login", component: LoginPage },
   { path: "/register", component: RegisterPage },
-  { path: "/admin", component: AdminDashboard },
-  { path: "/admin/stations", component: AdminStations },
-  { path: "/admin/operators", component: AdminOperators },
-  { path: "/admin/users", component: AdminUsers },
-  { path: "/admin/tickets", component:AdminTickets },
-  { path: "/admin/schedules", component: AdminSchedules },
-  { path: "/admin/routes", component: AdminRoutes },
-  { path: "/admin/buses", component: AdminBuses },
-  { path: "/admin/seats", component: AdminSeats },
-  { path: "/admin/banners", component:AdminBanners },
-  { path: "/admin/payment-providers", component: AdminPaymentProviders },
-  { path: "/book-car", component: BookCarPage }
+  { path: "/book-car", component: BookCarPage },
+  { path: "/profile", component: ProfilePage },
+
+  { path: "*", component: NotFoundPage }
 ]
 
 export default routes;

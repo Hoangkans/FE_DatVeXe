@@ -1,0 +1,101 @@
+.not-found-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #65a1dd;
+    gap: 50px; 
+    overflow: hidden;
+}
+
+.back-to-page {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column;
+}
+
+.not-found-page h1 {
+    color: white;
+    font-size: 50px;
+    margin: 0;
+}
+
+.back-to-page p {
+    color: white;
+    font-size: 20px;
+    padding: 10px 0;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.mascot-img {
+    height: auto;
+}
+
+
+.back-to-page a.home-btn {
+    color: white;
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: bold;
+    background-color: orange;
+    padding: 15px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 0 darken(orange, 10%); 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-to-page a.home-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    background-color: #ffaa00;
+}
+
+.back-to-page a.home-btn:active {
+    transform: translateY(0);
+}
+
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.back-to-page h1 {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.back-to-page p {
+    opacity: 0; 
+    animation: fadeInUp 0.8s ease-out 0.2s forwards; 
+}
+
+.back-to-page a.home-btn {
+    opacity: 0; 
+    animation: fadeInUp 0.8s ease-out 0.4s forwards; /
+}
+
+/*  Continuous Float Animation for image */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.mascot-img {
+    /* Runs forever, takes 6 seconds for one cycle */
+    animation: float 6s ease-in-out infinite; 
+}

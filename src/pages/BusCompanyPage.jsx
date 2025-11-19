@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSelectedPost } from "../config/redux/reducers/posts/postSlice";
 
-import { fetchBusCompanies } from "../services/Bus/BusCompanyAPI";
+import { fetchUserBusCompanies } from "../services/Bus/userBusCompany";
 import "../shared/styles/BusPage.css"
 
 export default function BusCompanyPage() {
@@ -20,7 +20,7 @@ export default function BusCompanyPage() {
 
     useEffect(() => {
         const loadBusCompanies = async () => {
-            const companies = await fetchBusCompanies();
+            const companies = await fetchUserBusCompanies();
             const mappedData = companies.map((company, index) => ({
                 title: company.company_name,
                 description: company.descriptions,

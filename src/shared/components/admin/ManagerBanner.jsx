@@ -295,6 +295,7 @@ export default function ManagerBanner() {
                       value={r.status}
                       onChange={(e) => handleStatusChange(r, e.target.value)}
                       disabled={updatingStatusId === r.id}
+                      className="filter"
                     >
                       <option value="active">ACTIVE</option>
                       <option value="inactive">INACTIVE</option>
@@ -385,7 +386,7 @@ export default function ManagerBanner() {
 
               <label>
                 <span>Trạng thái <em className="req">*</em></span>
-                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="filter">
                   <option value="active">ACTIVE</option>
                   <option value="inactive">INACTIVE</option>
                 </select>
