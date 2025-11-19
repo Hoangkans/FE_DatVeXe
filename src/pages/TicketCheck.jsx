@@ -7,17 +7,19 @@ import TicketResult from "../shared/components/Ticket/TicketResult"
 
 export default function TicketCheck() {
     const [ticketId, setTicketId] = useState(''); 
+    const [phoneNumber, setPhoneNumber] = useState('')
     const [ticketResult, setTicketResult] = useState(null); // Stores the data
 
     const handleCheckTicket = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget); 
         const ticketCode = formData.get('ticketCode'); 
-        const phone = formData.get('phone'); 
+        const userPhone = formData.get('phoneNumber'); 
 
         try {
-            const result = await checkTicket(ticketCode, phone);
+            const result = await checkTicket(ticketCode, userPhone);
             setTicketResult(result.data); 
+            console.log(result.data)
         } catch (error) {
             console.error("Error:", error);
             alert("Không tìm thấy vé!");
@@ -42,8 +44,11 @@ export default function TicketCheck() {
                                 />
                                 <input 
                                     type="text" 
-                                    name="phone" 
-                                    placeholder="Số điện thoại / Ghế" 
+                                    name="phoneNumber" 
+                                    placeholder="Số điện thoại " 
+                                    required
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
                                 />
                                 <button type="submit">Kiểm tra vé</button>
                             </form>

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import logo from "../../assets/logo.png"
 import "../styles/Header.css"
 import SearchIcon from '@mui/icons-material/Search';
@@ -16,9 +16,12 @@ import { useSelector, useDispatch } from "react-redux"
 export default function Header() {
 
     const {userInfo} = useSelector((state) => state.user)
-
+    const navigate = useNavigate()
     const dispatch = useDispatch();
 
+    const handleProfile = () => {
+        navigate("/profile")
+    }
     const handleLogout = () => {
         try {
             toast.info("You have logout!, login for and specific features!")
@@ -58,7 +61,9 @@ export default function Header() {
                         <AccountCircleIcon/>
                         {userInfo ? (
                             <div className="user-name">
-                                <p>hello, {userInfo.fullName}</p>
+                                <p onClick={()=> handleProfile()}>
+                                    hello, {userInfo.fullName}
+                                </p>
                                 <button onClick={() => handleLogout()}>Logout</button>
                             </div>
                         ):(
