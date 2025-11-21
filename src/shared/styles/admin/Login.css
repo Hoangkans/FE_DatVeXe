@@ -64,3 +64,51 @@
 
 .auth-switch { margin-top: 12px; text-align: center; color: #475569; }
 .auth-switch .auth-link { margin-left: 4px; }
+
+
+/* reset-password-stylees */
+.forgot-password{
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: #f1f5f9;
+  padding: 24px;
+}
+.reset-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.reset-modal-content {
+  position: relative;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.reset-modal-content form{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+.reset-modal-content form input{
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+.reset-error-text {
+  color: #e74c3c;
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}

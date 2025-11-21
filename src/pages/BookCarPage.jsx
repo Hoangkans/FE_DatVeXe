@@ -1,213 +1,153 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import "../shared/styles/BookCarPage.css";
 import MainLayout from "../shared/layouts/MainLayout";
 import hotlineImg from "../assets/hotline-bookcar.jpg";
 import SidebarFilters from "../shared/components/BookCar/SidebarFilters";
 import TripList from "../shared/components/BookCar/TripList";
 import LocationPicker from "../shared/components/BookCar/LocationPicker";
-// Local stubs to keep the page working after removing services
-const getLocations = async () => [];
-const searchTrips = async () => [];
-
+import locationsPick from "../services/bookcar/locations";
 
 export default function BookCarPage() {
-  const operatorList = useMemo(
-    () => [
-      "Anh Huy (Hải Phòng)",
-      "Anh Huy Đất Cảng",
-      "Anh Huy Travel",
-      "Bằng Phấn",
-      "Cát Bà Express",
-      "Cát Bà Go Easy Limousine",
-    ],
-    []
-  );
-
-  const [popular, setPopular] = useState({ discount: false, vip: false });
-  const [selectedOps, setSelectedOps] = useState(() => Object.fromEntries(operatorList.map((n) => [n, false])));
-  const [search, setSearch] = useState("");
-
-  const anyChecked = Object.values(selectedOps).some(Boolean) || popular.discount || popular.vip;
-  const selectedCount =
-    (popular.discount ? 1 : 0) + (popular.vip ? 1 : 0) + Object.values(selectedOps).filter(Boolean).length;
-  const [expandedId, setExpandedId] = useState(null);
-  const [activeTab, setActiveTab] = useState("images");
-  const [showFilters, setShowFilters] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    return !window.matchMedia('(max-width: 900px)').matches; // collapse on narrow by default
-  });
-  const [trips, setTrips] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [date, setDate] = useState("");
-  const [isNarrow, setIsNarrow] = useState(() => typeof window !== 'undefined' ? window.matchMedia('(max-width: 900px)').matches : false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mq = window.matchMedia('(max-width: 900px)');
-    const handler = (e) => setIsNarrow(e.matches);
-    mq.addEventListener ? mq.addEventListener('change', handler) : mq.addListener(handler);
-    return () => {
-      mq.removeEventListener ? mq.removeEventListener('change', handler) : mq.removeListener(handler);
-    };
-  }, []);
-  
-  useEffect(() => {
-    // Keep default behavior in sync with viewport
-    setShowFilters(!isNarrow);
-  }, [isNarrow]);
   const [locations, setLocations] = useState([]);
+  const [trips, setTrips] = useState([]);
+  const [filters, setFilters] = useState({ from: "", to: "", date: "" });
+
+  const [sidebarState, setSidebarState] = useState({
+    popular: { discount: false, vip: false },
+    selectedOps: {},
+    search: "",
+  });
+
+  const [uiState, setUiState] = useState({
+    expandedId: null,
+    activeTab: "images",
+    showFilters: true,
+    isNarrow: false,
+    hasSearched: false,
+  });
+
   useEffect(() => {
-    let mounted = true;
-    (async () => {
+    const fetchLocations = async () => {
       try {
-        const data = await getLocations();
-        if (mounted) setLocations(Array.isArray(data) ? data : []);
-      } catch (e) {
-        if (mounted) setLocations([]);
+        const data = await locationsPick;
+        setLocations(data || []);
+      } catch {
+        setLocations([]);
       }
-    })();
-    return () => {
-      mounted = false;
     };
+    fetchLocations();
   }, []);
 
-  // Load default trips on first render so the list isn't empty
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const data = await searchTrips({});
-        if (mounted) setTrips(Array.isArray(data) ? data : []);
-      } catch (e) {
-        if (mounted) setTrips([]);
-      }
-    })();
-    return () => { mounted = false };
-  }, []);
-
-  const handlePickDate = () => {
-    setDate(new Date().toISOString().slice(0, 10));
-  };
-
-  const handleSearch = async () => {
-    let results = [];
+  const handleSearch = useCallback(async () => {
     try {
-      const data = await searchTrips({ from, to, date });
-      results = Array.isArray(data) ? data : [];
-    } catch (e) {
-      results = [];
+      const data = await searchTrips(filters);
+      let results = data || [];
+      const { popular, selectedOps } = sidebarState;
+      if (popular.discount) results = results.filter((t) => t.discount);
+      if (popular.vip) results = results.filter((t) => t.vip);
+      const selectedOperatorNames = Object.keys(selectedOps).filter((key) => selectedOps[key]);
+      if (selectedOperatorNames.length) {
+        const operatorSet = new Set(selectedOperatorNames);
+        results = results.filter((t) => operatorSet.has(t.operator));
+      }
+
+      setTrips(results);
+      setUiState((prev) => ({ ...prev, hasSearched: true, expandedId: null, activeTab: "images" }));
+    } catch {
+      setTrips([]);
     }
+  }, [filters, sidebarState]);
 
-    // Apply sidebar filters (popular + operators)
-    const selectedOperatorNames = Object.entries(selectedOps)
-      .filter(([, v]) => Boolean(v))
-      .map(([name]) => name);
-
-    if (popular?.discount) results = results.filter((t) => t?.discount === true);
-    if (popular?.vip) results = results.filter((t) => t?.vip === true);
-    if (selectedOperatorNames.length > 0) {
-      const set = new Set(selectedOperatorNames);
-      results = results.filter((t) => set.has(String(t?.operator)));
-    }
-    setTrips(results);
-    setHasSearched(true);
-    setExpandedId(null);
-    setActiveTab("images");
-  };
-
-  const handleTogglePopular = (key) => (e) => setPopular((s) => ({ ...s, [key]: e.target.checked }));
-  const handleToggleOperator = (name) => (e) => setSelectedOps((s) => ({ ...s, [name]: e.target.checked }));
-  const clearSelections = () => {
-    setPopular({ discount: false, vip: false });
-    setSelectedOps(Object.fromEntries(operatorList.map((n) => [n, false])));
-  };
-
-  const filteredOperators = operatorList.filter((n) => n.toLowerCase().includes(search.toLowerCase()));
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 900px)");
+    const updateNarrow = (e) => setUiState((prev) => ({ ...prev, isNarrow: e.matches }));
+    mq.addEventListener("change", updateNarrow);
+    updateNarrow(mq);
+    return () => mq.removeEventListener("change", updateNarrow);
+  }, []);
 
   return (
     <MainLayout>
-    <div className="bookcar">
-      {/* Hero section: center title + form in the empty space */}
-      <section className="search-hero">
-        <div className="route-title">
-          Hà Nội <span>Đến</span> Hải Phòng
-        </div>
+      <div className="bookcar">
+        <section className="search-hero">
+          <div className="route-title">
+            {filters.from || "—"} <span>Đến</span> {filters.to || "—"}
+          </div>
+          <div className="searchbox">
+            <div className="searchbox__grid">
+              <LocationPicker 
+                label="Điểm Khởi Hành"
+                placeholder="Chọn Điểm Khởi Hành"
+                value={filters.from}
+                options={locations}
+                onSelect={(value) => setFilters((prev) => ({ ...prev, from: value }))}
+              />
+              <LocationPicker
+                label="Điểm Đến"
+                placeholder="Chọn Điểm Đến"
+                value={filters.to}
+                options={locations}
+                onSelect={(value) => setFilters((prev) => ({ ...prev, to: value }))}
+              />
+              <div className="searchbox__item">
+                <div className="searchbox__label">Ngày Khởi Hành</div>
+                <input
+                  type="date"
+                  className="searchbox__date"
+                  value={filters.date}
+                  onChange={(e) => setFilters((prev) => ({ ...prev, date: e.target.value }))}
+                />
+              </div>
+              <button className="searchbox__button" onClick={handleSearch}>TÌM CHUYẾN XE</button>
+            </div>
+          </div>
+        </section>
 
-        <div className="searchbox">
-          <div className="searchbox__grid">
-          <LocationPicker
-            label="Điểm Khởi Hành"
-            placeholder="Chọn Điểm Khởi Hành"
-            value={from}
-            options={locations}
-            onSelect={setFrom}
+        <div className="bookcar__container">
+          <SidebarFilters
+            showFilters={uiState.showFilters}
+            onToggleCollapse={() => setUiState((prev) => ({ ...prev, showFilters: !prev.showFilters }))}
+            {...sidebarState}
+            onTogglePopular={(key) => (value) =>
+              setSidebarState((prev) => ({ ...prev, popular: { ...prev.popular, [key]: value } }))}
+            onToggleOperator={(name) => (value) =>
+              setSidebarState((prev) => ({
+                ...prev,
+                selectedOps: { ...prev.selectedOps, [name]: value },
+              }))}
+            onSearchChange={(value) => setSidebarState((prev) => ({ ...prev, search: value }))}
+            onClear={() =>
+              setSidebarState({
+                popular: { discount: false, vip: false },
+                selectedOps: {},
+                search: "",
+              })}
           />
-          <LocationPicker
-            label="Điểm Đến"
-            placeholder="Chọn Điểm Đến"
-            value={to}
-            options={locations}
-            onSelect={setTo}
-          />
-          <div className="searchbox__item" role="group" aria-label="Ngày khởi hành">
-            <div className="searchbox__label">Ngày Khởi Hành</div>
-            <input
-              className="searchbox__date"
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              onFocus={() => !date && handlePickDate()}
+
+          <main className="results">
+            <TripList
+              trips={trips}
+              expandedId={uiState.expandedId}
+              activeTab={uiState.activeTab}
+              showHeader={true}
+              showEmpty={uiState.hasSearched}
+              isNarrow={uiState.isNarrow}
+              onToggleFilters={uiState.isNarrow ? () => setUiState((prev) => ({ ...prev, showFilters: !prev.showFilters })) : undefined}
+              onToggleTrip={(id) =>
+                setUiState((prev) => ({
+                  ...prev,
+                  expandedId: prev.expandedId === id ? null : id,
+                  activeTab: "images",
+                }))}
+              onTabChange={(tab) => setUiState((prev) => ({ ...prev, activeTab: tab }))}
             />
-          </div>
-          <button className="searchbox__button" onClick={handleSearch}>
-            TÌM CHUYẾN XE
-          </button>
-          </div>
+
+            <div className="banner">
+              <img src={hotlineImg} alt="Đặt vé ngay hotline" />
+            </div>
+          </main>
         </div>
-      </section>
-      <div className="bookcar__container">
-        <SidebarFilters
-          showFilters={showFilters}
-          onToggleCollapse={() => setShowFilters((s) => !s)}
-          popular={popular}
-          onTogglePopular={handleTogglePopular}
-          selectedOps={selectedOps}
-          onToggleOperator={handleToggleOperator}
-          search={search}
-          onSearchChange={(v) => setSearch(v)}
-          filteredOperators={filteredOperators}
-          onClear={clearSelections}
-          anyChecked={anyChecked}
-          selectedCount={selectedCount}
-        />
-
-        <main className="results">
-          <TripList
-            trips={trips}
-            expandedId={expandedId}
-            activeTab={activeTab}
-            showHeader={true}
-            showEmpty={hasSearched}
-            isNarrow={isNarrow}
-            onToggleFilters={isNarrow ? (() => setShowFilters((s) => !s)) : undefined}
-            onToggleTrip={(id) => {
-              if (expandedId === id) setExpandedId(null);
-              else {
-                setExpandedId(id);
-                setActiveTab("images");
-              }
-            }}
-            onTabChange={(tab) => setActiveTab(tab)}
-          />
-
-          <div className="banner">
-            <img src={hotlineImg} alt="Đặt vé ngay hotline" />
-          </div>
-        </main>
       </div>
-    </div>
     </MainLayout>
   );
 }

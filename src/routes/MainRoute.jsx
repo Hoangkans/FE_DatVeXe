@@ -13,6 +13,7 @@ import InfoPage from "../pages/InfoPage"
 import TicketCheck from "../pages/TicketCheck";
 import ProfilePage from "../pages/Profile/ProfilePage";
 
+import ForgotPassword from "../pages/auth/ForgotPassword";
 import NotFoundPage from "../pages/NotFoundPage";
 
 const routes = [
@@ -26,6 +27,7 @@ const routes = [
   { path: "/info", component: InfoPage},
   { path: "/login", component: LoginPage },
   { path: "/register", component: RegisterPage },
+  { path: "/forgot-password", component: ForgotPassword},
 
   { path: "/book-car", component: BookCarPage, protected: true },
   { path: "/profile", component: ProfilePage, protected: true },

@@ -105,7 +105,7 @@ export default function AdminLogin() {
         </label>
 
         <div className="auth-actions">
-          <Link to="#" className="auth-link">Quên mật khẩu?</Link>
+          <Link to="/forgot-password" className="auth-link">Quên mật khẩu?</Link>
         </div>
 
         <button className="auth-button" type="submit" disabled={loading}>
