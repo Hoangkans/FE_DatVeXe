@@ -1,4 +1,3 @@
-import carImg from "../../../assets/anh-minh-hoa-xe.jpg";
 import "../../styles/TripCard.css";
 import formatMoney from "../../utils/ticket/money";
 
@@ -9,40 +8,47 @@ export default function TripCard(props) {
     activeTab = "images",
     onToggle,
     onTabChange,
+    onBook
   } = props || {};
 
   const {
     name = "",
+    operator = "",
     rating = 0,
     reviews = 0,
     depart = "",
     arrive = "",
+    fromStation = "",
+    toStation = "",
     to = "",
     price = 0,
     seatsLeft = 0,
+    image = null,
+    duration,
+    departDate,
   } = t || {};
   return (
     <article className="trip">
-      <img className="trip__thumb" src={carImg} alt="Hình minh họa xe" />
+      <img className="trip__thumb" src={image} alt="Hình minh họa xe" />
 
       <div className="trip__content">
         <div className="trip__title">
-          <h4 className="trip__name">{name}</h4>
+          <h4 className="trip__name">{operator}</h4>
           <div className="trip__rating">
             <span className="badge">★ {Number(rating).toFixed(1)}</span>
             <span className="sep">•</span>
             <span className="muted">{reviews} Đánh giá</span>
           </div>
         </div>
-        <div className="trip__subtitle muted">Limousine 9 chỗ</div>
+        <div className="trip__subtitle muted">{name}</div>
 
         <div className="time time--row">
           <div className="time__col">
             <div className="time__value">{depart}</div>
-            <div className="link small">Hà Nội Office - Cổ Linh</div>
+            <div className="link small">{fromStation}</div>
           </div>
           <div className="time__center">
-            <div className="time__duration muted small">1h30’</div>
+            <div className="time__duration muted small">{duration}h</div>
             <div className="time__arrow" aria-hidden="true" />
             <div className="time__middle-label muted small">-</div>
           </div>
@@ -53,8 +59,7 @@ export default function TripCard(props) {
         </div>
 
         <div className="note-row">
-          <div className="note muted small">*Thuộc chuyến 21:00 31-12-2024 Hà Nội - Hải Phòng</div>
-          <div className="link small">Thông tin chi tiết</div>
+          <div className="note muted small">*Thuộc chuyến {depart} {fromStation} đến {toStation}</div>
         </div>
       </div>
 
@@ -79,14 +84,28 @@ export default function TripCard(props) {
               Phí hủy
             </button>
           </div>
+          
           <div className="tab-panel">
             {activeTab === "images" ? (
-              <div className="gallery">
-                <img src={carImg} alt="Ảnh xe" />
-                <div className="dots">
-                  <span className="dot is-active" />
-                  <span className="dot" />
-                  <span className="dot" />
+              <div className="gallery-container" style={{display:'flex', gap: 20}}>
+                <div className="gallery" style={{flex: 1}}>
+                  <img src={image} alt="Ảnh xe" />
+                </div>
+
+                <div className="booking-cta" style={{width: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px'}}>
+                   <div className="strong" style={{fontSize: '1.1rem'}}>Chuyến {t.depart}</div>
+                   <div className="muted">Giường nằm cao cấp</div>
+                   <div className="price-tag" style={{color: '#ff5e1f', fontSize: '1.2rem', fontWeight: 'bold'}}>
+                     {formatMoney(t.price)}đ
+                   </div>
+                   
+                   <button 
+                     className="btn btn--primary" 
+                     style={{width: '100%', padding: '12px'}}
+                     onClick={onBook} 
+                   >
+                     ĐẶT VÉ NGAY
+                   </button>
                 </div>
               </div>
             ) : (
@@ -101,9 +120,10 @@ export default function TripCard(props) {
                   <div className="row">
                     <div className="cell">Sau khi đặt</div>
                     <div className="cell">
-                      <div>06:45</div>
-                      <div>25/11/2024</div>
+                      <div>{depart}</div>
+                      <div>{departDate}</div>
                     </div>
+
                     <div className="cell">
                       <div className="strong">0%</div>
                       <div className="muted small">giá trị đơn hàng</div>
@@ -112,9 +132,10 @@ export default function TripCard(props) {
 
                   <div className="row">
                     <div className="cell">
-                      <div>06:45</div>
-                      <div>25/11/2024</div>
+                     <div>{depart}</div>
+                     <div>{departDate}</div>
                     </div>
+
                     <div className="cell">Giờ khởi hành</div>
                     <div className="cell">
                       <div className="strong">100%</div>

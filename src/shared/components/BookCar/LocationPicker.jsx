@@ -19,7 +19,7 @@ export default function LocationPicker(props) {
 
   return (
     <div
-      className="searchbox__item picker"
+      className={`searchbox__item picker ${open ? 'is-active' : ''}`}
       role="button"
       tabIndex={0}
       aria-haspopup="listbox"

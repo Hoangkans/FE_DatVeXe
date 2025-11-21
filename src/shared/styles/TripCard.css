@@ -140,18 +140,17 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 26px;
-  min-width: 111px;
-  width: 111px; /* match Figma aside width */
+  width: 100%;
+  max-width: 120px; /* match Figma aside width */
   padding-left: 0; /* remove extra space since divider is gone */
 }
 
 .aside__price { text-align: right; }
-.aside__from { font-size: 12px; color: #666666; margin-right: 6px; }
+.aside__from { font-size: 12px; color: #666666;  }
 .aside__value { font-size: 18px; font-weight: 700; color: #333333; }
 
 
 .trip__aside .btn--primary {
-  margin-left: 0; 
   width: 111px;
   height: 36px;
   border-radius: 6px;
@@ -162,7 +161,6 @@
 }
 
 .trip__aside .btn--primary::before {
-  content: "🚌";
   font-size: 14px;
   line-height: 1;
   filter: grayscale(100%);

@@ -2,30 +2,22 @@ import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import bg from "../../../assets/thumbnail.png"
 import { useEffect, useState } from 'react';
-// Local stub to keep component working after removing services
-const getLocations = async () => [];
 import PlaceSelect from './PlaceSelectment';
 import CalendarPicker from './CalendarPick';
 import "../../styles/Thumbnail.css"
 
+import locationsPick from "../../../services/bookcar/locations";
 export default function Thumbnail() {
     const [date, setDate] = useState();
     const [options, setOptions] = useState([]);
 
+
     useEffect(() => {
-        let mounted = true;
-        (async () => {
-            try {
-                const locs = await getLocations();
-                const arr = Array.isArray(locs) ? locs : [];
-                const mapped = arr.map((name, idx) => ({ id: idx + 1, destination: String(name) }));
-                if (mounted) setOptions(mapped);
-            } catch (e) {
-                if (mounted) setOptions([]);
-            }
-        })();
-        return () => { mounted = false };
-    }, []);
+        const locs = locationsPick; 
+        const arr = Array.isArray(locs) ? locs : [];
+        const mapped = arr.map((name, idx) => ({ id: idx + 1, destination: String(name) }));
+        setOptions(mapped);
+    }, []); 
 
     return (
         <div className="thumbnail">

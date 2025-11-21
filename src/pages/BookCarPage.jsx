@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "../shared/styles/BookCarPage.css";
 import MainLayout from "../shared/layouts/MainLayout";
 import hotlineImg from "../assets/hotline-bookcar.jpg";
@@ -6,11 +6,109 @@ import SidebarFilters from "../shared/components/BookCar/SidebarFilters";
 import TripList from "../shared/components/BookCar/TripList";
 import LocationPicker from "../shared/components/BookCar/LocationPicker";
 import locationsPick from "../services/bookcar/locations";
+import BookingModal from "../shared/components/BookCar/BookingModal";
+import formatDate from "../shared/utils/date/date"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { getUser } from "../services/auth/auth.service";
+import { fetchTripData } from "../services/bookcar/bookingInfo";
+import { bookTicket } from "../services/Ticket/booking";
+
+const cleanString = (str) => {
+  if (!str) return "";
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d").replace(/Đ/g, "D")
+    .replace(/[^a-zA-Z0-9]/g, "") 
+    .toLowerCase();
+};
+
+const LOCATION_ALIASES = {
+  // Common Abbreviations
+  "tp.hcm": "ho chi minh",
+  "sai gon": "ho chi minh",
+  "hcm": "ho chi minh",
+  "hn": "ha noi",
+  "vung tau": "ba ria vung tau",
+  "nha trang": "khanh hoa",
+  "da lat": "lam dong",
+  "buon ma thuot": "dak lak",
+  "bmt": "dak lak",
+  "pleiku": "gia lai",
+  "quy nhon": "binh dinh",
+  "phan thiet": "binh thuan",
+  "hue": "thua thien hue",
+  "vinh": "nghe an",
+  "ha long": "quang ninh",
+  "rach gia": "kien giang",
+  "chau doc": "an giang"
+};
+
+const expandLocation = (text) => {
+  if (!text) return "";
+
+  const cleanText = cleanString(text);
+  
+  let expanded = text; 
+
+  Object.keys(LOCATION_ALIASES).forEach((key) => {
+    const cleanKey = cleanString(key);
+    
+    if (cleanText.includes(cleanKey)) {
+      expanded += " " + LOCATION_ALIASES[key];
+    }
+  });
+
+  return expanded;
+};
+
+const normalizeTripData = (apiItem) => {
+  const departureDate = new Date(apiItem.time.departure);
+  const arrivalDate = new Date(apiItem.time.arrival);
+
+  const fromRaw = (apiItem.route?.start || "") + " " + (apiItem.route?.location?.departure?.address || "");
+  const toRaw = (apiItem.route?.end || "") + " " + (apiItem.route?.location?.arrival?.address || "");
+
+  return {
+    id: apiItem.id,
+    operator: apiItem.company?.name || "Unknown Bus",
+    depart: departureDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+    arrive: arrivalDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+    departDate: formatDate(apiItem.time.departure) || "",
+    duration: apiItem.route?.duration || "",
+    fromStation: apiItem.route?.start || "",
+    toStation: apiItem.route?.end || "",
+    fromAddress: apiItem.route?.location?.departure?.address,
+    toAddress: apiItem.route?.location?.arrival?.address,
+
+    searchFrom: cleanString(expandLocation(fromRaw)),
+    searchTo: cleanString(expandLocation(toRaw)),
+
+    rawDate: apiItem.time.departure,
+    price: apiItem.route?.price,
+    seatsLeft: apiItem.seats?.available,
+    rating: 4.5, 
+    reviews: 10, 
+    name: apiItem.bus?.name, 
+    vip: apiItem.bus?.name?.toLowerCase().includes("vip") || apiItem.seats?.list?.some(s => s.seat_type === 'VIP'),
+    discount: false, 
+    image: apiItem.bus?.images?.[0]?.image_url || null,
+    seatsList: apiItem.seats?.list || [],
+  };
+};
 
 export default function BookCarPage() {
   const [locations, setLocations] = useState([]);
-  const [trips, setTrips] = useState([]);
+  
+  const [allTrips, setAllTrips] = useState([]); 
+  const [trips, setTrips] = useState([]); 
+  const [bookingModal, setBookingModal] = useState({ isOpen: false, trip: null });
+  const [isBooking, setIsBooking] = useState(false);
+  
   const [filters, setFilters] = useState({ from: "", to: "", date: "" });
+  const [loading, setLoading] = useState(true);
 
   const [sidebarState, setSidebarState] = useState({
     popular: { discount: false, vip: false },
@@ -38,33 +136,117 @@ export default function BookCarPage() {
     fetchLocations();
   }, []);
 
-  const handleSearch = useCallback(async () => {
+  const loadTrips = useCallback(async () => {
+    setLoading(true);
     try {
-      const data = await searchTrips(filters);
-      let results = data || [];
-      const { popular, selectedOps } = sidebarState;
-      if (popular.discount) results = results.filter((t) => t.discount);
-      if (popular.vip) results = results.filter((t) => t.vip);
-      const selectedOperatorNames = Object.keys(selectedOps).filter((key) => selectedOps[key]);
-      if (selectedOperatorNames.length) {
-        const operatorSet = new Set(selectedOperatorNames);
-        results = results.filter((t) => operatorSet.has(t.operator));
-      }
-
-      setTrips(results);
-      setUiState((prev) => ({ ...prev, hasSearched: true, expandedId: null, activeTab: "images" }));
-    } catch {
-      setTrips([]);
+      const response = await fetchTripData();
+      const rawList = Array.isArray(response) ? response : (response.data || []);
+      const formattedList = rawList.map(normalizeTripData);
+      
+      setAllTrips(formattedList);
+      setTrips(formattedList); 
+    } catch (err) {
+      console.log("Failed to load Trip.", err);
+    } finally {
+      setLoading(false);
     }
-  }, [filters, sidebarState]);
+  }, []);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 900px)");
-    const updateNarrow = (e) => setUiState((prev) => ({ ...prev, isNarrow: e.matches }));
-    mq.addEventListener("change", updateNarrow);
-    updateNarrow(mq);
-    return () => mq.removeEventListener("change", updateNarrow);
+    const fetchLocations = async () => {
+    };
+    fetchLocations();
+    loadTrips(); 
+  }, [loadTrips])
+
+  const handleSearch = useCallback(() => {
+    let results = [...allTrips];
+
+    if (filters.from) {
+      // User picks "Hồ Chí Minh" -> converts to "hochiminh"
+      const keyword = cleanString(filters.from);
+      
+      results = results.filter(t => {
+        // t.searchFrom contains "tphcmhochiminh"
+        // "tphcmhochiminh".includes("hochiminh") -> TRUE
+        return t.searchFrom.includes(keyword);
+      });
+    }
+
+    if (filters.to) {
+      const keyword = cleanString(filters.to);
+      results = results.filter(t => t.searchTo.includes(keyword));
+    }
+
+    if (filters.date) {
+      results = results.filter(t => t.rawDate.startsWith(filters.date));
+    }
+
+    const { popular, selectedOps } = sidebarState;
+    if (popular.discount) results = results.filter((t) => t.discount);
+    if (popular.vip) results = results.filter((t) => t.vip);
+    const selectedOperatorNames = Object.keys(selectedOps).filter((key) => selectedOps[key]);
+    if (selectedOperatorNames.length) {
+      const operatorSet = new Set(selectedOperatorNames);
+      results = results.filter((t) => operatorSet.has(t.operator));
+    }
+
+    setTrips(results);
+    setUiState((prev) => ({ ...prev, hasSearched: true, expandedId: null, activeTab: "images" }));
+  }, [filters, sidebarState, allTrips]);
+
+  const handleConfirmBooking = async (seat) => {
+    const currentUser = getUser(); 
+    if (!currentUser || !currentUser.id) {
+      alert("Bạn cần đăng nhập để đặt vé!");
+      return;
+    }
+
+    const userId = currentUser.id;
+    const trip = bookingModal.trip;
+    const ticketCode = "TCK" + Math.floor(100000 + Math.random() * 900000);
+
+    setIsBooking(true); 
+    try {
+      const result = await bookTicket(
+        userId, 
+        trip.id,        
+        seat.id,        
+        seat.seat_type, 
+        trip.price,     
+        ticketCode
+      );
+
+      // Thay thanh QR thanh toan sau
+      window.alert('Xac Nhan Thanh Toan')
+      toast.success(` ${result.message || "Đặt vé thành công!"}`);
+      setBookingModal({ isOpen: false, trip: null });
+      await loadTrips(); 
+    } catch (err) {
+      console.error(err);
+      const msg = err.response?.data?.message || "Lỗi đặt vé";
+      alert(` ${msg}`);
+    } finally {
+      setIsBooking(false); 
+    }
+  };
+
+  const handleOpenBooking = (tripId) => {
+    const selectedTrip = trips.find(t => t.id === tripId);
+    if (selectedTrip) {
+      setBookingModal({ isOpen: true, trip: selectedTrip });
+    }
+  };
+
+    useEffect(() => {
+      const mq = window.matchMedia("(max-width: 900px)");
+      const updateNarrow = (e) => setUiState((prev) => ({ ...prev, isNarrow: e.matches }));
+      mq.addEventListener("change", updateNarrow);
+      updateNarrow(mq);
+      return () => mq.removeEventListener("change", updateNarrow);
   }, []);
+
+  const availableOperators = [...new Set(allTrips.map(t => t.operator))];
 
   return (
     <MainLayout>
@@ -108,38 +290,63 @@ export default function BookCarPage() {
             showFilters={uiState.showFilters}
             onToggleCollapse={() => setUiState((prev) => ({ ...prev, showFilters: !prev.showFilters }))}
             {...sidebarState}
-            onTogglePopular={(key) => (value) =>
-              setSidebarState((prev) => ({ ...prev, popular: { ...prev.popular, [key]: value } }))}
-            onToggleOperator={(name) => (value) =>
+            filteredOperators={availableOperators} 
+            onTogglePopular={(key) => (e) =>
+              setSidebarState((prev) => ({ 
+                  ...prev, 
+                  popular: { ...prev.popular, [key]: e.target.checked } 
+              }))
+            }
+            onToggleOperator={(name) => (e) =>
               setSidebarState((prev) => ({
                 ...prev,
-                selectedOps: { ...prev.selectedOps, [name]: value },
-              }))}
+                selectedOps: { ...prev.selectedOps, [name]: e.target.checked },
+              }))
+            }
             onSearchChange={(value) => setSidebarState((prev) => ({ ...prev, search: value }))}
             onClear={() =>
               setSidebarState({
                 popular: { discount: false, vip: false },
                 selectedOps: {},
                 search: "",
-              })}
+              })
+            }
+            anyChecked={sidebarState.popular.discount || sidebarState.popular.vip || Object.values(sidebarState.selectedOps).some(Boolean)}
+            selectedCount={
+                (sidebarState.popular.discount ? 1 : 0) + 
+                (sidebarState.popular.vip ? 1 : 0) + 
+                Object.values(sidebarState.selectedOps).filter(Boolean).length
+            }
           />
 
           <main className="results">
-            <TripList
-              trips={trips}
-              expandedId={uiState.expandedId}
-              activeTab={uiState.activeTab}
-              showHeader={true}
-              showEmpty={uiState.hasSearched}
-              isNarrow={uiState.isNarrow}
-              onToggleFilters={uiState.isNarrow ? () => setUiState((prev) => ({ ...prev, showFilters: !prev.showFilters })) : undefined}
-              onToggleTrip={(id) =>
-                setUiState((prev) => ({
-                  ...prev,
-                  expandedId: prev.expandedId === id ? null : id,
-                  activeTab: "images",
-                }))}
-              onTabChange={(tab) => setUiState((prev) => ({ ...prev, activeTab: tab }))}
+            {loading ? (
+                <div style={{padding: 20, textAlign: 'center'}}>Đang tải dữ liệu...</div>
+            ) : (
+                <TripList
+                  trips={trips}
+                  expandedId={uiState.expandedId}
+                  activeTab={uiState.activeTab}
+                  showHeader={true}
+                  showEmpty={uiState.hasSearched}
+                  isNarrow={uiState.isNarrow}
+                  onToggleFilters={uiState.isNarrow ? () => setUiState((prev) => ({ ...prev, showFilters: !prev.showFilters })) : undefined}
+                  onToggleTrip={(id) =>
+                    setUiState((prev) => ({
+                      ...prev,
+                      expandedId: prev.expandedId === id ? null : id,
+                      activeTab: "images",
+                    }))}
+                  onBookTicket={handleOpenBooking}
+                  onTabChange={(tab) => setUiState((prev) => ({ ...prev, activeTab: tab }))}
+                />
+                
+            )}
+            <BookingModal 
+              isOpen={bookingModal.isOpen}
+              trip={bookingModal.trip}
+              onClose={() => setBookingModal({ isOpen: false, trip: null })}
+              onConfirm={handleConfirmBooking}
             />
 
             <div className="banner">

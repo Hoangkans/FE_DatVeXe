@@ -584,6 +584,11 @@
   cursor: pointer;
   transition: border-color .15s ease, transform .05s ease;
   position: relative;
+  z-index: 1;
+}
+.searchbox__item.is-active {
+  z-index: 100; 
+  border-color: #1b87aa; 
 }
 
 .searchbox__item:hover,
@@ -691,6 +696,7 @@
   width: 100%;
   font-size: 16px;
   box-shadow: 0 2px 0 rgba(0,0,0,0.06);
+  z-index: 31;
 }
 
 .searchbox__button .icon {

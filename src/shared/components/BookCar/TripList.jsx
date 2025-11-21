@@ -3,6 +3,8 @@ import TripCard from "./TripCard";
 import "../../styles/TripList.css";
 import SORTS from "../../constants/sortOptions";
 
+import PaginationBar from "../Pagination"; 
+
 export default function TripList(props) {
   const {
     trips = [],
@@ -10,20 +12,22 @@ export default function TripList(props) {
     activeTab = "images",
     onToggleTrip,
     onTabChange,
+    onBookTicket,
     showHeader = true,
     showEmpty = true,
     onToggleFilters,
     isNarrow = false,
   } = props || {};
 
-  // Local state for dropdowns and sorting/filtering
-  const [openMenu, setOpenMenu] = useState(null); // 'time' | 'price' | null
-  const [selectedTime, setSelectedTime] = useState(null); // option object
-  const [selectedPrice, setSelectedPrice] = useState(null); // option object
-  const lastSortRef = useRef(null); // 'time' | 'price'
+  const ITEMS_PER_PAGE = 5; 
+  const [page, setPage] = useState(1);
+
+  const [openMenu, setOpenMenu] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedPrice, setSelectedPrice] = useState(null);
+  const lastSortRef = useRef(null);
   const menuRef = useRef(null);
 
-  // Close menus when clicking outside
   useEffect(() => {
     function onDocClick(e) {
       if (!menuRef.current) return;
@@ -33,7 +37,6 @@ export default function TripList(props) {
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
-  // Helpers
   function timeToMinutes(hhmm = "") {
     const [h, m] = String(hhmm).split(":").map((v) => parseInt(v, 10));
     if (Number.isNaN(h) || Number.isNaN(m)) return 0;
@@ -43,25 +46,21 @@ export default function TripList(props) {
   const displayedTrips = useMemo(() => {
     let data = Array.isArray(trips) ? [...trips] : [];
 
-    // Apply time filter
     if (selectedTime?.type === "filter") {
       const fromMin = timeToMinutes(selectedTime.from);
       const toMin = timeToMinutes(selectedTime.to);
       data = data.filter((t) => {
         const d = timeToMinutes(t?.depart);
-        // Include boundary on start, exclude on end (half-open)
         return d >= fromMin && d < toMin;
       });
     }
 
-    // Apply price filter
     if (selectedPrice?.type === "filter") {
       const min = selectedPrice.min ?? 0;
       const max = selectedPrice.max ?? Number.POSITIVE_INFINITY;
       data = data.filter((t) => Number(t?.price) >= min && Number(t?.price) <= max);
     }
 
-    // Sorting precedence: whichever menu set a sort last
     const winner = lastSortRef.current;
     const applyTimeSort = () => {
       if (selectedTime?.id === "earliest") data.sort((a, b) => timeToMinutes(a.depart) - timeToMinutes(b.depart));
@@ -75,7 +74,6 @@ export default function TripList(props) {
     if (winner === "time") applyTimeSort();
     else if (winner === "price") applyPriceSort();
     else {
-      // If no explicit precedence yet, prefer time sort if set; else price
       if (selectedTime?.type === "sort") applyTimeSort();
       else if (selectedPrice?.type === "sort") applyPriceSort();
     }
@@ -83,13 +81,29 @@ export default function TripList(props) {
     return data;
   }, [trips, selectedTime, selectedPrice]);
 
-  // Reset dropdown selections whenever a new search result set arrives
+  useEffect(() => {
+    setPage(1);
+  }, [displayedTrips]); 
+
+  const paginatedTrips = useMemo(() => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return displayedTrips.slice(startIndex, endIndex);
+  }, [displayedTrips, page]);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+  };
+
   useEffect(() => {
     setSelectedTime(null);
     setSelectedPrice(null);
     lastSortRef.current = null;
     setOpenMenu(null);
   }, [trips]);
+
+
   function ResultsHeader() {
     const label = isNarrow ? "Bộ lọc" : "Sắp xếp theo tuyến đường";
     const clickable = Boolean(onToggleFilters);
@@ -107,7 +121,6 @@ export default function TripList(props) {
 
     const onPick = (group, opt) => {
       if (group === "time") {
-        // Toggle same option to clear
         setSelectedTime((cur) => (cur?.id === opt.id ? null : opt));
         if (opt.type === "sort") lastSortRef.current = "time";
       } else {
@@ -168,12 +181,14 @@ export default function TripList(props) {
   return (
     <>
       {showHeader && <ResultsHeader />}
+      
       {showEmpty && displayedTrips.length === 0 && (
         <div className="muted" style={{ padding: 16 }}>
           Không tìm thấy chuyến phù hợp. Vui lòng thử lại với tiêu chí khác.
         </div>
       )}
-      {(displayedTrips || []).map((t, idx) => (
+
+      {paginatedTrips.map((t, idx) => (
         <TripCard
           key={t?.id ?? idx}
           t={t}
@@ -181,8 +196,18 @@ export default function TripList(props) {
           activeTab={activeTab}
           onToggle={() => onToggleTrip && onToggleTrip(t.id)}
           onTabChange={onTabChange || (() => void 0)}
+          onBook={() => onBookTicket && onBookTicket(t.id)}
         />
       ))}
+
+      {displayedTrips.length > 0 && (
+        <PaginationBar 
+            totalItems={displayedTrips.length} 
+            itemsPerPage={ITEMS_PER_PAGE} 
+            page={page} 
+            onChange={handlePageChange} 
+        />
+      )}
     </>
   );
 }
