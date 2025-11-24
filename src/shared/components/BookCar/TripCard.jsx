@@ -20,7 +20,6 @@ export default function TripCard(props) {
     arrive = "",
     fromStation = "",
     toStation = "",
-    to = "",
     price = 0,
     seatsLeft = 0,
     image = null,
@@ -54,7 +53,7 @@ export default function TripCard(props) {
           </div>
           <div className="time__col end">
             <div className="time__value">{arrive}</div>
-            <div className="link small">{to}</div>
+            <div className="link small">{toStation}</div>
           </div>
         </div>
 

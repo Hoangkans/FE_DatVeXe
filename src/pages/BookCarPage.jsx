@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom"; // Ensure this is imported
 import "../shared/styles/BookCarPage.css";
 import MainLayout from "../shared/layouts/MainLayout";
 import hotlineImg from "../assets/hotline-bookcar.jpg";
@@ -7,7 +8,7 @@ import TripList from "../shared/components/BookCar/TripList";
 import LocationPicker from "../shared/components/BookCar/LocationPicker";
 import locationsPick from "../services/bookcar/locations";
 import BookingModal from "../shared/components/BookCar/BookingModal";
-import formatDate from "../shared/utils/date/date"
+import formatDate from "../shared/utils/date/date";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -26,48 +27,30 @@ const cleanString = (str) => {
 };
 
 const LOCATION_ALIASES = {
-  // Common Abbreviations
-  "tp.hcm": "ho chi minh",
-  "sai gon": "ho chi minh",
-  "hcm": "ho chi minh",
-  "hn": "ha noi",
-  "vung tau": "ba ria vung tau",
-  "nha trang": "khanh hoa",
-  "da lat": "lam dong",
-  "buon ma thuot": "dak lak",
-  "bmt": "dak lak",
-  "pleiku": "gia lai",
-  "quy nhon": "binh dinh",
-  "phan thiet": "binh thuan",
-  "hue": "thua thien hue",
-  "vinh": "nghe an",
-  "ha long": "quang ninh",
-  "rach gia": "kien giang",
-  "chau doc": "an giang"
+  "tp.hcm": "ho chi minh", "sai gon": "ho chi minh", "hcm": "ho chi minh",
+  "hn": "ha noi", "vung tau": "ba ria vung tau", "nha trang": "khanh hoa",
+  "da lat": "lam dong", "buon ma thuot": "dak lak", "bmt": "dak lak",
+  "pleiku": "gia lai", "quy nhon": "binh dinh", "phan thiet": "binh thuan",
+  "hue": "thua thien hue", "vinh": "nghe an", "ha long": "quang ninh",
+  "rach gia": "kien giang", "chau doc": "an giang"
 };
 
 const expandLocation = (text) => {
   if (!text) return "";
-
   const cleanText = cleanString(text);
-  
   let expanded = text; 
-
   Object.keys(LOCATION_ALIASES).forEach((key) => {
     const cleanKey = cleanString(key);
-    
     if (cleanText.includes(cleanKey)) {
       expanded += " " + LOCATION_ALIASES[key];
     }
   });
-
   return expanded;
 };
 
 const normalizeTripData = (apiItem) => {
   const departureDate = new Date(apiItem.time.departure);
   const arrivalDate = new Date(apiItem.time.arrival);
-
   const fromRaw = (apiItem.route?.start || "") + " " + (apiItem.route?.location?.departure?.address || "");
   const toRaw = (apiItem.route?.end || "") + " " + (apiItem.route?.location?.arrival?.address || "");
 
@@ -82,10 +65,8 @@ const normalizeTripData = (apiItem) => {
     toStation: apiItem.route?.end || "",
     fromAddress: apiItem.route?.location?.departure?.address,
     toAddress: apiItem.route?.location?.arrival?.address,
-
     searchFrom: cleanString(expandLocation(fromRaw)),
     searchTo: cleanString(expandLocation(toRaw)),
-
     rawDate: apiItem.time.departure,
     price: apiItem.route?.price,
     seatsLeft: apiItem.seats?.available,
@@ -99,15 +80,52 @@ const normalizeTripData = (apiItem) => {
   };
 };
 
+const performFilter = (sourceData, currentFilters, currentSidebar) => {
+    let results = [...sourceData];
+
+    if (currentFilters.from) {
+      const keyword = cleanString(currentFilters.from);
+      results = results.filter(t => t.searchFrom.includes(keyword));
+    }
+
+    if (currentFilters.to) {
+      const keyword = cleanString(currentFilters.to);
+      results = results.filter(t => t.searchTo.includes(keyword));
+    }
+
+    if (currentFilters.date) {
+      results = results.filter(t => t.rawDate.startsWith(currentFilters.date));
+    }
+
+    const { popular, selectedOps } = currentSidebar;
+    if (popular.discount) results = results.filter((t) => t.discount);
+    if (popular.vip) results = results.filter((t) => t.vip);
+    const selectedOperatorNames = Object.keys(selectedOps).filter((key) => selectedOps[key]);
+    if (selectedOperatorNames.length) {
+      const operatorSet = new Set(selectedOperatorNames);
+      results = results.filter((t) => operatorSet.has(t.operator));
+    }
+    
+    return results;
+};
+
 export default function BookCarPage() {
   const [locations, setLocations] = useState([]);
-  
+  const location = useLocation(); 
   const [allTrips, setAllTrips] = useState([]); 
   const [trips, setTrips] = useState([]); 
   const [bookingModal, setBookingModal] = useState({ isOpen: false, trip: null });
   const [isBooking, setIsBooking] = useState(false);
   
-  const [filters, setFilters] = useState({ from: "", to: "", date: "" });
+  const [filters, setFilters] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return {
+      from: decodeURIComponent(params.get("from") || ""),
+      to: decodeURIComponent(params.get("to") || ""),
+      date: params.get("date") || ""
+    };
+  });
+
   const [loading, setLoading] = useState(true);
 
   const [sidebarState, setSidebarState] = useState({
@@ -153,47 +171,25 @@ export default function BookCarPage() {
   }, []);
 
   useEffect(() => {
-    const fetchLocations = async () => {
-    };
-    fetchLocations();
     loadTrips(); 
-  }, [loadTrips])
+  }, [loadTrips]);
+
+  useEffect(() => {
+    if (allTrips.length > 0) {
+      if (filters.from || filters.to || filters.date) {
+          const results = performFilter(allTrips, filters, sidebarState);
+          setTrips(results);
+          setUiState(prev => ({ ...prev, hasSearched: true }));
+      }
+    }
+  }, [allTrips]); 
 
   const handleSearch = useCallback(() => {
-    let results = [...allTrips];
-
-    if (filters.from) {
-      // User picks "Hồ Chí Minh" -> converts to "hochiminh"
-      const keyword = cleanString(filters.from);
-      
-      results = results.filter(t => {
-        // t.searchFrom contains "tphcmhochiminh"
-        // "tphcmhochiminh".includes("hochiminh") -> TRUE
-        return t.searchFrom.includes(keyword);
-      });
-    }
-
-    if (filters.to) {
-      const keyword = cleanString(filters.to);
-      results = results.filter(t => t.searchTo.includes(keyword));
-    }
-
-    if (filters.date) {
-      results = results.filter(t => t.rawDate.startsWith(filters.date));
-    }
-
-    const { popular, selectedOps } = sidebarState;
-    if (popular.discount) results = results.filter((t) => t.discount);
-    if (popular.vip) results = results.filter((t) => t.vip);
-    const selectedOperatorNames = Object.keys(selectedOps).filter((key) => selectedOps[key]);
-    if (selectedOperatorNames.length) {
-      const operatorSet = new Set(selectedOperatorNames);
-      results = results.filter((t) => operatorSet.has(t.operator));
-    }
-
+    const results = performFilter(allTrips, filters, sidebarState);
     setTrips(results);
     setUiState((prev) => ({ ...prev, hasSearched: true, expandedId: null, activeTab: "images" }));
   }, [filters, sidebarState, allTrips]);
+
 
   const handleConfirmBooking = async (seat) => {
     const currentUser = getUser(); 
@@ -262,14 +258,20 @@ export default function BookCarPage() {
                 placeholder="Chọn Điểm Khởi Hành"
                 value={filters.from}
                 options={locations}
-                onSelect={(value) => setFilters((prev) => ({ ...prev, from: value }))}
+                onSelect={(val) => {
+                  const text = typeof val === 'string' ? val : (val?.destination || val?.name || "");
+                  setFilters((prev) => ({ ...prev, from: text }));
+                }}
               />
               <LocationPicker
                 label="Điểm Đến"
                 placeholder="Chọn Điểm Đến"
                 value={filters.to}
                 options={locations}
-                onSelect={(value) => setFilters((prev) => ({ ...prev, to: value }))}
+                onSelect={(val) => {
+                  const text = typeof val === 'string' ? val : (val?.destination || val?.name || "");
+                  setFilters((prev) => ({ ...prev, to: text }));
+                }}
               />
               <div className="searchbox__item">
                 <div className="searchbox__label">Ngày Khởi Hành</div>
