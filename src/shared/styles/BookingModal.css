@@ -122,7 +122,7 @@
     margin: 0 auto;
     border: 2px solid #e0e0e0;
 
-    max-height: 400px; 
+    max-height: 200px; 
     overflow-y: auto;  
     scrollbar-width: thin; 
 }
