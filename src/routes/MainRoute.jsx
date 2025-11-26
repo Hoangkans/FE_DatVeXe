@@ -15,6 +15,7 @@ import ProfilePage from "../pages/Profile/ProfilePage";
 
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import NotFoundPage from "../pages/NotFoundPage";
+import PaymentResultPage from "../pages/Payment/PaymentResult";
 
 const routes = [
   { path: "/", component: HomePage},
@@ -32,7 +33,7 @@ const routes = [
   { path: "/book-car", component: BookCarPage, protected: true },
   { path: "/profile", component: ProfilePage, protected: true },
   { path: "/ticket-check", component: TicketCheck, protected: true },
-
+  { path: "/payment-success", component: PaymentResultPage, protected: true},
 
   { path: "*", component: NotFoundPage }
 ]

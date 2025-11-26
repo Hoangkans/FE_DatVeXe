@@ -1,6 +1,5 @@
 :root {
     --primary-color: #007bff; 
-    --accent-color: #ff5e1f; 
     --text-color: #333;
     --light-bg: #f8f9fa;
     --info-bg: #e0f7fa;
@@ -106,8 +105,8 @@
     background: white; 
 }
 .box.selected { 
-    background: var(--accent-color); 
-    border: 1px solid var(--accent-color); 
+    background: var(--primary-color); 
+    border: 1px solid var(--primary-color); 
 }
 .box.booked { 
     background: #adb5bd; 
@@ -262,7 +261,144 @@
     cursor: not-allowed;
 }
 
-/* Responsive adjustments */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite
+}
+/* --- Add this to your existing BookingModal.css --- */
+
+/* Form Container */
+.booking-form-container {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-section h4 {
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* Inputs */
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.req { color: red; }
+
+/* Payment Methods */
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payment-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.payment-card:hover {
+    background-color: #f9f9f9;
+}
+
+.payment-card.active {
+    border-color: #007bff;
+    background-color: #f0f7ff;
+}
+
+.pay-icon { 
+    font-size: 1.2rem; 
+    display: flex;
+    align-items: center;
+}
+.pay-icon img{
+    height: 25px;
+}
+.pay-name { 
+    font-weight: 500; 
+    font-size: 14px; 
+}
+
+
+/* Summary Total in Form */
+.summary-total {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px dashed #ccc;
+}
+
+.price-text {
+    color: #d32f2f;
+    font-size: 1.1rem;
+}
+
+/* Back Button */
+.btn--secondary {
+    background-color: #f1f1f1;
+    color: #333;
+    border: 1px solid #ddd;
+    margin-right: auto; /* Pushes other buttons to the right */
+}
+.btn--secondary:hover {
+    background-color: #e2e2e2;
+}
+
 @media (max-width: 600px) {
     .booking-modal-content {
         max-width: 90%; 
