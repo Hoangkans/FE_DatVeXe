@@ -5,7 +5,7 @@ import { Grid } from "@mui/material";
 import PaginationBar from "../shared/components/Pagination";
 import { useState, useEffect } from "react";
 
-import { fetchBusStation } from "../services/Station/StationApi";
+import { fetchAllArticle } from "../services/post/post";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSelectedPost } from "../config/redux/reducers/posts/postSlice";
@@ -18,21 +18,31 @@ export default function BusStationPage() {
     const [page, setPage] = useState(1);
     const itemsPerPage = 8;
 
-    useEffect( () => {
+    useEffect(() => {
         const loadBusStations = async () => {
-            const result = await fetchBusStation();
-            const stations = result.data;
-            const mappedData = stations.map((station, index) => ({
-                title: station.name,
-                description: station.descriptions,   
-                img: station.image,
-                wallpaper: station.wallpaper,
-                location: station.location,
+            const res = await fetchAllArticle();
+            const stations = res.data
+
+            const normalize = (str) =>
+            str
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") 
+                .replace(/\s+/g, "");           
+
+            const filtered = stations.filter(station => {
+                
+            const t = normalize(station.title.toLowerCase());
+            return t.includes("benxe"); 
+        });
+            const mappedData = filtered.map((station, index) => ({
+                title: station.title,
+                content: station.content,
+                wallpaper: station.image,
             }));
             setItemData(mappedData);
-        }
+        };
         loadBusStations();
-    }, [])
+    }, []);
 
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -76,8 +86,7 @@ export default function BusStationPage() {
 
                             <Card
                                 title={item.title}
-                                description={item.description}
-                                image={item.img}
+                                image={item.wallpaper}
                                 onClick={() => viewMore(item)}
                             />
                             </div>

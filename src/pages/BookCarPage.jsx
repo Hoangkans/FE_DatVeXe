@@ -15,7 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getUser } from "../services/auth/auth.service";
 import { fetchTripData } from "../services/bookcar/bookingInfo";
 import { bookTicket } from "../services/Ticket/booking";
-import createMoMoPayment from "../services/payment/createPayment";
+import { createMoMoPayment,  createSePayPayment } from "../services/payment/createPayment";
+import { createPayment } from "../services/payment/savePayment";
 
 const cleanString = (str) => {
   if (!str) return "";
@@ -113,6 +114,7 @@ const performFilter = (sourceData, currentFilters, currentSidebar) => {
 export default function BookCarPage() {
   const [locations, setLocations] = useState([]);
   const location = useLocation(); 
+  const [paymentData, setPaymentData] = useState(null);
   const [allTrips, setAllTrips] = useState([]); 
   const [trips, setTrips] = useState([]); 
   const [bookingModal, setBookingModal] = useState({ isOpen: false, trip: null });
@@ -202,6 +204,7 @@ export default function BookCarPage() {
     }
 
     setIsBooking(true); 
+    setPaymentData(null);
 
     try {
       const userId = currentUser.id;
@@ -213,11 +216,18 @@ export default function BookCarPage() {
           passengerInfo.phone, passengerInfo.email, paymentMethod
       );
 
+      const basePaymentPayload = {
+          amount: trip.price,
+          payment_method: paymentMethod,
+          ticket_code: ticketCode , 
+          booking_id: null, 
+      };
+
       if (paymentMethod === 'momo') {
         toast.info("Đang kết nối đến MoMo...");
 
         const currentDomain = window.location.origin;
-        const paymentPayload = {
+        const momoPayload = {
             amount: trip.price,
             orderInfo: `Thanh toan ve xe ${ticketCode}`,
             redirectUrl: `${currentDomain}/payment-success`, 
@@ -225,24 +235,65 @@ export default function BookCarPage() {
             lang: "vi"
         };
 
-        const momoResponse = await createMoMoPayment(paymentPayload, currentUser.accessToken);
+        const momoResponse = await createMoMoPayment(momoPayload, currentUser.accessToken);
 
         if (momoResponse && momoResponse.payUrl) {
+            await createPayment({
+                ...basePaymentPayload,
+                status: 'PENDING',
+                transaction_id: momoResponse.requestId
+            }, currentUser.accessToken);
+
             window.location.href = momoResponse.payUrl;
         } else {
             throw new Error("Không lấy được link thanh toán MoMo");
         }
-      } else {
-          toast.success(`Đặt vé thành công! Mã: ${ticketCode}`);
-          setBookingModal({ isOpen: false, trip: null });
-          await loadTrips();
+      } 
+      else if (paymentMethod === 'sepay') {
+        toast.info("Đang tạo mã QR SePay...");
+          
+        const sepayPayload = {
+            amount: trip.price,
+            content: `Thanh toan ${ticketCode}` 
+        };
+
+        const sepayResponse = await createSePayPayment(sepayPayload, currentUser.accessToken);
+        const qrData = sepayResponse.data || sepayResponse; 
+
+        if (qrData && qrData.qr_code_url) {
+          await createPayment({
+            ...basePaymentPayload,
+            status: 'PENDING',
+            bank_code: qrData.bank_code || null, 
+            account_number: qrData.account_number
+          }, currentUser.accessToken);
+
+          setPaymentData(qrData);
+          toast.success("Vui lòng quét mã QR để thanh toán");
+          
           setIsBooking(false); 
+        } else {
+            throw new Error("Không lấy được QR code Sepay");
+        }
+      }
+      else {
+        toast.info("Đang xử lý...");
+        await createPayment({
+            ...basePaymentPayload,
+              status: 'COMPLETED', 
+            description: 'Thanh toán tiền mặt/tại quầy'
+        }, currentUser.accessToken);
+
+        toast.success(`Đặt vé thành công! Mã: ${ticketCode}`);
+        setBookingModal({ isOpen: false, trip: null });
+        await loadTrips();
+        setIsBooking(false); 
       }
     } catch (err) {
-        console.error(err);
-        const msg = err.response?.data?.message || err.message || "Lỗi xử lý";
-        toast.error(msg);
-        setIsBooking(false); 
+      console.error(err);
+      const msg = err.response?.data?.message || err.message || "Lỗi xử lý";
+      toast.error(msg);
+      setIsBooking(false); 
     }
   };
 
@@ -369,6 +420,7 @@ export default function BookCarPage() {
               onClose={() => setBookingModal({ isOpen: false, trip: null })}
               onConfirm={handleConfirmBooking}
               isLoading={isBooking}
+              paymentData={paymentData}
             />
 
             <div className="banner">

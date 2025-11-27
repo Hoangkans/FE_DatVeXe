@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSelectedPost } from "../config/redux/reducers/posts/postSlice";
 
-import { fetchUserBusCompanies } from "../services/Bus/userBusCompany";
+import { fetchAllArticle } from "../services/post/post";
 import "../shared/styles/BusPage.css"
 
 export default function BusCompanyPage() {
@@ -20,11 +20,24 @@ export default function BusCompanyPage() {
 
     useEffect(() => {
         const loadBusCompanies = async () => {
-            const companies = await fetchUserBusCompanies();
-            const mappedData = companies.map((company, index) => ({
-                title: company.company_name,
-                description: company.descriptions,
-                img: company.image,
+            const res = await fetchAllArticle();
+            const companies = res.data
+
+            const normalize = (str) =>
+            str
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") 
+                .replace(/\s+/g, "");           
+
+            const filtered = companies.filter(company => {
+                
+            const t = normalize(company.title.toLowerCase());
+            return t.includes("nhaxe"); 
+        });
+            const mappedData = filtered.map((company, index) => ({
+                title: company.title,
+                content: company.content,
+                wallpaper: company.image,
             }));
             setItemData(mappedData);
         };
@@ -73,8 +86,7 @@ export default function BusCompanyPage() {
 
                                 <Card
                                     title={item.title}
-                                    description={item.description}
-                                    image={item.img}
+                                    image={item.wallpaper}
                                 />
                             </div>
                         </Grid>

@@ -30,6 +30,9 @@
     transform: scale(0.95); 
     opacity: 0;
     animation: fadeInScale 0.3s ease-out forwards;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
 @keyframes fadeInScale {
@@ -224,6 +227,9 @@
 .seat-item.luxury .seat-shape {
     border-color: #ffc107; 
 }
+.seat-item.vip .seat-shape {
+    border-color: #b007ff; 
+}
 
 .booking-modal-footer {
     padding: 18px 24px;
@@ -275,14 +281,12 @@
     border-radius: 50%;
     animation: spin 1s linear infinite
 }
-/* --- Add this to your existing BookingModal.css --- */
 
-/* Form Container */
 .booking-form-container {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 5px;
 }
 
 .form-section h4 {
@@ -293,7 +297,6 @@
     padding-bottom: 5px;
 }
 
-/* Inputs */
 .form-group {
     margin-bottom: 15px;
     display: flex;
@@ -335,6 +338,9 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height:180px; 
+    overflow-y: auto;  
+    scrollbar-width: thin; 
 }
 
 .payment-card {
@@ -371,16 +377,17 @@
 }
 
 
-/* Summary Total in Form */
+
 .summary-total {
     margin-top: 10px;
     padding: 15px;
-    background-color: #f8f9fa;
+    background-color: #c3c2c0;
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: 1px dashed #ccc;
+    background: transparent;
 }
 
 .price-text {
@@ -388,16 +395,21 @@
     font-size: 1.1rem;
 }
 
-/* Back Button */
+
 .btn--secondary {
     background-color: #f1f1f1;
     color: #333;
     border: 1px solid #ddd;
-    margin-right: auto; /* Pushes other buttons to the right */
 }
 .btn--secondary:hover {
     background-color: #e2e2e2;
 }
+.confirm-btn{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 
 @media (max-width: 600px) {
     .booking-modal-content {

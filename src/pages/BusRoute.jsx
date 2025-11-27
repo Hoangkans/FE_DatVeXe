@@ -1,10 +1,10 @@
 import MainLayout from "../shared/layouts/MainLayout"
 import Card from "../shared/components/Card"
 import { Grid } from "@mui/material";
-import sample from "../assets/image-hodler.png"
+
 import PaginationBar from "../shared/components/Pagination";
 import { useState, useEffect } from "react";
-import { fetchRoute } from "../services/Route/RouteAdminApi";
+import { fetchAllArticle } from "../services/post/post";
 
 import "../shared/styles/BusPage.css"
 import { useNavigate } from "react-router-dom";
@@ -22,23 +22,31 @@ export default function BusRoutePage() {
     const endIndex = startIndex + itemsPerPage;
     const currentItems = itemData.slice(startIndex, endIndex);
 
-    useEffect( () =>{
-        const loadRoute = async () => {
-            const routes = await fetchRoute();
-            const mappedData = routes.map((route, index) => ({ 
-                title: route.departure_station.location,
-                description: route.arrival_station.location,    
-                img: route.departure_station.image || sample,
-                depart: route.departure_station.name,
-                arrive: route.arrival_station.name,
-                distance: route.distance,
-                duration: route.duration,
-                price: route.price,
+    useEffect(() => {
+        const loadBusRoute = async () => {
+            const res = await fetchAllArticle();
+            const routes = res.data
+
+            const normalize = (str) =>
+            str
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") 
+                .replace(/\s+/g, "");           
+
+            const filtered = routes.filter(route => {
+                
+            const t = normalize(route.title.toLowerCase());
+            return t.includes("tuyen"); 
+        });
+            const mappedData = filtered.map((route, index) => ({
+                title: route.title,
+                content: route.content,
+                wallpaper: route.image,
             }));
             setItemData(mappedData);
-        }
-        loadRoute();
-    }, [])
+        };
+        loadBusRoute();
+    }, []);
 
     const handleChange = (e, value) => {
         setPage(value);
@@ -78,8 +86,7 @@ export default function BusRoutePage() {
 
                                 <Card
                                     title={item.title}
-                                    description={`to ${item.description}`}
-                                    image={item.img}
+                                    image={item.wallpaper}
                                 />
                             </div>
                         </Grid>

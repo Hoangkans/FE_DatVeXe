@@ -87,3 +87,13 @@
     font-size: 20px;
     color: #333;
 }
+
+.article-content figure {
+    max-width: 100%;
+    overflow: hidden;
+}
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}

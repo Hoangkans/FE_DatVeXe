@@ -9,7 +9,8 @@ export async function bookTicket(userId, scheduleId, seatId, seatType, price, ti
                 seat_type: seatType,
                 price: price,
                 ticket_code:  ticketCode,
-                user_id: userId
+                user_id: userId,
+                status:"BOOKED"
             }
         );
         return response.data;

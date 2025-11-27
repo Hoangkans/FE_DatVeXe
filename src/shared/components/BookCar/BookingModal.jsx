@@ -4,10 +4,12 @@ import formatMoney from "../../utils/ticket/money";
 import momo from "../../../assets/brand/momo.png"
 import vnpay from "../../../assets/brand/vnpay.png"
 import cash from "../../../assets/cash.png"
+import sepay from "../../../assets/brand/sepay.png"
 
 const getSeatLabel = (type) => {
     switch (type) {
         case "STANDARD": return "Ghế Standard";
+        case "VIP": return "Ghế Vip"
         case "LUXURY": return "Giường nằm cao cấp";
         default: return "Tiêu chuẩn";
     }
@@ -16,11 +18,12 @@ const getSeatLabel = (type) => {
 const PAYMENT_METHODS = [
     { id: 'momo', name: 'Ví MoMo', icon: <img src={momo} /> },
     { id: 'vnpay', name: 'VNPay QR', icon: <img src={vnpay} /> },
+    { id: 'sepay', name: 'SePay', icon: <img src={sepay}/>},
     { id: 'cash', name: 'Tien Mat', icon: <img src={cash} /> },
 ];
 
 
-export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoading }) {
+export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoading, paymentData }) {
     const [step, setStep] = useState(1); 
     const [selectedSeat, setSelectedSeat] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('momo');
@@ -39,9 +42,19 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
         }
     }, [isOpen]);
 
+    useEffect(() => {
+        if (paymentData && paymentData.qr_code_url) {
+            setStep(3);
+        }
+    }, [paymentData]);
+
     if (!isOpen || !trip) return null;
 
     const seatsList = trip.seatsList || [];
+
+    seatsList.sort((a, b) => 
+        a.seat_number.localeCompare(b.seat_number, undefined, { numeric: true })
+    );
 
     const handleSeatClick = (seat) => {
         if (seat.booked) return;
@@ -98,7 +111,7 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
                             <button
                                 key={seat.id}
                                 disabled={seat.booked}
-                                className={`seat-item ${seat.seat_type.toLowerCase()} ${seat.booked ? "booked" : ""} ${selectedSeat?.id === seat.id ? "selected" : ""}`}
+                                className={`seat-item ${seat.seat_type.toLowerCase()} ${seat.booked ? "BOOKED" : ""} ${selectedSeat?.id === seat.id ? "selected" : ""}`}
                                 onClick={() => handleSeatClick(seat)}
                                 title={`${seat.seat_number} - ${getSeatLabel(seat.seat_type)}`}
                             >
@@ -113,6 +126,32 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
                 </div>
             </div>
         </>
+    );
+
+    const renderPaymentQR = () => (
+        <div className="payment-qr-container" style={{textAlign: 'center', padding: '20px'}}>
+            <h4 style={{color: '#28a745', marginBottom: '15px'}}>Đặt vé thành công!</h4>
+            <p>Vui lòng quét mã QR bên dưới để thanh toán</p>
+            
+            <div className="qr-box" style={{margin: '20px 0', border: '2px dashed #ddd', padding: '10px', display:'inline-block'}}>
+                <img 
+                    src={paymentData.qr_code_url} 
+                    alt="SePay QR" 
+                    style={{maxWidth: '300px', width: '100%'}} 
+                />
+            </div>
+
+            <div className="transfer-info" style={{textAlign: 'left', background: '#f9f9f9', padding: '15px', borderRadius: '8px'}}>
+                <p><strong>Ngân hàng:</strong> {paymentData?.bank_code} (MB Bank)</p>
+                <p><strong>Số tài khoản:</strong> {paymentData?.account_number}</p>
+                <p><strong>Chủ tài khoản:</strong> {paymentData?.account_name}</p>
+                <p><strong>Số tiền:</strong> <span style={{color: '#d32f2f', fontWeight: 'bold'}}>{formatMoney(paymentData?.amount)}đ</span></p>
+            </div>
+            
+            <p style={{marginTop: '15px', fontSize: '0.9em', color: '#666'}}>
+                *Hệ thống sẽ tự động cập nhật trạng thái sau khi bạn chuyển khoản.
+            </p>
+        </div>
     );
 
     const renderInfoForm = () => (
@@ -186,46 +225,64 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
         <div className="booking-modal-overlay" onClick={onClose}>
             <div className="booking-modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="booking-modal-header">
-                    <h3>{step === 1 ? `Chọn ghế - ${trip.name}` : "Xác nhận & Thanh toán"}</h3>
+                    <h3>
+                        {step === 1 && `Chọn ghế - ${trip.name}`}
+                        {step === 2 && "Xác nhận & Thanh toán"}
+                        {step === 3 && "Thanh toán SePay"}
+                    </h3>
                     <button className="close-btn" onClick={onClose}>&times;</button>
                 </div>
 
                 <div className="booking-modal-body">
-                    {step === 1 ? renderSeatSelection() : renderInfoForm()}
+                    {step === 1 && renderSeatSelection()}
+                    {step === 2 && renderInfoForm()}
+                    {step === 3 && renderPaymentQR()}
                 </div>
 
                 <div className="booking-modal-footer">
-                    {step === 1 ? (
+                    {step === 1 && (
                         <>
-                            <div className="selected-info">
+                             <div className="selected-info">
                                 {selectedSeat ? (
                                     <span>Ghế: <strong>{selectedSeat.seat_number}</strong> ({getSeatLabel(selectedSeat.seat_type)})</span>
                                 ) : (
                                     <span className="info-placeholder">Vui lòng chọn ghế</span>
                                 )}
                             </div>
-                            <button 
-                                className="btn btn--primary confirm-btn" 
-                                disabled={!selectedSeat}
-                                onClick={handleNextStep}
-                            >
+                            <button className="btn btn--primary confirm-btn" disabled={!selectedSeat} onClick={handleNextStep}>
                                 Tiếp tục
                             </button>
                         </>
-                    ) : (
-                        <>
+                    )}
+                    {step === 2 && (
+                         <>
                             <button className="btn btn--secondary back-btn" onClick={handleBackStep} disabled={isLoading}>
                                 Quay lại
                             </button>
                             <button 
                                 className="btn btn--primary confirm-btn" 
-                                onClick={handleFinalConfirm}
+                                onClick={handleFinalConfirm} 
                                 disabled={isLoading}
-                                style={{ opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'wait' : 'pointer' }}
+                                style={{ 
+                                    opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'wait' : 'pointer' 
+                                }}
                             >
                                 {isLoading ? <><span className="loading-spinner"></span> Đang xử lý...</> : "Thanh toán ngay"}
                             </button>
                         </>
+                    )}
+                    {step === 3 && (
+                        <button 
+                            className="btn btn--primary confirm-btn" 
+                            onClick={onClose}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            Đã hoàn tất thanh toán
+                        </button>
                     )}
                 </div>
             </div>

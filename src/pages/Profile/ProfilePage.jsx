@@ -3,6 +3,8 @@ import MainLayout from "../../shared/layouts/MainLayout";
 
 import { getUser } from "../../services/auth/auth.service";
 import { ticketHistory } from "../../services/Ticket/TicketApi";
+import { fetchPaymentHistory }  from "../../services/payment/historyPayment"
+
 import UserProfile from "./UserProfile";
 import BookingHistory from "./BookingHistory";
 import PaymentHistory from "./PaymentHistory";
@@ -11,6 +13,7 @@ import "../../shared/styles/Profile.css"
 export default function ProfilePage() {
     const [user, setUser] = useState(null);
     const [tickets, setTickets] = useState([]);
+    const [payments, setPayments] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("profile");
@@ -47,6 +50,25 @@ export default function ProfilePage() {
         }
     }, [activeTab, tickets.length]);
 
+    useEffect(() => {
+        if (activeTab === "payment-history" && payments.length === 0) {
+            const loadPayments = async () => {
+                setLoading(true);
+                try {
+                    const paymentData = await fetchPaymentHistory();
+                    const result = paymentData.data
+                    result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    setPayments(result);
+                } catch (err) {
+                    console.log("Failed to load payment history.", err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            loadPayments();
+        }
+    }, [activeTab, payments.length]);
+
     const renderContent = () => {
         if (!user) return null; 
 
@@ -54,11 +76,9 @@ export default function ProfilePage() {
             case "profile":
                 return  <UserProfile user={user} />;
             case "ticket-history":
-                return  <BookingHistory 
-                            userId={user.id} 
-                            tickets={tickets} 
-                            loading={loading} 
-                        />; 
+                return  <BookingHistory userId={user.id} tickets={tickets} loading={loading} />; 
+            case "payment-history":
+                return <PaymentHistory payments={payments} loading={loading} />;
             default: 
                 return <PaymentHistory userId={user.id} />;
         }

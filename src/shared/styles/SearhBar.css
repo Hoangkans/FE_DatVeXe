@@ -73,3 +73,18 @@
     color: white;
     font-size: 2.2rem !important;
 }
+
+.search-result-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-result{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1800px;
+}

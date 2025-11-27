@@ -12,7 +12,7 @@ export default function RouteDetail() {
             <div className="station-detail">
                 <div className="station-header"
                     style={{
-                        backgroundImage: `url(${route.img || sample})`,
+                        backgroundImage: `url(${route.wallpaper || sample})`,
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -24,13 +24,11 @@ export default function RouteDetail() {
                     <p>From <strong>{route.title}</strong> to <strong>{route.description}</strong></p>
                 </div>
                 <div className="station-content">
-                    <p> <strong>Depart from:</strong> {route.depart}</p>
-                    <p><strong>Arrive at:</strong> {route.arrive}</p>
-                    <img src={route.img} alt={route.title} />
-                    
-                    <p><strong>Distance:</strong> {route.distance} km</p>
-                    <p><strong>Duration:</strong> {route.duration} minutes</p>
-                    <p><strong>Price:</strong> {formatMoney(route.price)} VND</p>
+                    <div 
+                        className="article-content"
+                        style={{maxWidth: 1100, textAlign: 'justify'}}
+                        dangerouslySetInnerHTML={{ __html: route.content }} 
+                    />
                 </div>
             </div>
         </MainLayout>

@@ -8,7 +8,7 @@ export default function CompanyDetail() {
             <div className="station-detail">
                 <div className="station-header"
                     style={{
-                        backgroundImage: `url(${company.img})`,
+                        backgroundImage: `url(${company.wallpaper})`,
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -20,10 +20,11 @@ export default function CompanyDetail() {
                     <h2>{company.title}</h2>
                 </div>
                 <div className="station-content">
-                    <p>{company.title}</p>
-                    <p>{company.description}</p>
-                    <img src={company.img} alt={company.title} />
-                    <p>{company.description}</p>
+                    <div 
+                        className="article-content"
+                        style={{maxWidth: 1100, textAlign: 'justify'}}
+                        dangerouslySetInnerHTML={{ __html: company.content }} 
+                    />
                 </div>
             </div>
         </MainLayout>

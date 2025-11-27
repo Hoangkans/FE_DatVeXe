@@ -21,10 +21,11 @@ export default function StationDetail() {
                     <h2>{station.title}</h2>
                 </div>
                 <div className="station-content">
-                    <p>{station.title}</p>
-                    <p>{station.location}</p>
-                    <img src={station.img} alt={station.title} />
-                    <p>{station.description}</p>
+                    <div 
+                        className="article-content"
+                        style={{maxWidth: 1100, textAlign: 'justify'}}
+                        dangerouslySetInnerHTML={{ __html: station.content }} 
+                    />
                 </div>
             </div>
         </MainLayout>
