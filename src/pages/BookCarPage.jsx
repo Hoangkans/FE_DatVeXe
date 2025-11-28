@@ -195,8 +195,9 @@ export default function BookCarPage() {
 
 
   const handleConfirmBooking = async (bookingData) => {
-    const { seat, passengerInfo, paymentMethod } = bookingData;
+    const { seat, passengerInfo, paymentMethod, totalPrice } = bookingData;
     const currentUser = getUser();
+    const finalAmount = totalPrice || bookingModal.trip.price;
     
     if (!currentUser || !currentUser.id) {
         toast.error("Vui lòng đăng nhập để tiếp tục");
@@ -212,12 +213,12 @@ export default function BookCarPage() {
       const ticketCode = "TCK" + Math.floor(100000 + Math.random() * 900000);
 
       await bookTicket(
-          userId, trip.id, seat.id, seat.seat_type, trip.price, ticketCode,
+          userId, trip.id, seat.id, seat.seat_type, finalAmount, ticketCode,
           passengerInfo.phone, passengerInfo.email, paymentMethod
       );
 
       const basePaymentPayload = {
-          amount: trip.price,
+          amount: finalAmount,
           payment_method: paymentMethod,
           ticket_code: ticketCode , 
           booking_id: null, 
@@ -228,7 +229,7 @@ export default function BookCarPage() {
 
         const currentDomain = window.location.origin;
         const momoPayload = {
-            amount: trip.price,
+            amount: finalAmount,
             orderInfo: `Thanh toan ve xe ${ticketCode}`,
             redirectUrl: `${currentDomain}/payment-success`, 
             extraData: JSON.stringify({ ticketCode: ticketCode }),
@@ -253,7 +254,7 @@ export default function BookCarPage() {
         toast.info("Đang tạo mã QR SePay...");
           
         const sepayPayload = {
-            amount: trip.price,
+            amount: finalAmount,
             content: `Thanh toan ${ticketCode}` 
         };
 

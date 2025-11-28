@@ -14,6 +14,16 @@ const getSeatLabel = (type) => {
         default: return "Tiêu chuẩn";
     }
 };
+const SEAT_SURCHARGES = {
+    "STANDARD": 0,       
+    "VIP": 50000,       
+    "LUXURY": 100000      
+};
+
+const calculateTotal = (basePrice, seatType) => {
+    const surcharge = SEAT_SURCHARGES[seatType] || 0;
+    return basePrice + surcharge;
+};
 
 const PAYMENT_METHODS = [
     { id: 'momo', name: 'Ví MoMo', icon: <img src={momo} /> },
@@ -27,6 +37,9 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
     const [step, setStep] = useState(1); 
     const [selectedSeat, setSelectedSeat] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('momo');
+    const currentSeatType = selectedSeat?.seat_type || "STANDARD";
+    const finalPrice = trip ? calculateTotal(trip.price, currentSeatType) : 0;
+    const surcharge = SEAT_SURCHARGES[currentSeatType] || 0;
     
     const [formData, setFormData] = useState({
         fullName: '',
@@ -83,7 +96,8 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
         onConfirm({
             seat: selectedSeat,
             passengerInfo: formData,
-            paymentMethod: paymentMethod
+            paymentMethod: paymentMethod,
+            totalPrice: finalPrice
         });
     };
 
@@ -214,9 +228,23 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
                 </div>
             </div>
             
-            <div className="summary-total">
-                <span>Ghế: <strong>{selectedSeat?.seat_number}</strong></span>
-                <span>Tổng tiền: <strong className="price-text">{formatMoney(trip.price)}đ</strong></span>
+            <div className="summary-total" style={{borderTop: '1px dashed #ccc', paddingTop: '10px', marginTop: '10px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px'}}>
+                    <span>Giá vé:</span>
+                    <span>{formatMoney(trip.price)}đ</span>
+                </div>
+                
+                {surcharge > 0 && (
+                    <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px', color: '#d32f2f'}}>
+                        <span>Phụ phí ({getSeatLabel(currentSeatType)}):</span>
+                        <span>+{formatMoney(surcharge)}đ</span>
+                    </div>
+                )}
+
+                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '1.1em', fontWeight: 'bold', borderTop: '1px solid #eee', paddingTop: '10px'}}>
+                    <span>Ghế {selectedSeat?.seat_number}:</span>
+                    <span className="price-text" style={{color: '#28a745'}}>{formatMoney(finalPrice)}đ</span>
+                </div>
             </div>
         </div>
     );
