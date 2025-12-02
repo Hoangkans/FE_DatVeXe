@@ -1,12 +1,20 @@
 import formatDate from "../../shared/utils/date/date";
+import { useState } from "react";
+import ChangePasswordModal from "../../shared/components/auth/ChangePassword";
 
 export default function UserProfile ({user}){
+    const [openModal, setOpenMoal] = useState(false)
+
     return (
        <div className="profile-card">
             <div className="profile-info-header">
                 <div>
                     <h2 style={{margin: 0}}>{user.fullName}</h2>
                     <span className="profile-role-badge">Khách hàng</span>
+                </div>
+
+                <div>
+                    <button onClick={() => setOpenMoal(true)}>Thay đổi mật khẩu</button>
                 </div>
             </div>
 
@@ -34,6 +42,11 @@ export default function UserProfile ({user}){
                     <p>{formatDate(user.createdAt)}</p>
                 </div>
             </div>
+
+            <ChangePasswordModal
+                isOpen={openModal}
+                onClose={() => setOpenMoal(false)}
+            />
         </div>
     )
 }

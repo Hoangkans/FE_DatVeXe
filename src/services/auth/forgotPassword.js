@@ -32,3 +32,16 @@ export async function resetPassword(token, newPass){
         throw  err;
     }
 }
+
+export async function UpdatePassword(oldPass, newPass) {
+    try {   
+        const response = await api.put('/user/change-password', {
+            old_password: oldPass,
+            new_password: newPass
+        });
+        return response.data
+    }catch (err) {
+        console.log(err?.response?.data || err?.message)
+        throw err;
+    }
+}

@@ -75,7 +75,7 @@ export default function HomePage() {
                     getSubtitle={(item) => item.descriptions}
                 />
 
-                <h2 className="title-accent">Top Review</h2>   
+                <h2 className="title-accent">Top Bài viết </h2>   
                 <TopReview/>
                 
 

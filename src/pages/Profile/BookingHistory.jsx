@@ -3,9 +3,10 @@ import formatDate from "../../shared/utils/date/date";
 import formatMoney from "../../shared/utils/ticket/money";
 import PaginationBar from "../../shared/components/Pagination"; 
 
+import { cancelTicket } from "../../services/Ticket/TicketApi";
+
 export default function BookingHistory({ tickets, loading }) {
     const [selectedTicket, setSelectedTicket] = useState(null);
-    
     const [page, setPage] = useState(1);
     const itemsPerPage = 5; 
 
@@ -19,6 +20,22 @@ export default function BookingHistory({ tickets, loading }) {
     const handleChange = (e, newPage) => {
         setPage(newPage);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleCancelTicket = async () => {
+        if (!selectedTicket) return;
+        const isConfirmed = window.confirm(`Bạn có chắc chắn muốn hủy vé #${selectedTicket.ticket_code} không?`);
+        
+        if (isConfirmed) {
+            try {
+                await cancelTicket(selectedTicket.id);            
+                alert("Hủy vé thành công!");
+                setSelectedTicket(null);
+                window.location.reload(); 
+            } catch (error) {
+                alert(error?.response?.data?.message || "Có lỗi xảy ra khi hủy vé.");
+            }
+        }
     };
 
     if (loading) return <p>Loading your tickets...</p>;
@@ -97,10 +114,27 @@ export default function BookingHistory({ tickets, loading }) {
                                 <h4>Thanh toán</h4>
                                 <p><strong>Tổng tiền:</strong> {formatMoney(selectedTicket.price)}</p>
                                 <p><strong>Ngày đặt:</strong> {formatDate(selectedTicket.created_at)}</p>
+                                <p><strong>Trạng thái:</strong> {selectedTicket.status}</p>
                             </div>
                         </div>
 
-                        <div style={{marginTop: '20px', textAlign: 'right'}}>
+                        <div style={{marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
+                             {selectedTicket.status !== 'Đã hủy' && selectedTicket.status !== 'Cancelled' && (
+                                <button 
+                                    onClick={handleCancelTicket}
+                                    style={{
+                                        backgroundColor: '#ff4d4f', 
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '10px 20px',
+                                        borderRadius: '5px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Hủy vé
+                                </button>
+                             )}
+
                              <button onClick={() => setSelectedTicket(null)} className="profile-button-secondary">Đóng</button>
                         </div>
                     </div>

@@ -5,11 +5,14 @@ import Card from "../shared/components/Card";
 import { fetchAllArticle } from "../services/post/post";
 import { Grid } from "@mui/material";
 import "../shared/styles/SearhBar.css";
+import { useDispatch } from "react-redux";
+import { setSelectedPost } from "../config/redux/reducers/posts/postSlice";
 
 export default function SearchResult() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('q');
     const navigate = useNavigate(); 
+    const dispatch = useDispatch();
 
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -48,6 +51,11 @@ export default function SearchResult() {
             fetchData();
         }
     }, [query]);
+
+    const viewMore = (item) => {
+        dispatch(setSelectedPost(item))
+        navigate(`/route-detail/${item.title}`)
+    }
 
     return (
         <MainLayout>

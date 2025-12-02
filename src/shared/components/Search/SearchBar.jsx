@@ -38,7 +38,6 @@ export default function SearchBar ({open, handleClose}) {
                     placeholder='Tìm kiếm ...'
                     onKeyDown={handleKeyDown} 
                 />
-                {/* Add onClick to icon */}
                 <div className="search-icon-wrapper" onClick={handleSearch}> 
                     <SearchIcon />
                 </div>

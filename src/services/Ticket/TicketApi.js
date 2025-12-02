@@ -34,3 +34,13 @@ export async function ticketHistory(userId){
         throw err;
     }
 }
+
+export async function cancelTicket(ticket_id) {
+    try {
+        const response = await api.put(`/user/tickets/cancel/${ticket_id}`);
+        return response.data;
+    } catch(err) {
+        console.error("Lỗi hủy vé: ", err);
+        throw err;
+    }
+}
