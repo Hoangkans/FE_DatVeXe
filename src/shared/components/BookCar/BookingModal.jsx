@@ -125,7 +125,7 @@ export default function BookingModal({ isOpen, onClose, trip, onConfirm, isLoadi
                             <button
                                 key={seat.id}
                                 disabled={seat.booked}
-                                className={`seat-item ${seat.seat_type.toLowerCase()} ${seat.booked ? "BOOKED" : ""} ${selectedSeat?.id === seat.id ? "selected" : ""}`}
+                                className={`seat-item ${seat.status === "BOOKED" ? "booked" : ""} ${selectedSeat?.id === seat.id ? "selected" : ""} ${seat.seat_type.toLowerCase()}`}
                                 onClick={() => handleSeatClick(seat)}
                                 title={`${seat.seat_number} - ${getSeatLabel(seat.seat_type)}`}
                             >
