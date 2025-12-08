@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import "../shared/styles/BookCarPage.css";
 import MainLayout from "../shared/layouts/MainLayout";
@@ -15,8 +15,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getUser } from "../services/auth/auth.service";
 import { fetchTripData } from "../services/bookcar/bookingInfo";
 import { bookTicket } from "../services/Ticket/booking";
-import { createMoMoPayment,  createSePayPayment } from "../services/payment/createPayment";
+import { createMoMoPayment, createSePayPayment } from "../services/payment/createPayment";
 import { createPayment } from "../services/payment/savePayment";
+import AdSlider from "../shared/components/HomePage/AdSlider"
 
 const cleanString = (str) => {
   if (!str) return "";
@@ -63,7 +64,7 @@ const normalizeTripData = (apiItem) => {
     arrive: arrivalDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
     departDate: formatDate(apiItem.time.departure) || "",
     duration: apiItem.route?.duration || "",
-    fromStation: apiItem.route?.start || "",
+    fromStation: apiItem.route?.start || "", 
     toStation: apiItem.route?.end || "",
     fromAddress: apiItem.route?.location?.departure?.address,
     toAddress: apiItem.route?.location?.arrival?.address,
@@ -74,7 +75,8 @@ const normalizeTripData = (apiItem) => {
     seatsLeft: apiItem.seats?.available,
     rating: 4.5, 
     reviews: 10, 
-    name: apiItem.bus?.name, 
+    name: apiItem.bus?.name,
+    busType: apiItem.bus?.bus_type || "UNKNOWN",
     vip: apiItem.bus?.name?.toLowerCase().includes("vip") || apiItem.seats?.list?.some(s => s.seat_type === 'VIP'),
     discount: false, 
     image: apiItem.bus?.images?.[0]?.image_url || null,
@@ -82,26 +84,60 @@ const normalizeTripData = (apiItem) => {
   };
 };
 
+// --- UPDATED FILTER LOGIC ---
 const performFilter = (sourceData, currentFilters, currentSidebar) => {
     let results = [...sourceData];
 
+    // 1. Top Bar Search (From/To/Date)
     if (currentFilters.from) {
       const keyword = cleanString(currentFilters.from);
       results = results.filter(t => t.searchFrom.includes(keyword));
     }
-
     if (currentFilters.to) {
       const keyword = cleanString(currentFilters.to);
       results = results.filter(t => t.searchTo.includes(keyword));
     }
-
     if (currentFilters.date) {
       results = results.filter(t => t.rawDate.startsWith(currentFilters.date));
     }
 
-    const { popular, selectedOps } = currentSidebar;
+    // 2. Sidebar Filters
+    const { 
+        popular, 
+        selectedOps, 
+        selectedDeparture, 
+        selectedArrival, 
+        selectedBusType,
+        minTime,   // New
+        maxPrice   // New
+    } = currentSidebar;
+
+    // A. Dropdowns
+    if (selectedDeparture) results = results.filter(t => t.fromStation === selectedDeparture);
+    if (selectedArrival) results = results.filter(t => t.toStation === selectedArrival);
+    if (selectedBusType) results = results.filter(t => t.busType === selectedBusType);
+
+    // B. Popular
     if (popular.discount) results = results.filter((t) => t.discount);
     if (popular.vip) results = results.filter((t) => t.vip);
+
+    // C. Ranges (NEW)
+    // Time Filter: Parse the 'rawDate' or 'depart' to get hour
+    if (minTime > 0) {
+        results = results.filter(t => {
+            const dateObj = new Date(t.rawDate);
+            const hour = dateObj.getHours(); 
+            // Return true if trip hour is equal or greater than slider value
+            return hour >= minTime;
+        });
+    }
+
+    // Price Filter: Max Price
+    // Default maxPrice is 2,000,000. If ticket is higher, hide it.
+    results = results.filter(t => t.price <= maxPrice);
+
+
+    // D. Operators
     const selectedOperatorNames = Object.keys(selectedOps).filter((key) => selectedOps[key]);
     if (selectedOperatorNames.length) {
       const operatorSet = new Set(selectedOperatorNames);
@@ -131,10 +167,16 @@ export default function BookCarPage() {
 
   const [loading, setLoading] = useState(true);
 
+  // --- UPDATED STATE ---
   const [sidebarState, setSidebarState] = useState({
     popular: { discount: false, vip: false },
     selectedOps: {},
     search: "",
+    selectedDeparture: "", 
+    selectedArrival: "",   
+    selectedBusType: "",
+    minTime: 0,           // New: Start at 00:00
+    maxPrice: 2000000     // New: Start at max value
   });
 
   const [uiState, setUiState] = useState({
@@ -145,6 +187,7 @@ export default function BookCarPage() {
     hasSearched: false,
   });
 
+  // ... (useEffect for locations and loadTrips remains the same) ...
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -177,15 +220,37 @@ export default function BookCarPage() {
     loadTrips(); 
   }, [loadTrips]);
 
+  const filterOptions = useMemo(() => {
+    const departures = new Set();
+    const arrivals = new Set();
+    const busTypes = new Set(); 
+    allTrips.forEach(trip => {
+        if(trip.fromStation) departures.add(trip.fromStation);
+        if(trip.toStation) arrivals.add(trip.toStation);
+        if(trip.busType) busTypes.add(trip.busType);
+    });
+    return {
+        departures: [...departures],
+        arrivals: [...arrivals],
+        busTypes: [...busTypes]
+    };
+  }, [allTrips]);
+
+  // Main Effect to trigger filtering when any state changes
   useEffect(() => {
     if (allTrips.length > 0) {
-      if (filters.from || filters.to || filters.date) {
+      if (filters.from || filters.to || filters.date || uiState.hasSearched) {
           const results = performFilter(allTrips, filters, sidebarState);
           setTrips(results);
-          setUiState(prev => ({ ...prev, hasSearched: true }));
+          if(filters.from || filters.to || filters.date) {
+             setUiState(prev => ({ ...prev, hasSearched: true }));
+          }
+      } else {
+        const results = performFilter(allTrips, filters, sidebarState);
+        setTrips(results);
       }
     }
-  }, [allTrips]); 
+  }, [allTrips, sidebarState]); 
 
   const handleSearch = useCallback(() => {
     const results = performFilter(allTrips, filters, sidebarState);
@@ -195,6 +260,7 @@ export default function BookCarPage() {
 
 
   const handleConfirmBooking = async (bookingData) => {
+    // ... (Existing booking logic remains exactly the same) ...
     const { seat, passengerInfo, paymentMethod, totalPrice } = bookingData;
     const currentUser = getUser();
     const finalAmount = totalPrice || bookingModal.trip.price;
@@ -203,10 +269,8 @@ export default function BookCarPage() {
         toast.error("Vui lòng đăng nhập để tiếp tục");
         return;
     }
-
     setIsBooking(true); 
     setPaymentData(null);
-
     try {
       const userId = currentUser.id;
       const trip = bookingModal.trip;
@@ -226,7 +290,6 @@ export default function BookCarPage() {
 
       if (paymentMethod === 'momo') {
         toast.info("Đang kết nối đến MoMo...");
-
         const currentDomain = window.location.origin;
         const momoPayload = {
             amount: finalAmount,
@@ -235,16 +298,13 @@ export default function BookCarPage() {
             extraData: JSON.stringify({ ticketCode: ticketCode }),
             lang: "vi"
         };
-
         const momoResponse = await createMoMoPayment(momoPayload, currentUser.accessToken);
-
         if (momoResponse && momoResponse.payUrl) {
             await createPayment({
                 ...basePaymentPayload,
                 status: 'PENDING',
                 transaction_id: momoResponse.requestId
             }, currentUser.accessToken);
-
             window.location.href = momoResponse.payUrl;
         } else {
             throw new Error("Không lấy được link thanh toán MoMo");
@@ -252,15 +312,12 @@ export default function BookCarPage() {
       } 
       else if (paymentMethod === 'sepay') {
         toast.info("Đang tạo mã QR SePay...");
-          
         const sepayPayload = {
             amount: finalAmount,
             content: `Thanh toan ${ticketCode}` 
         };
-
         const sepayResponse = await createSePayPayment(sepayPayload, currentUser.accessToken);
         const qrData = sepayResponse.data || sepayResponse; 
-
         if (qrData && qrData.qr_code_url) {
           await createPayment({
             ...basePaymentPayload,
@@ -268,10 +325,8 @@ export default function BookCarPage() {
             bank_code: qrData.bank_code || null, 
             account_number: qrData.account_number
           }, currentUser.accessToken);
-
           setPaymentData(qrData);
           toast.success("Vui lòng quét mã QR để thanh toán");
-          
           setIsBooking(false); 
         } else {
             throw new Error("Không lấy được QR code Sepay");
@@ -284,7 +339,6 @@ export default function BookCarPage() {
               status: 'COMPLETED', 
             description: 'Thanh toán tiền mặt/tại quầy'
         }, currentUser.accessToken);
-
         toast.success(`Đặt vé thành công! Mã: ${ticketCode}`);
         setBookingModal({ isOpen: false, trip: null });
         await loadTrips();
@@ -357,13 +411,27 @@ export default function BookCarPage() {
             </div>
           </div>
         </section>
-
+        
+        <div className="ad-wrapper">
+          <div className="ad-contents">
+          <AdSlider />
+          </div>
+        </div>
         <div className="bookcar__container">
           <SidebarFilters
             showFilters={uiState.showFilters}
             onToggleCollapse={() => setUiState((prev) => ({ ...prev, showFilters: !prev.showFilters }))}
+            
+            // Pass Sidebar State
             {...sidebarState}
+
+            // Dropdown Options
+            departureStations={filterOptions.departures}
+            arrivalStations={filterOptions.arrivals}
+            busTypes={filterOptions.busTypes}
             filteredOperators={availableOperators} 
+            
+            // Handlers for Boolean/Text
             onTogglePopular={(key) => (e) =>
               setSidebarState((prev) => ({ 
                   ...prev, 
@@ -377,18 +445,47 @@ export default function BookCarPage() {
               }))
             }
             onSearchChange={(value) => setSidebarState((prev) => ({ ...prev, search: value }))}
+            
+            // Handlers for Dropdowns
+            onSelectDeparture={(val) => setSidebarState(prev => ({...prev, selectedDeparture: val}))}
+            onSelectArrival={(val) => setSidebarState(prev => ({...prev, selectedArrival: val}))}
+            onSelectBusType={(val) => setSidebarState(prev => ({...prev, selectedBusType: val}))}
+
+            // --- NEW Handlers for Ranges ---
+            onTimeChange={(val) => setSidebarState(prev => ({...prev, minTime: val}))}
+            onPriceChange={(val) => setSidebarState(prev => ({...prev, maxPrice: val}))}
+
             onClear={() =>
               setSidebarState({
                 popular: { discount: false, vip: false },
                 selectedOps: {},
                 search: "",
+                selectedDeparture: "",
+                selectedArrival: "",
+                selectedBusType: "",
+                minTime: 0,        // Reset Time
+                maxPrice: 2000000  // Reset Price
               })
             }
-            anyChecked={sidebarState.popular.discount || sidebarState.popular.vip || Object.values(sidebarState.selectedOps).some(Boolean)}
+            anyChecked={
+                sidebarState.popular.discount || 
+                sidebarState.popular.vip || 
+                Object.values(sidebarState.selectedOps).some(Boolean) ||
+                sidebarState.selectedDeparture !== "" ||
+                sidebarState.selectedArrival !== "" ||
+                sidebarState.selectedBusType !== "" ||
+                sidebarState.minTime > 0 ||           // Checked if not default
+                sidebarState.maxPrice < 2000000       // Checked if not default
+            }
             selectedCount={
                 (sidebarState.popular.discount ? 1 : 0) + 
                 (sidebarState.popular.vip ? 1 : 0) + 
-                Object.values(sidebarState.selectedOps).filter(Boolean).length
+                Object.values(sidebarState.selectedOps).filter(Boolean).length +
+                (sidebarState.selectedDeparture ? 1 : 0) +
+                (sidebarState.selectedArrival ? 1 : 0) +
+                (sidebarState.selectedBusType ? 1 : 0) +
+                (sidebarState.minTime > 0 ? 1 : 0) +
+                (sidebarState.maxPrice < 2000000 ? 1 : 0)
             }
           />
 
@@ -413,7 +510,6 @@ export default function BookCarPage() {
                   onBookTicket={handleOpenBooking}
                   onTabChange={(tab) => setUiState((prev) => ({ ...prev, activeTab: tab }))}
                 />
-                
             )}
             <BookingModal 
               isOpen={bookingModal.isOpen}

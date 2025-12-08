@@ -87,6 +87,7 @@ export default function BusCompanyPage() {
                                 <Card
                                     title={item.title}
                                     image={item.wallpaper}
+                                    description={item.content}
                                 />
                             </div>
                         </Grid>

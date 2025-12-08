@@ -87,6 +87,7 @@ export default function BusStationPage() {
                             <Card
                                 title={item.title}
                                 image={item.wallpaper}
+                                description={item.content}
                                 onClick={() => viewMore(item)}
                             />
                             </div>
