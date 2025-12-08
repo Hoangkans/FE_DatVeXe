@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import routes from "./routes/MainRoute";
 import { ToastContainer } from "react-toastify";
 import RequireAuth from "./routes/RequireAuth";
+import ChatWidget from "./shared/components/ChatWidget/ChatWidget";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -34,6 +35,9 @@ function App() {
         draggable
         theme="colored"
       />
+
+      {/* Chat Widget - Floating button */}
+      <ChatWidget />
     </Router>
   );
 }
