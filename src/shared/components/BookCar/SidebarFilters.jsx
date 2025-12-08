@@ -1,18 +1,13 @@
-import React from "react";
-import "../../styles/SidebarFilters.css"; // Ensure path matches your project
-
 export default function SidebarFilters(props) {
   const {
     showFilters = true,
     onToggleCollapse,
     
-    // Popular & Search
     popular = { discount: false, vip: false },
     onTogglePopular,
     search = "",
     onSearchChange,
     
-    // Dropdowns
     filteredOperators = [],
     selectedOps = {},
     onToggleOperator,
@@ -26,21 +21,24 @@ export default function SidebarFilters(props) {
     selectedBusType = "",
     onSelectBusType,
 
-    // --- NEW RANGES PROPS ---
-    minTime = 0,       // Default 0
-    onTimeChange,      // Handler
-    maxPrice = 2000000, // Default 2000000
-    onPriceChange,     // Handler
+    minTime = 0,       
+    onTimeChange,      
+    maxPrice = 2000000, 
+    onPriceChange, 
 
-    // Meta
     onClear,
     anyChecked = false,
     selectedCount = 0,
   } = props || {};
 
-  // Helper for currency format
   const formatCurrency = (val) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
+  };
+
+  const busTypeLabels = {
+    GIUONG_NAM: "Giường nằm",
+    GHE_NGOI: "Ghế ngồi",
+    LIMOUSINE: "Limousine"
   };
 
   return (
@@ -54,7 +52,6 @@ export default function SidebarFilters(props) {
       
       <aside className={`filters ${!showFilters ? "is-collapsed" : ""}`}>
         
-        {/* --- 1. Popular Criteria --- */}
         <div className="filters__section">
           <h4 className="filters__title">Tiêu chí phổ biến</h4>
           <label className="checkbox">
@@ -75,7 +72,6 @@ export default function SidebarFilters(props) {
           </label>
         </div>
 
-        {/* --- 2. Dropdowns --- */}
         <div className="filters__section">
           <div className="filters__label">Nơi đi</div>
           <select 
@@ -112,13 +108,14 @@ export default function SidebarFilters(props) {
             onChange={(e) => onSelectBusType && onSelectBusType(e.target.value)}
           >
             <option value="">Tất cả loại xe</option>
-            {busTypes.map((type) => (
-              <option key={type} value={type}>{type}</option>
-            ))}
+              {busTypes.map(type => (
+                <option key={type} value={type}>
+                  {busTypeLabels[type] || type}
+                </option>
+              ))}
           </select>
         </div>
 
-        {/* --- 5. Ranges (Time & Price) UPDATED --- */}
         <div className="filters__section">
           <div className="filters__label" style={{display: 'flex', justifyContent: 'space-between'}}>
             <span>Giờ đi</span>
@@ -162,7 +159,6 @@ export default function SidebarFilters(props) {
           </div>
         </div>
 
-        {/* --- 6. Operator Search --- */}
         <div className="filters__section">
           <div className="filters__label">Nhà xe</div>
           <input

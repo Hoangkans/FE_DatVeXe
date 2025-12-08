@@ -84,11 +84,9 @@ const normalizeTripData = (apiItem) => {
   };
 };
 
-// --- UPDATED FILTER LOGIC ---
 const performFilter = (sourceData, currentFilters, currentSidebar) => {
     let results = [...sourceData];
 
-    // 1. Top Bar Search (From/To/Date)
     if (currentFilters.from) {
       const keyword = cleanString(currentFilters.from);
       results = results.filter(t => t.searchFrom.includes(keyword));
@@ -101,43 +99,34 @@ const performFilter = (sourceData, currentFilters, currentSidebar) => {
       results = results.filter(t => t.rawDate.startsWith(currentFilters.date));
     }
 
-    // 2. Sidebar Filters
     const { 
         popular, 
         selectedOps, 
         selectedDeparture, 
         selectedArrival, 
         selectedBusType,
-        minTime,   // New
-        maxPrice   // New
+        minTime,  
+        maxPrice   
     } = currentSidebar;
 
-    // A. Dropdowns
     if (selectedDeparture) results = results.filter(t => t.fromStation === selectedDeparture);
     if (selectedArrival) results = results.filter(t => t.toStation === selectedArrival);
     if (selectedBusType) results = results.filter(t => t.busType === selectedBusType);
 
-    // B. Popular
     if (popular.discount) results = results.filter((t) => t.discount);
     if (popular.vip) results = results.filter((t) => t.vip);
 
-    // C. Ranges (NEW)
-    // Time Filter: Parse the 'rawDate' or 'depart' to get hour
     if (minTime > 0) {
         results = results.filter(t => {
             const dateObj = new Date(t.rawDate);
             const hour = dateObj.getHours(); 
-            // Return true if trip hour is equal or greater than slider value
             return hour >= minTime;
         });
     }
 
-    // Price Filter: Max Price
-    // Default maxPrice is 2,000,000. If ticket is higher, hide it.
     results = results.filter(t => t.price <= maxPrice);
 
 
-    // D. Operators
     const selectedOperatorNames = Object.keys(selectedOps).filter((key) => selectedOps[key]);
     if (selectedOperatorNames.length) {
       const operatorSet = new Set(selectedOperatorNames);
@@ -167,7 +156,6 @@ export default function BookCarPage() {
 
   const [loading, setLoading] = useState(true);
 
-  // --- UPDATED STATE ---
   const [sidebarState, setSidebarState] = useState({
     popular: { discount: false, vip: false },
     selectedOps: {},
@@ -175,8 +163,8 @@ export default function BookCarPage() {
     selectedDeparture: "", 
     selectedArrival: "",   
     selectedBusType: "",
-    minTime: 0,           // New: Start at 00:00
-    maxPrice: 2000000     // New: Start at max value
+    minTime: 0,           
+    maxPrice: 2000000   
   });
 
   const [uiState, setUiState] = useState({
@@ -187,7 +175,6 @@ export default function BookCarPage() {
     hasSearched: false,
   });
 
-  // ... (useEffect for locations and loadTrips remains the same) ...
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -236,7 +223,6 @@ export default function BookCarPage() {
     };
   }, [allTrips]);
 
-  // Main Effect to trigger filtering when any state changes
   useEffect(() => {
     if (allTrips.length > 0) {
       if (filters.from || filters.to || filters.date || uiState.hasSearched) {
@@ -260,7 +246,6 @@ export default function BookCarPage() {
 
 
   const handleConfirmBooking = async (bookingData) => {
-    // ... (Existing booking logic remains exactly the same) ...
     const { seat, passengerInfo, paymentMethod, totalPrice } = bookingData;
     const currentUser = getUser();
     const finalAmount = totalPrice || bookingModal.trip.price;
@@ -422,16 +407,13 @@ export default function BookCarPage() {
             showFilters={uiState.showFilters}
             onToggleCollapse={() => setUiState((prev) => ({ ...prev, showFilters: !prev.showFilters }))}
             
-            // Pass Sidebar State
             {...sidebarState}
 
-            // Dropdown Options
             departureStations={filterOptions.departures}
             arrivalStations={filterOptions.arrivals}
             busTypes={filterOptions.busTypes}
             filteredOperators={availableOperators} 
             
-            // Handlers for Boolean/Text
             onTogglePopular={(key) => (e) =>
               setSidebarState((prev) => ({ 
                   ...prev, 
@@ -446,12 +428,10 @@ export default function BookCarPage() {
             }
             onSearchChange={(value) => setSidebarState((prev) => ({ ...prev, search: value }))}
             
-            // Handlers for Dropdowns
             onSelectDeparture={(val) => setSidebarState(prev => ({...prev, selectedDeparture: val}))}
             onSelectArrival={(val) => setSidebarState(prev => ({...prev, selectedArrival: val}))}
             onSelectBusType={(val) => setSidebarState(prev => ({...prev, selectedBusType: val}))}
 
-            // --- NEW Handlers for Ranges ---
             onTimeChange={(val) => setSidebarState(prev => ({...prev, minTime: val}))}
             onPriceChange={(val) => setSidebarState(prev => ({...prev, maxPrice: val}))}
 
@@ -463,8 +443,8 @@ export default function BookCarPage() {
                 selectedDeparture: "",
                 selectedArrival: "",
                 selectedBusType: "",
-                minTime: 0,        // Reset Time
-                maxPrice: 2000000  // Reset Price
+                minTime: 0,       
+                maxPrice: 2000000  
               })
             }
             anyChecked={
@@ -474,8 +454,8 @@ export default function BookCarPage() {
                 sidebarState.selectedDeparture !== "" ||
                 sidebarState.selectedArrival !== "" ||
                 sidebarState.selectedBusType !== "" ||
-                sidebarState.minTime > 0 ||           // Checked if not default
-                sidebarState.maxPrice < 2000000       // Checked if not default
+                sidebarState.minTime > 0 ||           
+                sidebarState.maxPrice < 2000000     
             }
             selectedCount={
                 (sidebarState.popular.discount ? 1 : 0) + 
