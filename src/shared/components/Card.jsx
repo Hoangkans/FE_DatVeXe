@@ -2,6 +2,7 @@
 import "../styles/Card.css"
 
 function stripHtmlAndLimit(text, limit = 30) {
+    if (!text || typeof text !== 'string') return ''; // Ensure text is a valid string
     const clean = text.replace(/<[^>]+>/g, '');
     const words = clean.split(' ');
 
