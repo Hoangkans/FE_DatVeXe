@@ -175,29 +175,33 @@
 }
 
 .tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  text-align: center;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 6px;
   border-bottom: 1px solid #e9e9e9;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #1b8aeb1d #f1f1f100; 
 }
 
 .tabs__btn {
+  flex: 0 0 auto; /* prevents shrinking/wrapping */
+  padding: 0 16px;
+  width: 50%;
   height: 36px;
   background: #fff;
   border: 0;
-  border-right: 1px solid #e9e9e9;
   cursor: pointer;
   font-weight: 600;
   color: #428bca;
-}
-
-.tabs__btn:last-child {
-  border-right: 0;
+  position: relative;
+  border-radius: 6px;
 }
 
 .tabs__btn.is-active {
   color: #484848;
-  position: relative;
 }
 
 .tabs__btn.is-active::after {
@@ -205,14 +209,16 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: -1px;
   height: 2px;
   background: #428bca;
 }
 
+
 .tab-panel {
   padding: 16px 8px;
 }
+
 
 /* Note + Details in one line */
 .note-row {

@@ -3,12 +3,12 @@ export default function Review(props) {
         reviewerName = "",
         rating = 0,
         date = "",
-        comment = "",
+        review = "",
     } = props || {};  
 
     return (
         <div className="review">
-
+            <p>Review{review}</p>
         </div>
     )
 }
