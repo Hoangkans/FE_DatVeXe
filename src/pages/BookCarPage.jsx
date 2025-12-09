@@ -17,7 +17,7 @@ import { fetchTripData } from "../services/bookcar/bookingInfo";
 import { bookTicket } from "../services/Ticket/booking";
 import { createMoMoPayment, createSePayPayment } from "../services/payment/createPayment";
 import { createPayment } from "../services/payment/savePayment";
-import AdSlider from "../shared/components/HomePage/AdSlider"
+import AdSlider from "../shared/components/BookCar/AdSlider.jsx";
 
 const cleanString = (str) => {
   if (!str) return "";

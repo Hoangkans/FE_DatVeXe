@@ -65,7 +65,8 @@ export default function HomePage() {
                     getSubtitle={(item) => item.descriptions}
                 />
                 
-                <AdSlider/>
+                <AdSlider
+                />
                 
                 <SliderContent
                     title="Bến xe phổ biến"
