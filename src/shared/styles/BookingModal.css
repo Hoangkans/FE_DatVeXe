@@ -376,20 +376,14 @@
     font-size: 14px; 
 }
 
-
-
 .summary-total {
-    margin-top: 10px;
-    padding: 15px;
-    background-color: #c3c2c0;
+    margin-top: 15px;
+    background-color: #f8f9fa; 
+    border: 1px solid #e9ecef;
     border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px dashed #ccc;
-    background: transparent;
+    padding: 15px;
+    font-size: 0.95rem; 
 }
-
 .price-text {
     color: #d32f2f;
     font-size: 1.1rem;
@@ -504,6 +498,51 @@
 
 .filters__select:focus {
     border-color: #007bff; 
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.summary-row.discount {
+    color: #28a745; /* Green for discount */
+}
+
+.summary-row.total {
+    border-top: 1px dashed #ccc; /* Dashed line separator */
+    padding-top: 12px;
+    margin-top: 8px;
+    margin-bottom: 0;
+    align-items: center;
+}
+
+.summary-label {
+    font-weight: 500;
+}
+
+.summary-label.final {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.summary-value.final {
+    color: #d32f2f; 
+    font-size: 1.4rem; 
+}
+
+.surcharge-note {
+    font-size: 0.8em;
+    color: #888;
+    font-weight: normal;
 }
 @media (max-width: 600px) {
     .booking-modal-content {

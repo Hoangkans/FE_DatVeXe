@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react"; 
 import { toast } from "react-toastify";
 import "../../styles/TripCard.css";
 import formatMoney from "../../utils/ticket/money";
@@ -6,6 +6,7 @@ import Review from "./Review";
 
 import { fetchUserReview, createReview } from "../../../services/bookcar/review";
 import { getUser } from "../../../services/auth/auth.service"
+import { fetchDiscount } from "../../../services/Ticket/discount";
 
 export default function TripCard(props) {
   const {
@@ -20,8 +21,7 @@ export default function TripCard(props) {
   const {
     name = "",
     operator = "",
-    rating = 0,
-    reviews = 0,
+    reviews = 0, 
     depart = "",
     arrive = "",
     fromStation = "",
@@ -32,7 +32,9 @@ export default function TripCard(props) {
     duration,
     departDate,
     bus,
-    id
+    id,
+    route = {}, 
+    company = {}
   } = t || {};
 
   const [reviewList, setReviewList] = useState([]);
@@ -43,14 +45,25 @@ export default function TripCard(props) {
   const [userComment, setUserComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [voucherList, setVoucherList] = useState([]);
+  const [loadingVouchers, setLoadingVouchers] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+
   useEffect(() => {
-    if (expanded && activeTab === "review" && !reviewsLoaded) {
       const loadReviews = async () => {
+        if (reviewsLoaded) return;
+        
+        if (activeTab !== 'review') return; 
+
+        const busId = bus?.id || id || t.id;
+        if (!busId) return;
+
         setLoadingReviews(true);
         try {
-          const busId = bus?.id || t.id;
           const data = await fetchUserReview(busId);
-          const sortedData = Array.isArray(data) ? data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) : [];
+          const sortedData = Array.isArray(data) 
+            ? [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) 
+            : [];
           setReviewList(sortedData);
           setReviewsLoaded(true);
         } catch (error) {
@@ -59,9 +72,65 @@ export default function TripCard(props) {
           setLoadingReviews(false);
         }
       };
+      
       loadReviews();
+  }, [bus?.id, t.id, id, reviewsLoaded, activeTab]); 
+
+  useEffect(() => {
+    const loadDiscounts = async () => {
+        if (activeTab !== 'discount') return; 
+        if (voucherList.length > 0) return; 
+
+        setLoadingVouchers(true);
+        try {
+            const response = await fetchDiscount();
+            const allVouchers = response.data || [];
+            
+            const currentRouteId = route?.id || t.route?.id;
+            const currentCompanyId = company?.id || t.company?.id;
+
+            const validVouchers = allVouchers.filter(v => {
+                if (v.status !== 'active') return false;
+                
+                if (v.applicable_routes && v.applicable_routes.length > 0) {
+                    if (currentRouteId && !v.applicable_routes.includes(currentRouteId)) return false;
+                }
+                
+                if (v.applicable_bus_companies && v.applicable_bus_companies.length > 0) {
+                    if (currentCompanyId && !v.applicable_bus_companies.includes(currentCompanyId)) return false;
+                }
+
+                if (v.min_order_amount && price < parseFloat(v.min_order_amount)) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            setVoucherList(validVouchers);
+        } catch (error) {
+            console.error("Failed to load vouchers", error);
+        } finally {
+            setLoadingVouchers(false);
+        }
+    };
+
+    loadDiscounts();
+  }, [activeTab, voucherList.length, route?.id, company?.id, t.id, price]);
+
+  const { avgRating, totalReviews } = useMemo(() => {
+    if (!reviewList || reviewList.length === 0) {
+      return { avgRating: 0, totalReviews: reviews };
     }
-  }, [expanded, activeTab, reviewsLoaded, bus?.id, t.id]);
+
+    const totalStars = reviewList.reduce((acc, curr) => acc + Number(curr.rating), 0);
+    const average = totalStars / reviewList.length;
+
+    return {
+      avgRating: average.toFixed(1), 
+      totalReviews: reviewList.length
+    };
+  }, [reviewList, reviews]);
 
   const handleSubmitReview = async () => {
     const currentUser = getUser();
@@ -98,9 +167,18 @@ export default function TripCard(props) {
         toast.success("Đánh giá của bạn đã được gửi!");
 
     } catch (error) {
+        console.error(error);
         toast.error("Gửi đánh giá thất bại. Vui lòng thử lại.");
     } finally {
         setIsSubmitting(false);
+    }
+  };
+
+  const handleApplyVoucher = (voucher) => {
+    if (selectedVoucher?.id === voucher.id) {
+        setSelectedVoucher(null); 
+    } else {
+        setSelectedVoucher(voucher); 
     }
   };
 
@@ -138,8 +216,21 @@ export default function TripCard(props) {
           <div className="booking-cta" style={{ width: "200px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "10px" }}>
             <div className="strong" style={{ fontSize: "1.1rem" }}>Chuyến {t.depart}</div>
             <div className="muted">Giường nằm cao cấp</div>
-            <div className="price-tag" style={{ color: "#ff5e1f", fontSize: "1.2rem", fontWeight: "bold" }}>{formatMoney(t.price)}đ</div>
-            <button className="btn btn--primary" style={{ width: "100%", padding: "12px" }} onClick={onBook}>ĐẶT VÉ NGAY</button>
+            
+            {selectedVoucher ? (
+                <div>
+                     <div className="price-tag" style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.9rem' }}>{formatMoney(t.price)}đ</div>
+                     <div className="price-tag" style={{ color: "#28a745", fontSize: "1.2rem", fontWeight: "bold" }}>
+                        Đã áp mã giảm
+                     </div>
+                </div>
+            ) : (
+                <div className="price-tag" style={{ color: "#ff5e1f", fontSize: "1.2rem", fontWeight: "bold" }}>{formatMoney(t.price)}đ</div>
+            )}
+
+            <button className="btn btn--primary" style={{ width: "100%", padding: "12px" }} onClick={() => onBook(t.id, selectedVoucher)}>
+                ĐẶT VÉ NGAY
+            </button>
           </div>
         </div>
       );
@@ -148,7 +239,6 @@ export default function TripCard(props) {
     if (activeTab === "review") {
       return (
         <div className="reviews-wrapper" style={{display: 'flex', flexDirection: 'column', gap: 20}}>
-            
             <div className="write-review-box" style={{ background: "#f9f9f9", padding: 15, borderRadius: 8, border: "1px solid #eee" }}>
                 <div style={{fontWeight: 'bold', marginBottom: 10}}>Viết đánh giá của bạn</div>
                 {renderInteractiveStars()}
@@ -180,9 +270,8 @@ export default function TripCard(props) {
                 </div>
             </div>
 
-            {/* --- REVIEW LIST --- */}
             <div className="reviews-list" style={{ maxHeight: '300px', overflowY: 'auto', paddingRight: '5px' }}>
-                {loadingReviews ? (
+                {loadingReviews && !reviewsLoaded ? (
                     <div style={{ padding: 20, textAlign: "center", color: "#666" }}>Đang tải đánh giá...</div>
                 ) : reviewList.length > 0 ? (
                     reviewList.map((item) => (
@@ -198,7 +287,68 @@ export default function TripCard(props) {
       );
     }
 
-    // Policy Tab
+    if (activeTab === "discount") {
+      return (
+        <div className="discount-tab" style={{maxHeight: 250, overflowY: 'auto'}}>
+          {loadingVouchers ? (
+            <div style={{textAlign: "center", padding: 30, color: "#666"}}>
+                <span className="loading-spinner" style={{borderColor: '#ff5e1f', borderTopColor: 'transparent', marginRight: 10}}></span>
+                Đang tìm ưu đãi tốt nhất...
+            </div>
+          ) : voucherList.length > 0 ? (
+            <div style={{display: 'flex', flexDirection: 'column', minHeight: '100%'}}>
+                
+                <div className="voucher-list">
+                  {voucherList.map(voucher => {
+                    const isSelected = selectedVoucher?.id === voucher.id;
+                    return (
+                        <div 
+                            key={voucher.id} 
+                            className={`voucher-card ${isSelected ? 'is-selected' : ''}`}
+                            onClick={() => handleApplyVoucher(voucher)}
+                        >
+                          <div className="voucher-main">
+                              <div className="voucher-code-badge">{voucher.code}</div>
+                              <div className="voucher-name">{voucher.name}</div>
+                              <div className="voucher-desc">{voucher.description}</div>
+                          </div>
+                          
+                          <div className="voucher-divider"></div>
+                          
+                          <div className="voucher-footer">
+                              <div className="voucher-date">
+                                  HSD: {new Date(voucher.end_date).toLocaleDateString('vi-VN')}
+                              </div>
+                              <button className="btn-apply-voucher">
+                                  {isSelected ? '✓ Đã chọn' : 'Dùng ngay'}
+                              </button>
+                          </div>
+                        </div>
+                    )
+                  })}
+                </div>
+
+                <div className="discount-book-btn-container">
+                    <button 
+                        className="btn btn--primary" 
+                        style={{ padding: "12px 24px", boxShadow: "0 4px 10px rgba(255, 94, 31, 0.3)" }} 
+                        onClick={() => onBook(t.id, selectedVoucher)}
+                    >
+                        {selectedVoucher 
+                            ? `ĐẶT VÉ • GIẢM ${selectedVoucher.type === 'percentage' ? selectedVoucher.value + '%' : formatMoney(selectedVoucher.value) + 'đ'}` 
+                            : 'ĐẶT VÉ NGAY'}
+                    </button>
+                </div>
+            </div>
+          ) : (
+            <div style={{textAlign: "center", padding: 40, color: "#888"}}>
+                <p>Chưa có mã giảm giá nào cho chuyến này.</p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className="policy">
         <div className="policy-table">
@@ -245,9 +395,9 @@ export default function TripCard(props) {
         <div className="trip__title">
           <h4 className="trip__name">{operator}</h4>
           <div className="trip__rating">
-            <span className="badge">★ {Number(rating).toFixed(1)}</span>
+            <span className="badge">★ {avgRating > 0 ? avgRating : "N/A"}</span>
             <span className="sep">•</span>
-            <span className="muted">{reviews} Đánh giá</span>
+            <span className="muted">{totalReviews} Đánh giá</span>
           </div>
         </div>
         <div className="trip__subtitle muted">{name}</div>
@@ -286,7 +436,8 @@ export default function TripCard(props) {
           <div className="tabs">
             <button className={`tabs__btn ${activeTab === "images" ? "is-active" : ""}`} onClick={() => onTabChange("images")}>Hình ảnh</button>
             <button className={`tabs__btn ${activeTab === "cancel" ? "is-active" : ""}`} onClick={() => onTabChange("cancel")}>Phí hủy</button>
-            <button className={`tabs__btn ${activeTab === "review" ? "is-active" : ""}`} onClick={() => onTabChange("review")}>Đánh giá ({reviewList.length || reviews})</button>
+            <button className={`tabs__btn ${activeTab === "review" ? "is-active" : ""}`} onClick={() => onTabChange("review")}>Đánh giá ({totalReviews})</button>
+            <button className={`tabs__btn ${activeTab === "discount" ? "is-active" : ""}`} onClick={() => onTabChange("discount")}>Ưu đãi</button>
           </div>
           <div className="tab-panel">
             {renderTab()}

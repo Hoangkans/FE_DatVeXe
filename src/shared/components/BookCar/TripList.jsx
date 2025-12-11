@@ -196,7 +196,7 @@ export default function TripList(props) {
           activeTab={activeTab}
           onToggle={() => onToggleTrip && onToggleTrip(t.id)}
           onTabChange={onTabChange || (() => void 0)}
-          onBook={() => onBookTicket && onBookTicket(t.id)}
+          onBook={(id, voucher) => onBookTicket(id, voucher)}
         />
       ))}
 

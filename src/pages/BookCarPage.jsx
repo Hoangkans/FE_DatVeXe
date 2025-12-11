@@ -73,14 +73,15 @@ const normalizeTripData = (apiItem) => {
     rawDate: apiItem.time.departure,
     price: apiItem.route?.price,
     seatsLeft: apiItem.seats?.available,
-    rating: 4.5, 
-    reviews: 10, 
     name: apiItem.bus?.name,
     busType: apiItem.bus?.bus_type || "UNKNOWN",
     vip: apiItem.bus?.name?.toLowerCase().includes("vip") || apiItem.seats?.list?.some(s => s.seat_type === 'VIP'),
     discount: false, 
     image: apiItem.bus?.images?.[0]?.image_url || null,
     seatsList: apiItem.seats?.list || [],
+    // Needed for filtering discounts later in TripCard
+    route: apiItem.route, 
+    company: apiItem.company
   };
 };
 
@@ -142,7 +143,7 @@ export default function BookCarPage() {
   const [paymentData, setPaymentData] = useState(null);
   const [allTrips, setAllTrips] = useState([]); 
   const [trips, setTrips] = useState([]); 
-  const [bookingModal, setBookingModal] = useState({ isOpen: false, trip: null });
+  const [bookingModal, setBookingModal] = useState({ isOpen: false, trip: null, discount: null });
   const [isBooking, setIsBooking] = useState(false);
   
   const [filters, setFilters] = useState(() => {
@@ -246,9 +247,9 @@ export default function BookCarPage() {
 
 
   const handleConfirmBooking = async (bookingData) => {
-    const { seat, passengerInfo, paymentMethod, totalPrice } = bookingData;
+    const { seat, passengerInfo, paymentMethod, totalPrice, discountUsed} = bookingData;
     const currentUser = getUser();
-    const finalAmount = totalPrice || bookingModal.trip.price;
+    const finalAmount = totalPrice;
     
     if (!currentUser || !currentUser.id) {
         toast.error("Vui lòng đăng nhập để tiếp tục");
@@ -337,14 +338,19 @@ export default function BookCarPage() {
     }
   };
 
-  const handleOpenBooking = (tripId) => {
+  // --- FIXED FUNCTION ---
+  const handleOpenBooking = (tripId, voucher) => { // Added voucher param
     const selectedTrip = trips.find(t => t.id === tripId);
     if (selectedTrip) {
-      setBookingModal({ isOpen: true, trip: selectedTrip });
+      setBookingModal({ 
+        isOpen: true, 
+        trip: selectedTrip,
+        discount: voucher // Now 'voucher' exists
+      });
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
       const mq = window.matchMedia("(max-width: 900px)");
       const updateNarrow = (e) => setUiState((prev) => ({ ...prev, isNarrow: e.matches }));
       mq.addEventListener("change", updateNarrow);
@@ -494,7 +500,8 @@ export default function BookCarPage() {
             <BookingModal 
               isOpen={bookingModal.isOpen}
               trip={bookingModal.trip}
-              onClose={() => setBookingModal({ isOpen: false, trip: null })}
+              selectedDiscount={bookingModal.discount}
+              onClose={() => setBookingModal({ isOpen: false, trip: null, discount: null })}
               onConfirm={handleConfirmBooking}
               isLoading={isBooking}
               paymentData={paymentData}
