@@ -181,15 +181,12 @@
   white-space: nowrap;
   padding-bottom: 6px;
   border-bottom: 1px solid #e9e9e9;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: #1b8aeb1d #f1f1f100; 
 }
 
 .tabs__btn {
   flex: 0 0 auto; /* prevents shrinking/wrapping */
   padding: 0 16px;
-  width: 50%;
+  width: 100px;
   height: 36px;
   background: #fff;
   border: 0;
