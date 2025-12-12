@@ -10,6 +10,9 @@ export const login = async (email, password) => {
     if (response?.data?.token) {
       // Lưu theo key 'token' để axios interceptor gắn Authorization
       localStorage.setItem('token', response.data.token);
+      if (response.data.refreshToken) {
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+      }
       if (response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }

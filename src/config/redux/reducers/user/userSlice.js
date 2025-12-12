@@ -29,11 +29,15 @@ export const userSlice = createSlice({
             state.userInfo = action.payload
             state.status = 'succeeded'
         },
-        logOut(state){
-            localStorage.removeItem('user')
-            localStorage.removeItem('token')
-            state.userInfo = null
-            state.status = 'idle'
+        logOut(state) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken'); 
+            
+            state.userInfo = null;
+            state.status = 'idle';
+            
+            window.location.href = '/login'; 
         }
     }
 })
