@@ -37,6 +37,30 @@ export default function TripCard(props) {
     company = {}
   } = t || {};
 
+  const formattedDuration = useMemo(() => {
+    if (duration == null || duration === "") return "";
+    const mins = Number(duration);
+    if (Number.isNaN(mins)) return String(duration);
+
+    const totalHours = Math.floor(mins / 60);
+    const minutes = mins % 60;
+
+    if (totalHours >= 24) {
+      const days = Math.floor(totalHours / 24);
+      const hours = totalHours % 24;
+
+      if (minutes > 0 && hours > 0) return `${days}d ${hours}h ${minutes}m`;
+      if (hours > 0) return `${days}d ${hours}h`;
+      if (minutes > 0) return `${days}d ${minutes}m`;
+      return `${days}d`;
+    }
+
+    if (totalHours > 0 && minutes > 0) return `${totalHours}h ${minutes}m`;
+    if (totalHours > 0) return `${totalHours}h`;
+    return `${minutes}m`;
+  }, [duration]);
+
+
   const [reviewList, setReviewList] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [reviewsLoaded, setReviewsLoaded] = useState(false);
@@ -407,7 +431,7 @@ export default function TripCard(props) {
             <div className="link small">{fromStation}</div>
           </div>
           <div className="time__center">
-            <div className="time__duration muted small">{duration}h</div>
+            <div className="time__duration muted small">{formattedDuration}</div>
             <div className="time__arrow" aria-hidden="true" />
             <div className="time__middle-label muted small">-</div>
           </div>
