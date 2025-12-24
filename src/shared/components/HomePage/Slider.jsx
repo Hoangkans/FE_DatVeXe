@@ -1,6 +1,7 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 import "../../styles/HomePage.css"
 
@@ -9,7 +10,8 @@ export default function SliderContent({
     items = null,
     getImageUrl,
     getTitle,
-    getSubtitle
+    getSubtitle,
+    getLink
 }) {
 
     const scrollRef = useRef(null);
@@ -25,6 +27,10 @@ export default function SliderContent({
         else container.scrollLeft += cardWidth;
     };
 
+    const handleNavigation = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     return (
         <>
             <div className="slide-content">
@@ -36,13 +42,19 @@ export default function SliderContent({
 
                     <div className="routes-slider" ref={scrollRef}>
                         {items?.map((item) => (
-                            <div key={item.id} className="route-card">
+                            <Link 
+                                to={getLink ? getLink(item) : "#"} 
+                                key={item.id} 
+                                className="route-card"
+                                onClick={handleNavigation} 
+                                style={{ textDecoration: 'none', color: 'inherit' }} 
+                            >
                                 <img src={getImageUrl(item)} alt={getTitle(item)} />
                                 <div className="route-info">
                                     <h3>{getTitle(item)}</h3>
                                     <p className="price">{getSubtitle(item)}</p>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
 

@@ -2,6 +2,16 @@
     width: 100%;
     height: auto;
 }
+.main-content-wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.main-content{
+    width: 90%;
+    max-width: 1300px;
+}
 
 .slide-content {
     width: 100%;
@@ -236,6 +246,20 @@
         transform: translateX(-50%);
     }
 }
+
+.reveal-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+    pointer-events: none; 
+}
+
+.reveal-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
 
 @media (max-width: 768px) {
     .claim-card img {

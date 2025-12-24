@@ -34,6 +34,7 @@ export default function ResponsiveNav() {
         { title: 'BẾN XE', path: '/bus-station' },
         { title: 'TUYẾN ĐƯỜNG', path: '/bus-route' },
         { title: 'KIỂM TRA VÉ', path: '/ticket-check' },
+        { title: 'PROFILE', path: '/profile' },
     ];
 
     return (

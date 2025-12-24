@@ -23,14 +23,13 @@ function srcset(image, size, rows = 1, cols = 1) {
 }
 
 export default function TopReview() {
-    // 1. Initialize the hook
     const navigate = useNavigate();
 
-    // 2. Update function to accept the location name directly
     const handleSearch = (locationTitle) => {
         if (locationTitle) {
             // Encode URI component handles spaces (e.g., "Ha Noi" -> "Ha%20Noi")
             navigate(`/search-result?q=${encodeURIComponent(locationTitle)}`);
+            window.scrollTo({ top: 0, behavior: "smooth" })
         }
     };
 
@@ -49,8 +48,6 @@ export default function TopReview() {
             >
                 {itemData.map((item, index) => (
                     <ImageListItem
-                        // 3. FIX: 'onClick' (CamelCase)
-                        // 4. FIX: Use arrow function () => to prevent immediate execution
                         onClick={() => handleSearch(item.title)}
                         key={`${item.img}-${index}`}
                         cols={item.cols || 1}
@@ -60,7 +57,7 @@ export default function TopReview() {
                             transition: 'transform 0.3s ease',
                             '&:hover': {   
                                 cursor: 'pointer',
-                                transform: 'scale(1.02)', // Optional: adds a nice zoom effect
+                                transform: 'scale(1.01)', 
                                 zIndex: 1
                             },
                         }}

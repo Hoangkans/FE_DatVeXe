@@ -41,6 +41,7 @@ export default function CalendarPicker({ value: propValue, onChange }) {
                     onClick={() => setOpen((s) => !s)}
                     aria-haspopup="dialog"
                     aria-expanded={open}
+                    readOnly
                 />
 
                 {open && (

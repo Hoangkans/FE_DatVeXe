@@ -37,7 +37,7 @@ export default function TicketCheck() {
                                 <input 
                                     type="text" 
                                     name="ticketCode" 
-                                    placeholder="Mã Vé" 
+                                    placeholder="Mã Vé (bắt buộc)" 
                                     required
                                     value={ticketId}
                                     onChange={(e) => setTicketId(e.target.value)}
@@ -45,7 +45,7 @@ export default function TicketCheck() {
                                 <input 
                                     type="text" 
                                     name="phoneNumber" 
-                                    placeholder="Số điện thoại " 
+                                    placeholder="Số điện thoại (bắt buộc)" 
                                     required
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value)}

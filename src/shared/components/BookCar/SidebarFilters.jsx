@@ -5,8 +5,6 @@ export default function SidebarFilters(props) {
     
     popular = { discount: false, vip: false },
     onTogglePopular,
-    search = "",
-    onSearchChange,
     
     filteredOperators = [],
     selectedOps = {},
@@ -54,15 +52,7 @@ export default function SidebarFilters(props) {
         
         <div className="filters__section">
           <h4 className="filters__title">Tiêu chí phổ biến</h4>
-          <label className="checkbox">
-            <input 
-              type="checkbox" 
-              checked={!!popular?.discount} 
-              onChange={onTogglePopular ? onTogglePopular("discount") : undefined} 
-            /> 
-            Chuyến giảm giá
-          </label>
-          <label className="checkbox">
+          <label className="checkbox" style={{display: 'flex', alignItems: 'center'}}>
             <input 
               type="checkbox" 
               checked={!!popular?.vip} 
@@ -161,15 +151,9 @@ export default function SidebarFilters(props) {
 
         <div className="filters__section">
           <div className="filters__label">Nhà xe</div>
-          <input
-            className="filters__search"
-            placeholder="Tìm nhà xe"
-            value={search}
-            onChange={(e) => (onSearchChange ? onSearchChange(e.target.value) : void 0)}
-          />
           <div className="filters__operator-list">
             {(filteredOperators || []).map((name) => (
-              <label className="checkbox" key={name}>
+              <label className="checkbox" key={name} style={{display: 'flex', alignItems: 'center'}}>
                 <input 
                   type="checkbox" 
                   checked={!!selectedOps[name]} 

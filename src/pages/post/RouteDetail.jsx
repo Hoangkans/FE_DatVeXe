@@ -2,7 +2,6 @@ import { useSelector } from "react-redux"
 import MainLayout from "../../shared/layouts/MainLayout"
 
 import sample from "../../assets/image-hodler.png"
-import formatMoney from "../../shared/utils/ticket/money"
 import "../../shared/styles/BusPage.css"
 export default function RouteDetail() {
     const route = useSelector((state) => state.post.selectedPost)
@@ -21,7 +20,7 @@ export default function RouteDetail() {
                     }}
                 >
                     <h2>TUYẾN ĐƯỜNG</h2>
-                    <p>From <strong>{route.title}</strong> to <strong>{route.description}</strong></p>
+                    <p> <strong>{route.title}</strong>  <strong>{route.description}</strong></p>
                 </div>
                 <div className="station-content">
                     <div 

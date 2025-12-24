@@ -93,7 +93,7 @@ export default function BookingHistory({ tickets, loading }) {
                                 <h4>Thông tin xe</h4>
                                 <p><strong>Nhà xe:</strong> {selectedTicket.seat?.bus?.name}</p>
                                 <p><strong>Biển số:</strong> {selectedTicket.seat?.bus?.license_plate}</p>
-                                <p><strong>Loại xe:</strong> {selectedTicket.seat?.bus?.descriptions}</p>
+                                <p><strong>Mô tả:</strong> {selectedTicket.seat?.bus?.descriptions}</p>
                                 <p><strong>Ghế của bạn:</strong> <span style={{color: 'green', fontWeight: 'bold'}}>{selectedTicket.seat?.seat_number}</span> ({selectedTicket.seat_type})</p>
                             </div>
                             

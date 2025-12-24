@@ -41,6 +41,24 @@ export default function HomePage() {
     const stationStatus = useSelector((state) => state.stations.status)
 
     useEffect(() => {
+        const observerOptions = {
+            threshold: 0.15, 
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        const sections = document.querySelectorAll(".reveal-section");
+        sections.forEach((section) => observer.observe(section));
+
+        return () => observer.disconnect(); 
+    }, [busData, stationData]); 
+
+    useEffect(() => {
         if (busStatus === 'idle') {
             dispatch(fetchPopularBuses());
         }
@@ -57,80 +75,94 @@ export default function HomePage() {
                     <Thumbnail/>
                 </div>
                 
-                <SliderContent
-                    title="Nhà xe phổ biến"
-                    items={busData}
-                    getImageUrl={(item) => item.image}
-                    getTitle={(item) => item.company_name}
-                    getSubtitle={(item) => item.descriptions}
-                />
-                
-                <AdSlider
-                />
-                
-                <SliderContent
-                    title="Bến xe phổ biến"
-                    items={stationData}
-                    getImageUrl={(item) => item.image} 
-                    getTitle={(item) => item.name}
-                    getSubtitle={(item) => item.descriptions}
-                />
+                <div className="main-content-wrapper">
+                    <div className="main-content">
 
-                <h2 className="title-accent">Top Bài viết </h2>   
-                <TopReview/>
-                
+                        <div className="reveal-section">
+                            <SliderContent
+                                title="Nhà xe phổ biến"
+                                items={busData}
+                                getImageUrl={(item) => item.image}
+                                getTitle={(item) => item.company_name}
+                                getSubtitle={(item) => item.descriptions}
+                                getLink={() => "/bus-company"}
+                            />
+                        </div>
+                        
+                        <div className="reveal-section">
+                            <AdSlider/>
+                        </div>
+                        
+                        <div className="reveal-section">
+                            <SliderContent
+                                title="Bến xe phổ biến"
+                                items={stationData}
+                                getImageUrl={(item) => item.image} 
+                                getTitle={(item) => item.name}
+                                getSubtitle={(item) => item.descriptions}
+                                getLink={() => "/bus-station"}
+                            />
+                        </div>
 
-                <h2 className="title-accent" style={{marginTop: 50}}>Nền tảng kết nối người dùng và nhà xe</h2>   
-                <div className="claim-section">
-                    <div className="claim-item">
-                        <div className="claim-card">
-                            <img src={icon1} style={{height: "65px"}}/>
-                            <div className="claim-info">
-                                <h3>ĐÁP ỨNG MỌI NHU CẦU TÌM KIẾM</h3>
-                                <p>Với hơn 5000+ tuyến dường và 1500+ nhà xe trên khắp cả nước</p>
-                            </div>
+                        <div className="reveal-section">
+                            <h2 className="title-accent">Top Bài viết </h2>   
+                            <TopReview/>
                         </div>
-                        <div className="claim-card">
-                            <img src={icon2} style={{height: "65px"}}/>
-                            <div className="claim-info">
-                                <h3>ĐẢM BẢO CÓ VÉ</h3>
-                                <p>Hoàn ngay 150% nếu không có vé, mang đến hành trình chọn vẹn</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="claim-item">
-                        <div className="claim-card">
-                            <img src={icon3} style={{height: "65px"}} />
-                            <div className="claim-info">
-                                <h3>CAM KẾT GIỮ VẼ</h3>
-                                <p>Vivutoday cam kết hoàn 150% nếu nhà xe không giữ vé</p>
-                            </div>
-                        </div>
-                        <div className="claim-card">
-                            <img src={icon4} style={{height: "65px"}}/>
-                            <div className="claim-info">
-                                <h3>TỔNG ĐÀI HỖ TRỢ KHÁCH HÀNG 24/7</h3>
-                                <p>Giải quyết kịp thời vấn đề của khách hàng một cách nhanh chóng</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 className="title-accent">Nền Tảng Kết Nối Người Dùng Và Nhà Xe</h2>
-                
-                <div className="prize-wrapper">
-                    <div className="prize-section">
-                        <div className="prize-list">
-                            {[...prize, ...prize].map((item, index) => (
-                                <div key={index} className="prize-card">
-                                <img src={item.src} alt={item.name} />
+                        
+                        <div className="reveal-section">
+                            <h2 className="title-accent" style={{marginTop: 50}}>Nền tảng kết nối người dùng và nhà xe</h2>   
+                            <div className="claim-section">
+                                <div className="claim-item">
+                                    <div className="claim-card">
+                                        <img src={icon1} style={{height: "65px"}}/>
+                                        <div className="claim-info">
+                                            <h3>ĐÁP ỨNG MỌI NHU CẦU TÌM KIẾM</h3>
+                                            <p>Với hơn 5000+ tuyến dường và 1500+ nhà xe trên khắp cả nước</p>
+                                        </div>
+                                    </div>
+                                    <div className="claim-card">
+                                        <img src={icon2} style={{height: "65px"}}/>
+                                        <div className="claim-info">
+                                            <h3>ĐẢM BẢO CÓ VÉ</h3>
+                                            <p>Hoàn ngay 150% nếu không có vé, mang đến hành trình chọn vẹn</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            ))}
+
+                                <div className="claim-item">
+                                    <div className="claim-card">
+                                        <img src={icon3} style={{height: "65px"}} />
+                                        <div className="claim-info">
+                                            <h3>CAM KẾT GIỮ VẼ</h3>
+                                            <p>Vivutoday cam kết hoàn 150% nếu nhà xe không giữ vé</p>
+                                        </div>
+                                    </div>
+                                    <div className="claim-card">
+                                        <img src={icon4} style={{height: "65px"}}/>
+                                        <div className="claim-info">
+                                            <h3>TỔNG ĐÀI HỖ TRỢ KHÁCH HÀNG 24/7</h3>
+                                            <p>Giải quyết kịp thời vấn đề của khách hàng một cách nhanh chóng</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 className="title-accent">Nền Tảng Kết Nối Người Dùng Và Nhà Xe</h2>
+                        
+                        <div className="prize-wrapper">
+                            <div className="prize-section">
+                                <div className="prize-list">
+                                    {[...prize, ...prize].map((item, index) => (
+                                        <div key={index} className="prize-card">
+                                        <img src={item.src} alt={item.name} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
             </div>
         </MainLayout>
     )

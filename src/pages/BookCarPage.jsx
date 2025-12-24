@@ -79,7 +79,6 @@ const normalizeTripData = (apiItem) => {
     discount: false, 
     image: apiItem.bus?.images?.[0]?.image_url || null,
     seatsList: apiItem.seats?.list || [],
-    // Needed for filtering discounts later in TripCard
     route: apiItem.route, 
     company: apiItem.company
   };
@@ -247,7 +246,7 @@ export default function BookCarPage() {
 
 
   const handleConfirmBooking = async (bookingData) => {
-    const { seat, passengerInfo, paymentMethod, totalPrice, discountUsed} = bookingData;
+    const { seat, passengerInfo, paymentMethod, totalPrice} = bookingData;
     const currentUser = getUser();
     const finalAmount = totalPrice;
     
@@ -312,7 +311,9 @@ export default function BookCarPage() {
             account_number: qrData.account_number
           }, currentUser.accessToken);
           setPaymentData(qrData);
-          toast.success("Vui lòng quét mã QR để thanh toán");
+          setTimeout(() => {
+            toast.success("Vui lòng quét mã QR để thanh toán");
+          }, 1000);
           setIsBooking(false); 
         } else {
             throw new Error("Không lấy được QR code Sepay");
@@ -325,7 +326,9 @@ export default function BookCarPage() {
               status: 'COMPLETED', 
             description: 'Thanh toán tiền mặt/tại quầy'
         }, currentUser.accessToken);
-        toast.success(`Đặt vé thành công! Mã: ${ticketCode}`);
+        setTimeout(() => {
+          toast.success(`Đặt vé thành công! Mã: ${ticketCode}`);
+        }, 1500);
         setBookingModal({ isOpen: false, trip: null });
         await loadTrips();
         setIsBooking(false); 
@@ -338,14 +341,13 @@ export default function BookCarPage() {
     }
   };
 
-  // --- FIXED FUNCTION ---
-  const handleOpenBooking = (tripId, voucher) => { // Added voucher param
+  const handleOpenBooking = (tripId, voucher) => { 
     const selectedTrip = trips.find(t => t.id === tripId);
     if (selectedTrip) {
       setBookingModal({ 
         isOpen: true, 
         trip: selectedTrip,
-        discount: voucher // Now 'voucher' exists
+        discount: voucher 
       });
     }
   };
@@ -454,7 +456,6 @@ export default function BookCarPage() {
               })
             }
             anyChecked={
-                sidebarState.popular.discount || 
                 sidebarState.popular.vip || 
                 Object.values(sidebarState.selectedOps).some(Boolean) ||
                 sidebarState.selectedDeparture !== "" ||
@@ -464,7 +465,6 @@ export default function BookCarPage() {
                 sidebarState.maxPrice < 2000000     
             }
             selectedCount={
-                (sidebarState.popular.discount ? 1 : 0) + 
                 (sidebarState.popular.vip ? 1 : 0) + 
                 Object.values(sidebarState.selectedOps).filter(Boolean).length +
                 (sidebarState.selectedDeparture ? 1 : 0) +

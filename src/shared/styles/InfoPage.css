@@ -194,6 +194,57 @@
     font-size: 20px;
     text-transform: uppercase;
 }
+.Info-form-input button:hover{
+    cursor: pointer;
+}
+
+.reveal-base {
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-delay: var(--delay, 0s);
+}
+
+.reveal-fade-up {
+    transform: translateY(40px);
+}
+.reveal-slide-left {
+    transform: translateX(-60px);
+}
+.reveal-slide-right {
+    transform: translateX(60px);
+}
+.reveal-pop {
+    transform: scale(0.85) translateY(20px);
+}
+.reveal-base.is-visible {
+    opacity: 1;
+    transform: translate(0) scale(1); 
+}
+
+@keyframes bannerTextSlide {
+    from { opacity: 0; transform: translateX(-50px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bannerFadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.banner-claim p {
+    animation: bannerTextSlide 0.8s ease-out forwards;
+    opacity: 0; 
+}
+.banner-claim p:nth-child(1) { animation-delay: 0.1s; }
+.banner-claim p:nth-child(2) { animation-delay: 0.3s; }
+.banner-claim p:nth-child(3) { animation-delay: 0.5s; }
+
+.banner-info-link {
+    animation: bannerFadeUp 0.8s ease-out forwards;
+    animation-delay: 0.8s; 
+    opacity: 0;
+}
+
 @media (max-width: 1200px) {
     .banner-claim p{
         font-size: 40px;

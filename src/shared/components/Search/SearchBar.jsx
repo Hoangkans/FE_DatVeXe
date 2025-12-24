@@ -19,6 +19,7 @@ export default function SearchBar ({open, handleClose}) {
 
         if (query && query.trim() !== "") {
             navigate(`/search-result?q=${encodeURIComponent(query)}`);
+            window.scrollTo({ top: 0, behavior: "smooth" })
             handleClose(); 
         }
     }
