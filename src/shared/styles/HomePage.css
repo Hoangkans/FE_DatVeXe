@@ -1,12 +1,18 @@
-.thumnail-wrapper{
+.thumnail-wrapper {
     width: 100%;
     height: auto;
+    position: relative; 
+    z-index: 10;
 }
-.main-content-wrapper{
+
+.main-content-wrapper {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    z-index: 1; 
+    background-color: #fff; /
 }
 .main-content{
     width: 90%;
