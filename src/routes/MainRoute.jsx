@@ -1,6 +1,6 @@
 import BookCarPage from "../pages/BookCarPage"; 
 import LoginPage from "../pages/auth/Login";
-import RegisterPage from "../pages/Auth/Register";
+import RegisterPage from "../pages/auth/Register";
 
 import HomePage from "../pages/HomePage"
 import BusCompanyPage from "../pages/BusCompanyPage"
